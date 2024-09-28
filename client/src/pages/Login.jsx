@@ -1,5 +1,8 @@
+import Signup from "./Signup";
+
 const Login = () => {
-  return <div></div>;
+  // for now
+  return <Signup />;
 };
 
 export default Login;

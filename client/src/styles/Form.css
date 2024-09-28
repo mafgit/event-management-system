@@ -1,0 +1,19 @@
+.form {
+  @apply flex flex-col w-[300px] m-auto bg-slate-900 p-5 px-7 rounded-md text-white gap-4;
+}
+
+.form-field {
+  @apply flex flex-col gap-1;
+}
+
+.form-field input {
+  @apply rounded-sm p-[5px] text-black;
+}
+
+.form-page {
+  @apply flex justify-between items-center h-[100vh];
+}
+
+.text-gradient {
+  @apply bg-gradient-to-r from-blue-600 to-pink-800 bg-clip-text text-transparent;
+}
