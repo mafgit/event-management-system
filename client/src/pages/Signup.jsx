@@ -39,11 +39,12 @@ const Signup = () => {
   return (
     <div className="form-page">
       <div
-        className="bg-slate-400 h-[100vh] w-[70%] bg-top relative text-white p-36 flex flex-col gap-3"
+        className="bg-slate-400 h-[100vh] w-[70%] relative text-white p-36 flex flex-col gap-3"
         style={{
           backgroundRepeat: "no-repeat",
-          backgroundImage:
-            "url(https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)",
+          backgroundImage: "url(/form-bg-2.jpg)",
+          backgroundSize: "cover",
+          backgroundPositionX: "right",
         }}
       >
         {/* <img
@@ -70,7 +71,7 @@ const Signup = () => {
         <p className="text-xl w-[500px] italic z-20">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda
         </p>
-        <div className="w-full h-full bg-black opacity-30 absolute z-10 top-0 left-0"></div>
+        <div className="w-full h-full bg-black opacity-70 absolute z-10 top-0 left-0"></div>
       </div>
       <form className="form" onSubmit={handleSubmit}>
         <div>
