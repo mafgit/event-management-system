@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -11,30 +11,133 @@ import AdminPayments from "./pages/AdminPages/AdminPayments";
 import AdminReviews from "./pages/AdminPages/AdminReviews";
 import AdminTags from "./pages/AdminPages/AdminTags";
 import AdminTickets from "./pages/AdminPages/AdminTickets";
+import AdminRoute from "./components/AdminRoute";
+import NormalRoute from "./components/NormalRoute";
+import { createContext, useEffect, useState } from "react";
+import axios from "axios";
+
+export const AuthContext = createContext({
+  auth: true, // todo: set to false
+  admin: true,
+  email: "",
+  name: "",
+}); // todo: add default value
 
 function App() {
+  const [auth, setAuth] = useState(true); // todo: set to false
+  const [admin, setAdmin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  // todo: add loading use state
+
+  useEffect(() => {
+    // todo: axios.get() with credentials
+  }, []);
+
   return (
-    <div className="App">
-      <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+    <AuthContext.Provider value={{ auth, admin, email, name }}>
+      <div className="App">
+        <Routes>
+          {/* Signup and Login */}
+          <Route
+            path="/signup"
+            element={!auth ? <Signup /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/login"
+            element={!auth ? <Login /> : <Navigate to="/" />}
+          />
 
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
+          {/* Normal Routes */}
+          <Route
+            path="/"
+            element={
+              <NormalRoute>
+                <Home />
+              </NormalRoute>
+            }
+          />
 
-        <Route path="/event/:id" element={<Event />} />
+          <Route
+            path="/event/:id"
+            element={
+              <NormalRoute>
+                <Event />
+              </NormalRoute>
+            }
+          />
 
-        {/* ADMIN ROUTES */}
-        <Route path="/admin" element={<AdminHome />} />
-        <Route path="/admin/users" element={<AdminUsers />} />
-        <Route path="/admin/categories" element={<AdminCategories />} />
-        <Route path="/admin/events" element={<AdminEvents />} />
-        <Route path="/admin/payments" element={<AdminPayments />} />
-        <Route path="/admin/reviews" element={<AdminReviews />} />
-        <Route path="/admin/tags" element={<AdminTags />} />
-        <Route path="/admin/tickets" element={<AdminTickets />} />
-      </Routes>
-    </div>
+          {/* Auth Routes */}
+          {/* todo:... */}
+
+          {/* Admin Routes */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminHome />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <AdminRoute>
+                <AdminUsers />{" "}
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/categories"
+            element={
+              <AdminRoute>
+                <AdminCategories />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/events"
+            element={
+              <AdminRoute>
+                <AdminEvents />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/payments"
+            element={
+              <AdminRoute>
+                <AdminPayments />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/reviews"
+            element={
+              <AdminRoute>
+                <AdminReviews />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/tags"
+            element={
+              <AdminRoute>
+                <AdminTags />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/tickets"
+            element={
+              <AdminRoute>
+                <AdminTickets />
+              </AdminRoute>
+            }
+          />
+        </Routes>
+      </div>
+    </AuthContext.Provider>
   );
 }
 

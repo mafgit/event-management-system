@@ -15,7 +15,7 @@ const Navbar = () => {
         <Link to="#">Create Event</Link>
         {loggedIn ? (
           <>
-            <Link to="#">Organized by me</Link>
+            <Link to="#">Organized by Me</Link>
             <Link to="#">Visited</Link>
             <Link to="#">Account</Link>
           </>
