@@ -7,7 +7,7 @@
 }
 
 .form-field input {
-  @apply rounded-sm p-[5px] text-black;
+  @apply rounded-sm p-[5px] px-2 text-black;
 }
 
 .form-page {

@@ -85,6 +85,7 @@ const Signup = () => {
             type="text"
             onChange={(e) => setName(e.target.value)}
             required
+            placeholder="John Smith"
           />
         </div>
 
@@ -95,6 +96,7 @@ const Signup = () => {
             type="email"
             onChange={(e) => setEmail(e.target.value)}
             required
+            placeholder="johnsmith@gmail.com"
           />
         </div>
 
@@ -105,6 +107,7 @@ const Signup = () => {
             type="password"
             onChange={(e) => setPassword(e.target.value)}
             required
+            placeholder="**********"
           />
         </div>
 
@@ -115,6 +118,7 @@ const Signup = () => {
             type="password"
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
+            placeholder="**********"
           />
         </div>
 
