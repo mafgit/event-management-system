@@ -2,8 +2,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-// import Event from "./pages/Event";
-import SearchPage from "./pages/searchPage/searchPage.jsx";
+import Event from "./pages/Event";
+import SearchPage from "./pages/SearchPage";
 import AdminHome from "./pages/AdminPages/AdminHome";
 import AdminUsers from "./pages/AdminPages/AdminUsers";
 import AdminCategories from "./pages/AdminPages/AdminCategories";
@@ -65,16 +65,16 @@ function App() {
               <NormalRoute>
                 <Event />
               </NormalRoute>
-            } />
+            }
+          />
 
           <Route
-            path="/searchPage"
+            path="/search"
             element={
               <NormalRoute>
                 <SearchPage />
               </NormalRoute>
             }
-
           />
 
           {/* Auth Routes */}
