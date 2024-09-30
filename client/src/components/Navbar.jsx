@@ -11,7 +11,7 @@ const Navbar = () => {
       </Link>
       <div className="navbar-links flex gap-4 relative">
         <Link to="#">Home</Link>
-        <Link to="#">Find Events</Link>
+        <Link to="/searchPage">Search Events</Link>
         <Link to="#">Create Event</Link>
         {loggedIn ? (
           <>
