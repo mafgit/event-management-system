@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { AuthContext } from "../App";
+import Footer from "./Footer";
 
 const AdminRoute = ({ children }) => {
   const { auth } = useContext(AuthContext);
@@ -10,6 +11,7 @@ const AdminRoute = ({ children }) => {
     <div>
       <Navbar />
       {children}
+      <Footer />
     </div>
   ) : (
     <Navigate to="/" />
