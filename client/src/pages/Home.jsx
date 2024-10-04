@@ -28,14 +28,14 @@ const Home = () => {
   //https://plus.unsplash.com/premium_photo-1681488484866-af8f282d59ce?q=80&w=1914&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
   return (
   <>
-      <div  className="min-h-screen bg-gray-100">
-        <header className="relative bg-cover bg-center h-screen" style={{ backgroundImage: 'url("https://plus.unsplash.com/premium_photo-1681488484866-af8f282d59ce?q=80&w=1914&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")' }}>
-        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
-        <div className="relative z-10 flex flex-col items-center justify-center text-center text-white h-full">
-          <h1 className="text-5xl font-bold mb-4">Organize & Attend Events Effortlessly</h1>
-          <p className="text-lg mb-8">Discover events near you or create your own.</p>
-          <Link to={'/'} className="bg-gradient-to-tr from-purple-800 to-purple-400 hover:from-purple-600 hover:to-cyan-400 text-white py-2 px-6 rounded-full transition duration-300">Get Started</Link>
-        </div>
+    <div  className="min-h-screen bg-gray-100">
+      <header className="relative bg-cover bg-center h-screen" style={{ backgroundImage: 'url("https://plus.unsplash.com/premium_photo-1681488484866-af8f282d59ce?q=80&w=1914&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")' }}>
+      <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+      <div className="relative z-10 flex flex-col items-center justify-center text-center text-white h-full">
+        <h1 className="text-5xl font-bold mb-4">Organize & Attend Events Effortlessly</h1>
+        <p className="text-lg mb-8">Discover events near you or create your own.</p>
+        <Link to={'/'} className="bg-gradient-to-tr from-purple-800 to-purple-400 hover:from-purple-600 hover:to-cyan-400 text-white py-2 px-6 rounded-full transition duration-300">Get Started</Link>
+      </div>
       </header>
 
       {/* About Section */}
@@ -62,16 +62,16 @@ const Home = () => {
           </div>
         </div>
       </section>
-      </div>
+    </div>
 
-    <section className="bg-gray-50">
-      <div className="flex flex-col gap-5 bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 p-3 py-8">
+    <section className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">
+      <div className="flex flex-col gap-5 p-3 py-8">
         <h3 className="text-center text-3xl text-zinc-100 font-semibold">Search Events</h3>
         <form className="flex justify-center items-stretch gap-2 w-1/3 mx-auto">
-          <input className="w-full peer focus:scale-110 focus:outline-none focus:ring focus:ring-purple-500 bg-slate-200 rounded-full px-3 py-2 transition ease duration-200" type="text" placeholder="Search Events.." />
+          <input className="w-full peer focus:scale-110 focus:outline-none focus:ring focus:ring-purple-500 bg-slate-200 rounded-full px-4 py-2 transition ease duration-200" type="text" placeholder="Search Events.." />
           <button className="px-3 peer-focus:scale-110 peer-focus:translate-x-6 transition ease duration-200 rounded-full bg-slate-200"><CiSearch /></button>
         </form>
-        <div className="pt-3 grid grid-cols-5 gap-8 *:rounded-full *:text-gray-800 *:text-sm *:px-8 *:py-2 *:focus:ring *:focus:ring-purple-400 max-w-6xl mx-auto">
+        <div className="pt-3 grid grid-cols-5 gap-4 *:rounded-full *:text-gray-800 *:text-sm *:px-10 *:py-2 *:focus:ring *:focus:ring-purple-400 max-w-6xl mx-auto">
           <button className="bg-gray-200 focus:bg-amber-400 ">HEllo</button>
           <button className="bg-gray-200  focus:bg-pink-300">World</button>
           <button className="bg-gray-200 focus:bg-red-400">Party</button>
@@ -79,23 +79,25 @@ const Home = () => {
           <button className="bg-gray-200 focus:bg-emerald-400">WOrkshop</button>
         </div>
       </div>
-      <div className="pt-4 px-16 rounded-t-xl ">
-        <h2 className="text-zinc-900 text-center text-2xl mb-4 font-light">Featured Events</h2>
-        <Carousel featured={featuredEvents}/>
+      <div className="bg-gray-50 rounded-t-[3rem] ">
+        <div className="pt-4 px-16">
+          <h2 className="text-zinc-900 text-center text-2xl mb-4 font-light">Featured Events</h2>
+          <Carousel featured={featuredEvents}/>
+        </div>
+        <div className="mt-4 max-w-[66rem] mx-auto ">
+          <h2 className="text-zinc-900 text-center text-2xl mb-4 font-light">Upcoming Events</h2>
+            <section className="grid grid-cols-3 gap-x-10">
+              {upcomingEvents && upcomingEvents.map((event) => (
+                <EventCard event={event}/>
+              ))
+              }
+              <EventCard/>
+              <EventCard/>
+              <EventCard/>
+            </section>
+        </div>
       </div>
-      <div className="mt-4 max-w-[66rem] mx-auto">
-        <h2 className="text-zinc-900 text-center text-2xl mb-4 font-light">Upcoming Events</h2>
-          <section className="grid grid-cols-3 gap-x-10">
-            {upcomingEvents && upcomingEvents.map((event) => (
-              <EventCard event={event}/>
-            ))
-            }
-            <EventCard/>
-            <EventCard/>
-            <EventCard/>
-          </section>
-
-      </div>
+      
     </section>
     </>
   ) 
