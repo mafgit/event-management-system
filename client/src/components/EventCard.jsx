@@ -1,6 +1,6 @@
 import { FaPeopleGroup } from "react-icons/fa6";
 
-const EventCard = () => {
+const EventCard = ({event}) => {
   return (
     <div className="w-[250px] border-slate-200 border-[1px] rounded-sm flex flex-col">
       <div className="relative h-[125px] w-full">
