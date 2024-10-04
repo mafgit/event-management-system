@@ -1,8 +1,9 @@
 const express = require("express");
 require("dotenv").config();
-require("./db_conn"); // to run db
+require("./db"); // to run db
 
 const app = express();
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/events", require("./routes/event"));
 app.use("/registrations", require("./routes/registration"));

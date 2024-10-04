@@ -1,4 +1,3 @@
-const conn = require("../db_conn");
 const router = require("express").Router();
 
 // router.get("/", (req, res) => {})

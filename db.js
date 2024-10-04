@@ -1,6 +1,7 @@
-const mysql = require("mysql2"); // auth error was coming in mysql therefore used mysql2
+const mysql = require("mysql2");
+// auth error was coming in mysql therefore used mysql2
 
-const conn = mysql.createConnection({
+const db = mysql.createPool({
   host: "localhost",
   user: process.env.DB_USER,
   password: process.env.DB_PW,
@@ -8,10 +9,7 @@ const conn = mysql.createConnection({
   multipleStatements: true,
 });
 
-conn.connect((err) => {
-  if (err) throw err;
-  console.log("-> connected to mysql database");
-});
+console.log("-> connected to mysql database");
 
 const create_tables_query = `CREATE TABLE IF NOT EXISTS users ( 
     user_id INT NOT NULL AUTO_INCREMENT,
@@ -26,13 +24,14 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(20) NOT NULL,
     PRIMARY KEY (name)
   );
-  
+
   CREATE TABLE IF NOT EXISTS events (
     event_id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(45) NOT NULL,
     description VARCHAR(120) NOT NULL,
     capacity INT NOT NULL,
     venue VARCHAR(45) NOT NULL,
+    image_url VARCHAR(45),
     organized_by INT NOT NULL,
     event_date DATE NOT NULL,
     start_time TIME NOT NULL,
@@ -114,9 +113,9 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (event_id) REFERENCES events (event_id)
   );`;
 
-conn.query(create_tables_query, (err, result) => {
+db.query(create_tables_query, (err) => {
   if (err) console.log(err);
   else console.log("-> tables are ready");
 });
 
-module.exports = conn;
+module.exports = db;
