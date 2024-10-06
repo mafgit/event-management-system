@@ -10,14 +10,14 @@ const Event = () => {
           className="w-full h-full object-cover rounded-md"
           alt="event image"
         />
-        <div className="absolute left-0 top-0 w-full h-full opacity-50 bg-black z-20"></div>
+        <div className="absolute left-0 top-0 w-full h-full opacity-50 bg-black z-20 rounded-md"></div>
         <h1 className="absolute left-6 bottom-5 z-30 text-white text-3xl font-bold">
           Event Name
         </h1>
       </div>
 
       <div className="flex my-[10px] gap-2 items-stretch">
-        <div className="bg-slate-300 p-5 rounded-md grow-[4] basis-0 flex flex-col gap-3">
+        <div className="bg-gray-300 p-5 rounded-md grow-[4] basis-0 flex flex-col gap-3">
           {/* details etc */}
           <div className="flex flex-wrap gap-3">
             <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
@@ -52,7 +52,7 @@ const Event = () => {
             </p>
           </div>
         </div>
-        <div className="grow-[1] w-full h-full bg-slate-300 rounded-md basis-0 p-5">
+        <div className="grow-[1] w-full h-full bg-gray-300 rounded-md basis-0 p-5">
           {/* tickets etc */}
           <div className="flex flex-col gap-2">
             <button className="text-white bg-gradient-to-r from-pink-700 to-blue-700 p-2 w-full rounded-md font-bold uppercase">

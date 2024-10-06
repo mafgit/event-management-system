@@ -2,7 +2,7 @@ import Signup from "./Signup";
 
 const Login = () => {
   // for now
-  return <Signup />;
+  return <Signup isLoginPage={true} />;
 };
 
 export default Login;

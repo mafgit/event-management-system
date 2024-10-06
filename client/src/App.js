@@ -14,8 +14,13 @@ import AdminTags from "./pages/AdminPages/AdminTags";
 import AdminTickets from "./pages/AdminPages/AdminTickets";
 import AdminRoute from "./components/AdminRoute";
 import NormalRoute from "./components/NormalRoute";
+import AuthRoute from "./components/AuthRoute";
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
+import CreateEvent from "./pages/CreateEvent";
+import OrganizedBy from "./pages/OrganizedBy";
+import VisitedByMe from "./pages/VisitedByMe";
 
 export const AuthContext = createContext({
   auth: true, // todo: set to false
@@ -77,8 +82,33 @@ function App() {
             }
           />
 
+          <Route
+            path="/organized-by/:id"
+            element={
+              <NormalRoute>
+                <OrganizedBy />
+              </NormalRoute>
+            }
+          />
+
           {/* Auth Routes */}
-          {/* todo:... */}
+          <Route
+            path="/create-event"
+            element={
+              <AuthRoute>
+                <CreateEvent />
+              </AuthRoute>
+            }
+          />
+
+          <Route
+            path="/visited-by-me"
+            element={
+              <AuthRoute>
+                <VisitedByMe />
+              </AuthRoute>
+            }
+          />
 
           {/* Admin Routes */}
           <Route

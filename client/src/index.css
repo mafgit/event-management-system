@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.navbar-links a {
+  transition: 0.3s;
+  border-bottom: 2px solid #d1d5db;
+  border-top: 1px solid #d1d5db;
+}
+
+.navbar-links a:hover {
+  border-bottom: 2px solid white;
+}
