@@ -73,6 +73,34 @@ const get_event = async (req, res) => {
   }
 };
 
+const get_featured = async (req, res) => {
+    try {
+      const q = "SELECT * FROM events WHERE event_date >= CURDATE() ORDER BY Attendees DESC, event_date ASC LIMIT 10;"
+      db.query(q, (err, result) => {
+        if (err) throw err;
+        if (result.length === 0)
+          return res.status(404).json({ success: false, message: "Event not found" });
+        res.status(200).json({ success: true, event: result[0] });
+      })
+    } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+}
+
+const get_upcoming = async (req, res) => {
+  try {
+    const q = "SELECT * FROM events WHERE event_date >= CURDATE() ORDER BY event_date DESC LIMIT 3;"
+    db.query(q, (err, result) => {
+      if (err) throw err;
+      if (result.length === 0)
+        return res.status(404).json({ success: false, message: "Event not found" });
+      res.status(200).json({ success: true, event: result[0] });
+    })
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
 const update_event = async (req, res) => {
   try {
     const { id } = req.params;
@@ -142,6 +170,8 @@ module.exports = {
   create_event,
   get_events,
   get_event,
+  get_featured,
+  get_upcoming,
   update_event,
   delete_event,
 };
