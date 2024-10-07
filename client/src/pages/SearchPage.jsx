@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../styles/SearchPage.css";
 import Footer from "../components/Footer";
+import EventCard from "../components/EventCard";
 
 const eventList = [
   {
@@ -125,24 +126,15 @@ const SearchPage = () => {
 
         <div className="eventsGrid">
           {filteredEvents.map((event) => (
-            <div key={event.id} className="eventCard">
-              <img
-                src="https://media.istockphoto.com/id/499517325/photo/a-man-speaking-at-a-business-conference.jpg?s=612x612&w=0&k=20&c=gWTTDs_Hl6AEGOunoQ2LsjrcTJkknf9G8BGqsywyEtE="
-                alt={event.title}
-                className="event-image"
-              />
-              <div className="eventDetails">
-                <h2>{event.title}</h2>
-                <p>
-                  <span role="img" aria-label="attendees">
-                    👥
-                  </span>{" "}
-                  {event.attendees} | {event.type} | {event.duration}
-                </p>
-                <p>{event.venue}</p>
-                <button className="openEventBtn">Open Event</button>
-              </div>
-            </div>
+            <EventCard
+              key={event.id}         
+              title={event.title}     
+              attendees={event.attendees}  
+              type={event.type}       
+              duration={event.duration}  
+              venue={event.venue}     
+              imageUrl="https://media.istockphoto.com/id/499517325/photo/a-man-speaking-at-a-business-conference.jpg?s=612x612&w=0&k=20&c=gWTTDs_Hl6AEGOunoQ2LsjrcTJkknf9G8BGqsywyEtE=" // Example image URL
+            />
           ))}
         </div>
       </div>
