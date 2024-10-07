@@ -24,18 +24,23 @@ import OrganizedBy from "./pages/OrganizedBy";
 import VisitedByMe from "./pages/VisitedByMe";
 import Account from "./pages/Account";
 
+axios.defaults.baseURL = "http://localhost:5000/";
+
 export const AuthContext = createContext({
   auth: true, // todo: set to false
   admin: true,
   email: "",
-  name: "",
+  first_name: "",
+  last_name: "",
 }); // todo: add default value
 
 function App() {
   const [auth, setAuth] = useState(true); // todo: set to false
+  const [userId, setUserId] = useState(-1); // todo: set to false
   const [admin, setAdmin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("a@a.com");
+  const [firstName, setFirstName] = useState("abc");
+  const [lastName, setLastName] = useState("def");
   // todo: add loading use state
 
   useEffect(() => {
@@ -43,7 +48,9 @@ function App() {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ auth, admin, email, name }}>
+    <AuthContext.Provider
+      value={{ auth, admin, email, firstName, lastName, userId }}
+    >
       <div className="App">
         <Routes>
           {/* Signup and Login */}

@@ -12,7 +12,6 @@
   border-bottom: 2px solid white;
 }
 
-
 .footer-links a {
   transition: 0.3s;
   border-bottom: 2px solid #d1d5db;
@@ -21,4 +20,16 @@
 
 .footer-links a:hover {
   border-bottom: 2px solid white;
+}
+
+.page {
+  min-height: calc(100vh - 103px);
+}
+
+.btn {
+  transition: 0.3s;
+}
+
+.btn:hover {
+  filter: brightness(0.8);
 }
