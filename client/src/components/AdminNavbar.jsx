@@ -15,7 +15,9 @@ const Navbar = () => {
         <Link to="/admin/tags">Tags</Link>
         <Link to="/admin/payments">Payments</Link>
         <Link to="/admin/tickets">Tickets</Link>
-        <Link to="/">Website</Link>
+        <Link to="/" className="bg-white px-2 rounded-md btn">
+          Website
+        </Link>
       </div>
     </div>
   );
