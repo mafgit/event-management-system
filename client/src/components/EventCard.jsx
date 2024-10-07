@@ -5,7 +5,7 @@ const EventCard = ({
   name = "My Event",
   capacity = 100,
   venue = "Abcd, efgh, ijkl",
-  edit = true,
+  edit = false,
 }) => {
   return (
     <div className="border-slate-200 border rounded-xl flex flex-col justify-between min-h-[125px] group overflow-hidden">
@@ -30,9 +30,11 @@ const EventCard = ({
             {venue}
           </div>
         </div>
-        <button className="btn border-[1px] bg-gray-100 border-blue-600 text-black w-full p-1 rounded-md">
-          Edit Event
-        </button>
+        {edit && (
+          <button className="btn border-[1px] bg-gray-100 border-blue-600 text-black w-full p-1 rounded-md">
+            Edit Event
+          </button>
+        )}
         <button className="btn bg-gradient-to-r from-blue-600 text-white to-pink-800 w-full p-1 rounded-md">
           Show Event
         </button>
