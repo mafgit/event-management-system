@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../styles/SearchPage.css";
+import Footer from "../components/Footer";
 
 const eventList = [
   {
@@ -76,6 +77,7 @@ const eventList = [
   },
 ];
 
+
 const SearchPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("");
@@ -103,44 +105,46 @@ const SearchPage = () => {
 
   return (
     <div className="searchPage">
-      <div className="searchContainer">
-        <input
-          type="text"
-          placeholder="Search events here..."
-          value={searchTerm}
-          onChange={handleSearch}
-          className="searchInput"
-        />
-        <div className="filterContainer">
-          <select onChange={handleSort} className="sortDropdown">
-            <option value="">Sort By</option>
-            <option value="title">Title</option>
-            <option value="attendees">Attendees</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="eventsGrid">
-        {filteredEvents.map((event) => (
-          <div key={event.id} className="eventCard">
-            <img
-              src="https://media.istockphoto.com/id/499517325/photo/a-man-speaking-at-a-business-conference.jpg?s=612x612&w=0&k=20&c=gWTTDs_Hl6AEGOunoQ2LsjrcTJkknf9G8BGqsywyEtE="
-              alt={event.title}
-              className="event-image"
-            />
-            <div className="eventDetails">
-              <h2>{event.title}</h2>
-              <p>
-                <span role="img" aria-label="attendees">
-                  👥
-                </span>{" "}
-                {event.attendees} | {event.type} | {event.duration}
-              </p>
-              <p>{event.venue}</p>
-              <button className="openEventBtn">Open Event</button>
-            </div>
+      <div className="contentWrapper">
+        <div className="searchContainer">
+          <input
+            type="text"
+            placeholder="Search events here..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="searchInput"
+          />
+          <div className="filterContainer">
+            <select onChange={handleSort} className="sortDropdown">
+              <option value="">Sort By</option>
+              <option value="title">Title</option>
+              <option value="attendees">Attendees</option>
+            </select>
           </div>
-        ))}
+        </div>
+
+        <div className="eventsGrid">
+          {filteredEvents.map((event) => (
+            <div key={event.id} className="eventCard">
+              <img
+                src="https://media.istockphoto.com/id/499517325/photo/a-man-speaking-at-a-business-conference.jpg?s=612x612&w=0&k=20&c=gWTTDs_Hl6AEGOunoQ2LsjrcTJkknf9G8BGqsywyEtE="
+                alt={event.title}
+                className="event-image"
+              />
+              <div className="eventDetails">
+                <h2>{event.title}</h2>
+                <p>
+                  <span role="img" aria-label="attendees">
+                    👥
+                  </span>{" "}
+                  {event.attendees} | {event.type} | {event.duration}
+                </p>
+                <p>{event.venue}</p>
+                <button className="openEventBtn">Open Event</button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
