@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CreateEvent from "./pages/CreateEvent";
 import OrganizedBy from "./pages/OrganizedBy";
 import VisitedByMe from "./pages/VisitedByMe";
+import Account from "./pages/Account";
 
 export const AuthContext = createContext({
   auth: true, // todo: set to false
@@ -111,6 +112,15 @@ function App() {
             }
           />
 
+          <Route
+            path="/account"
+            element={
+              <AuthRoute>
+                <Account />
+              </AuthRoute>
+            }
+          />
+
           {/* Admin Routes */}
           <Route
             path="/admin"
@@ -124,7 +134,7 @@ function App() {
             path="/admin/users"
             element={
               <AdminRoute>
-                <AdminUsers />{" "}
+                <AdminUsers />
               </AdminRoute>
             }
           />

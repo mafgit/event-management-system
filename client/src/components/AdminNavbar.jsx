@@ -2,20 +2,20 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <div className="bg-slate-900 text-white py-3 px-4 flex justify-between">
-      <Link to="/">
-        <h1>EMS Admin</h1>
+    <div className="bg-gray-300 text-black py-2 px-6 flex justify-between">
+      <Link className="flex items-center font-bold italic" to="/">
+        <h1 className="text-lg">EMS Admin</h1>
       </Link>
-      <div className="flex gap-4">
-        <Link to="#">Home</Link>
-        <Link to="#">Website</Link>
-        <Link to="#">Users</Link>
-        <Link to="#">Events</Link>
-        <Link to="#">Reviews</Link>
-        <Link to="#">Categories</Link>
-        <Link to="#">Tags</Link>
-        <Link to="#">Payments</Link>
-        <Link to="#">Tickets</Link>
+      <div className="navbar-links flex gap-5 relative">
+        <Link to="/admin">Home</Link>
+        <Link to="/admin/users">Users</Link>
+        <Link to="/admin/events">Events</Link>
+        <Link to="/admin/reviews">Reviews</Link>
+        <Link to="/admin/categories">Categories</Link>
+        <Link to="/admin/tags">Tags</Link>
+        <Link to="/admin/payments">Payments</Link>
+        <Link to="/admin/tickets">Tickets</Link>
+        <Link to="/">Website</Link>
       </div>
     </div>
   );

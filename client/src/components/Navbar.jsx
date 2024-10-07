@@ -16,8 +16,8 @@ const Navbar = () => {
         {auth ? (
           <>
             <Link to="/create-event">Create Event</Link>
-            <Link to="/organized">Organized by Me</Link>
-            <Link to="/visited">Visited</Link>
+            <Link to="/organized-by/1">Organized by Me</Link>
+            <Link to="/visited-by-me">Visited</Link>
             <Link to="/account">Account</Link>
           </>
         ) : (
