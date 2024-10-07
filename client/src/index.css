@@ -26,10 +26,13 @@
   min-height: calc(100vh - 103px);
 }
 
-.btn {
+.btn,
+.admin-tap {
   transition: 0.3s;
 }
 
-.btn:hover {
+.btn:hover,
+.admin-tap:hover {
   filter: brightness(0.8);
+  cursor: pointer;
 }
