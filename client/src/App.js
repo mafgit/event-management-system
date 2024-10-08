@@ -25,6 +25,7 @@ import VisitedByMe from "./pages/VisitedByMe";
 import Account from "./pages/Account";
 
 axios.defaults.baseURL = "http://localhost:5000/";
+axios.defaults.withCredentials = true;
 
 export const AuthContext = createContext({
   auth: true, // todo: set to false
