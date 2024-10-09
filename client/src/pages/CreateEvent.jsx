@@ -7,7 +7,7 @@ import {HiChevronDown } from "react-icons/hi2";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../App";
 
 function CreateEvent () {
   const navigate = useNavigate();
@@ -42,8 +42,7 @@ function CreateEvent () {
       return setImageUploadError('Cover Image must be uploaded!');
     } 
     try {
-      const res = await axios.post('http://localhost:5000/events/create_event', {...formData, organized_by: userId}, {
-        withCredentials: true,
+      const res = await axios.post('/events/create_event', {...formData, organized_by: userId}, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -350,11 +349,11 @@ function CreateEvent () {
                       className="block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none"
                     >
                       <option value="">Select a category</option>
-                      <option value="conference">Conference</option>
-                      <option value="seminar">Seminar</option>
-                      <option value="workshop">Workshop</option>
-                      <option value="party">Party</option>
-                      <option value="other">Other</option>
+                      <option value="Conference">Conference</option>
+                      <option value="Seminar">Seminar</option>
+                      <option value="Workshop">Workshop</option>
+                      <option value="Party">Party</option>
+                      <option value="Other">Other</option>
                     </select>
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                       <HiChevronDown className="h-5 w-5 text-gray-400" aria-hidden="true" />

@@ -1,4 +1,5 @@
 const mysql = require("mysql2");
+
 // auth error was coming in mysql therefore used mysql2
 
 const db = mysql.createPool({
@@ -15,8 +16,9 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     user_id INT NOT NULL AUTO_INCREMENT,
     first_name VARCHAR(20) NOT NULL,
     last_name VARCHAR(20) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
     is_admin TINYINT NOT NULL DEFAULT 0,
-    password VARCHAR(45) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     PRIMARY KEY (user_id)
   );
   

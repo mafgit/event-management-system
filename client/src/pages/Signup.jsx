@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../App";
 import { Link } from "react-router-dom";
 import "../styles/Form.css";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
 const Signup = ({ isLoginPage }) => {
+  const { setAuth, setAdmin, setUserId, setEmail, setFirstName, setLastName } = useContext(AuthContext);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, set_Email] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -29,11 +31,11 @@ const Signup = ({ isLoginPage }) => {
         return;
       }
 
-      axios.post("/users/signup", { name, email, password }).then((res) => {
+      axios.post("/auth/signup", { name, email, password }).then((res) => {
         if (res.data.success) {
           toast("Signed up!");
         } else {
-          toast(res.data.error);
+          toast(res.data.message);
         }
       });
     } else {
@@ -42,8 +44,17 @@ const Signup = ({ isLoginPage }) => {
         return;
       }
 
-      axios.get("/users/login", { email, password }).then((res) => {
-        if (res.data.success) toast("Logged in!");
+      axios.post("/auth/signin", { email, password }).then((res) => {
+        if (res.data.success){
+          toast("Logged in!");
+          const { id, email, firstName, lastName, admin } = res.data.user;
+          setAuth(true);
+          setUserId(id);
+          setEmail(email);
+          setFirstName(firstName);
+          setLastName(lastName);
+          setAdmin(admin);
+        } 
         else toast(res.data.error);
       });
     }
@@ -105,7 +116,7 @@ const Signup = ({ isLoginPage }) => {
             <input
               id="email"
               type="email"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => set_Email(e.target.value)}
               required
               placeholder="johnsmith@gmail.com"
             />
