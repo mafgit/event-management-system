@@ -1,5 +1,10 @@
-const { create_registration, get_registrations, get_registration, update_registration, delete_registration } = require("../controllers/registration.js");
-
+const {
+  create_registration,
+  get_registrations,
+  get_registration,
+  update_registration,
+  delete_registration,
+} = require("../controllers/registration.js");
 
 const router = require("express").Router();
 

@@ -9,7 +9,7 @@ import AdminHome from "./pages/AdminPages/AdminHome";
 import AdminUsers from "./pages/AdminPages/AdminUsers";
 import AdminCategories from "./pages/AdminPages/AdminCategories";
 import AdminEvents from "./pages/AdminPages/AdminEvents";
-import AdminPayments from "./pages/AdminPages/AdminPayments";
+import AdminRegistrations from "./pages/AdminPages/AdminRegistrations";
 import AdminReviews from "./pages/AdminPages/AdminReviews";
 import AdminTags from "./pages/AdminPages/AdminTags";
 import AdminTickets from "./pages/AdminPages/AdminTickets";
@@ -163,10 +163,10 @@ function App() {
             }
           />
           <Route
-            path="/admin/payments"
+            path="/admin/registrations"
             element={
               <AdminRoute>
-                <AdminPayments />
+                <AdminRegistrations />
               </AdminRoute>
             }
           />

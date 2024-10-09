@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Modal, Input, Form, message, InputNumber } from "antd";
 import axios from "axios";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 
 const AdminReviews = () => {
   const [data, setData] = useState([]);
@@ -125,6 +125,10 @@ const AdminReviews = () => {
 
   return (
     <div>
+      <div className="flex justify-between py-3 pb-0 px-6">
+        <h1 className="text-lg font-bold">Reviews</h1>
+      </div>
+
       <Table
         rowSelection={{
           type: "checkbox",
