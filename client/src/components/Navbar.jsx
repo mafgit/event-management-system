@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../App";
 
 const Navbar = () => {
-  const { auth } = useContext(AuthContext);
+  const { auth, admin } = useContext(AuthContext);
 
   return (
     <div className="bg-gray-300 text-black py-2 px-6 flex justify-between">
@@ -20,6 +20,11 @@ const Navbar = () => {
           </>
         ) : (
           <Link to="/login">Login</Link>
+        )}
+        {admin && (
+          <Link to="/admin" className="bg-white px-2 rounded-md btn">
+            Admin
+          </Link>
         )}
       </div>
     </div>
