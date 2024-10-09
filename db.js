@@ -31,7 +31,7 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     description VARCHAR(120) NOT NULL,
     capacity INT NOT NULL,
     venue VARCHAR(45) NOT NULL,
-    image_url VARCHAR(45),
+    image_url VARCHAR(1024),
     organized_by INT NOT NULL,
     event_date DATE NOT NULL,
     start_time TIME NOT NULL,
