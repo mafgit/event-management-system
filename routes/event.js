@@ -1,5 +1,4 @@
-const { create_event } = require("../controllers/event");
-import { get_events, get_event, get_featured, get_upcoming, update_event, delete_event } from '../controllers/event.js';
+const { create_event, get_events, get_event, get_featured, get_upcoming, update_event, delete_event } = require("../controllers/event.js");
 
 const router = require("express").Router();
 

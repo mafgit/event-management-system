@@ -12,10 +12,10 @@ const create_event = async (req, res) => {
       start_time,
       end_time,
       category,
-      status,
-      verified,
       image_url,
     } = req.body;
+    const verified = req.body.verified ?? false;
+    const status = req.body.verified ?? "Upcoming"; //Canceled, Featured, Completed, Postponed
 
     const q =
       "INSERT INTO events (name, description, capacity, venue, organized_by, event_date, start_time, end_time, category, status, verified, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
