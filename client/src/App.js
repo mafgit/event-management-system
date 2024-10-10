@@ -32,8 +32,8 @@ export const AuthContext = createContext({
   admin: true,
   userId: -1,
   email: "",
-  first_name: "",
-  last_name: "",
+  firstName: "",
+  lastName: "",
   setAuth: () => {},
   setAdmin: () => {},
   setUserId: () => {},
@@ -46,34 +46,10 @@ function App() {
   const [auth, setAuth] = useState(false); // todo: set to false
   const [userId, setUserId] = useState(-1); // todo: set to false
   const [admin, setAdmin] = useState(true);
-  const [email, setEmail] = useState("a@a.com");
-  const [firstName, setFirstName] = useState("abc");
-  const [lastName, setLastName] = useState("def");
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   // todo: add loading use state
-
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const res = await axios.get("/users/get_user");
-  //       if (res.data.success) {
-  //         const { id, email, firstName, lastName, admin } = res.data.user;
-  //         setUserId(id);
-  //         setEmail(email);
-  //         setFirstName(firstName);
-  //         setLastName(lastName);
-  //         setAdmin(admin);
-  //         setAuth(true);
-  //       } else {
-  //         setAuth(false);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //       setAuth(false);
-  //     }
-  //   };
-
-  //   fetchUserData();
-  // }, []);
 
   return (
     <AuthContext.Provider

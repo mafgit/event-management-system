@@ -49,14 +49,6 @@ function CreateEvent() {
       return setImageUploadError('Cover Image must be uploaded!');
     } 
     try {
-      const res = await axios.post('/events/create_event', {...formData, organized_by: userId}, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      return setImageUploadError("Cover Image must be uploaded!");
-    }
-    try {
       const res = await axios.post(
         "http://localhost:5000/events/create_event",
         { ...formData, organized_by: userId },

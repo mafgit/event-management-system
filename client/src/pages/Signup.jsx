@@ -37,8 +37,17 @@ const Signup = ({ isLoginPage }) => {
         } else {
           toast(res.data.message);
         }
+      })
+      .catch((error) => {
+        if (error.response) {
+            toast(error.response.data.message); // Display custom error message from backend
+        }
+        else {
+          toast("Request error: " + error.message);
+        }
       });
-    } else {
+    } 
+    else {
       if (!email || !password) {
         toast("Fill all fields");
         return;
@@ -47,15 +56,25 @@ const Signup = ({ isLoginPage }) => {
       axios.post("/auth/signin", { email, password }).then((res) => {
         if (res.data.success){
           toast("Logged in!");
-          const { id, email, firstName, lastName, admin } = res.data.user;
+          const { user_id, email, firstName, lastName, admin } = res.data.user;
           setAuth(true);
-          setUserId(id);
+          setUserId(user_id);
           setEmail(email);
           setFirstName(firstName);
           setLastName(lastName);
           setAdmin(admin);
         } 
-        else toast(res.data.error);
+        else {
+          toast(res.data.message);
+        } 
+      })
+      .catch((error) => {
+        if (error.response) {
+            toast(error.response.data.message); // Display custom error message from backend
+        }
+        else {
+          toast("Request error: " + error.message);
+        }
       });
     }
   };
