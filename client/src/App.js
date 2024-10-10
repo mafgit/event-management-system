@@ -28,15 +28,22 @@ axios.defaults.baseURL = "http://localhost:5000/";
 axios.defaults.withCredentials = true;
 
 export const AuthContext = createContext({
-  auth: true, // todo: set to false
+  auth: false, // todo: set to false
   admin: true,
+  userId: -1,
   email: "",
   first_name: "",
   last_name: "",
+  setAuth: () => {},
+  setAdmin: () => {},
+  setUserId: () => {},
+  setEmail: () => {},
+  setFirstName: () => {},
+  setLastName: () => {},
 }); // todo: add default value
 
 function App() {
-  const [auth, setAuth] = useState(true); // todo: set to false
+  const [auth, setAuth] = useState(false); // todo: set to false
   const [userId, setUserId] = useState(-1); // todo: set to false
   const [admin, setAdmin] = useState(true);
   const [email, setEmail] = useState("a@a.com");
@@ -44,13 +51,33 @@ function App() {
   const [lastName, setLastName] = useState("def");
   // todo: add loading use state
 
-  useEffect(() => {
-    // todo: axios.get() with credentials
-  }, []);
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const res = await axios.get("/users/get_user");
+  //       if (res.data.success) {
+  //         const { id, email, firstName, lastName, admin } = res.data.user;
+  //         setUserId(id);
+  //         setEmail(email);
+  //         setFirstName(firstName);
+  //         setLastName(lastName);
+  //         setAdmin(admin);
+  //         setAuth(true);
+  //       } else {
+  //         setAuth(false);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching user data:", error);
+  //       setAuth(false);
+  //     }
+  //   };
+
+  //   fetchUserData();
+  // }, []);
 
   return (
     <AuthContext.Provider
-      value={{ auth, admin, email, firstName, lastName, userId }}
+      value={{ auth, admin, email, firstName, lastName, userId, setAuth, setAdmin, setUserId, setEmail, setFirstName, setLastName}}
     >
       <div className="App">
         <Routes>
