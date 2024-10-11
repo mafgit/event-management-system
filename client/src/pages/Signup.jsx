@@ -1,16 +1,62 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../App";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Form.css";
 import axios from "axios";
+import { app } from '../firebase';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { toast, ToastContainer } from "react-toastify";
+import { FcGoogle } from "react-icons/fc";
+
 
 const Signup = ({ isLoginPage }) => {
   const { setAuth, setAdmin, setUserId, setEmail, setFirstName, setLastName } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, set_Email] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  
+  const handleGoogleLogin = async () => {
+    try {
+        const provider = new GoogleAuthProvider();
+        const auth = getAuth(app);
+        
+        const result = await signInWithPopup(auth, provider);
+        const res = await fetch('http://localhost:5000/auth/google', 
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: result.user.displayName, 
+                email: result.user.email, 
+            }),
+        });
+        const data = await res.json();
+        if(data.success === false)  return toast(data.message); 
+        toast("Logged in!");
+        const { user_id, email, first_name, last_name, admin } = data.user;
+          setAuth(true);
+          setUserId(user_id);
+          setEmail(email);
+          setFirstName(first_name);
+          setLastName(last_name);
+          setAdmin(admin);
+          const userData = {
+            userId: user_id,
+            email,
+            firstName: first_name,
+            lastName: last_name,
+            admin,
+          };
+          localStorage.setItem("userData", JSON.stringify(userData));
+
+    } catch (error) {
+        console.log("Could not sign in with google", error);
+    }
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,13 +80,14 @@ const Signup = ({ isLoginPage }) => {
       axios.post("/auth/signup", { name, email, password }).then((res) => {
         if (res.data.success) {
           toast("Signed up!");
+          navigate("/login");
         } else {
           toast(res.data.message);
         }
       })
       .catch((error) => {
         if (error.response) {
-            toast(error.response.data.message); // Display custom error message from backend
+            toast(error.response.data.message); 
         }
         else {
           toast("Request error: " + error.message);
@@ -78,7 +125,7 @@ const Signup = ({ isLoginPage }) => {
       })
       .catch((error) => {
         if (error.response) {
-            toast(error.response.data.message); // Display custom error message from backend
+            toast(error.response.data.message); 
         }
         else {
           toast("Request error: " + error.message);
@@ -109,96 +156,125 @@ const Signup = ({ isLoginPage }) => {
               Event Management System
             </h1>
           </div>
-          <p className="text-xl w-[500px] italic z-20">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda
-            voluptate voluptas iure, eaque dicta aperi
+          <p className="text-xl w-[500px] italic z-20 mt-4">
+          Transforming how events are managed and experienced.
           </p>
           <p className="text-xl w-[500px] italic z-20">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda
+          Join us today and transform your event experience into something extraordinary.
           </p>
           <div className="w-full h-full bg-black opacity-70 absolute z-10 top-0 left-0"></div>
         </div>
-        <form className="form" onSubmit={handleSubmit}>
-          <div>
-            <h1 className="text-lg font-bold text-center">
-              {!isLoginPage ? "Signup on EMS" : "Login on EMS"}
-            </h1>
-          </div>
-
-          {!isLoginPage && (
-            <div className="form-field">
-              <label for="name">Enter Name</label>
-              <input
+        <div className="md:w-1/2 p-8">
+            <h3 className="text-2xl font-semibold mb-4 text-center">
+            {isLoginPage ? "Login to Your Account" : "Create Your Account"}
+            </h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLoginPage && (
+            <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                <input
                 id="name"
                 type="text"
+                value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                placeholder="John Smith"
-              />
+                className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+                    focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                placeholder="John Doe"
+                />
             </div>
-          )}
-
-          <div className="form-field">
-            <label for="email">Enter Email</label>
+            )}
+            <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
             <input
-              id="email"
-              type="email"
-              onChange={(e) => set_Email(e.target.value)}
-              required
-              placeholder="johnsmith@gmail.com"
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => set_Email(e.target.value)}
+                required
+                className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+                focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                placeholder="you@example.com"
             />
-          </div>
-
-          <div className="form-field">
-            <label for="password">Enter Password</label>
+            </div>
+            <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
             <input
-              id="password"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="**********"
-            />
-          </div>
-
-          {!isLoginPage && (
-            <div className="form-field">
-              <label for="confirm-password">Confirm Password</label>
-              <input
-                id="confirm-password"
+                id="password"
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+                focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                placeholder="********"
+            />
+            </div>
+            {!isLoginPage && (
+            <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                placeholder="**********"
-              />
+                className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+                    focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                placeholder="********"
+                />
             </div>
-          )}
-
-          <div className="flex flex-col text-center gap-2">
-            <button className="bg-blue-600 p-[5px] rounded-md">
-              {!isLoginPage ? "Signup" : "Login"}
-            </button>
+            )}
             <div>
-              <p className="inline">
-                {!isLoginPage
-                  ? "If you already have an account, then click "
-                  : "If you do not have an account, then click "}
-              </p>
-              {!isLoginPage ? (
-                <Link to="/login" className="text-blue-300">
-                  Login
-                </Link>
-              ) : (
-                <Link to="/signup" className="text-blue-300">
-                  Signup
-                </Link>
-              )}
+            <button
+                type="submit"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+            >
+                {isLoginPage ? "Sign In" : "Sign Up"}
+            </button>
             </div>
-          </div>
-        </form>
+            </form>
+            <div className="mt-6">
+                <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                        <span className="px-3 bg-white text-gray-500">Or</span>
+                    </div>
+                </div>
+                <div className="mt-6">
+                    <button
+                        onClick={handleGoogleLogin}
+                        className="w-full flex items-center gap-2 justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                    >
+                        <FcGoogle className="text-lg"/>
+                        Continue with Google
+                    </button>
+                </div>
+            </div>
+            <p className="mt-4 text-center text-sm text-gray-600">
+            {isLoginPage ? (
+            <>
+                Don't have an account?{' '}
+                <Link to="/signup" className="font-medium text-purple-600 hover:text-purple-500">
+                    Sign up
+                </Link>
+            </>
+            ) : (
+            <>
+                Already have an account?{' '}
+                <Link to="/login" className="font-medium text-purple-600 hover:text-purple-500">
+                    Log in
+                </Link>
+            </>
+            )}
+            </p>
+        </div>
       </div>
       <ToastContainer></ToastContainer>
     </>
   );
 };
 
-export default Signup;
+ export default Signup;

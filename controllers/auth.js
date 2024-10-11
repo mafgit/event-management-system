@@ -83,11 +83,12 @@ const google = async (req, res) => {
         const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
 
         db.query(
-          "INSERT INTO users (first_name, email, password) VALUES (?, ?, ?)", 
-          [name, email, hashedPassword],
+          "INSERT INTO users (first_name, email, password, last_name) VALUES (?, ?, ?, ?)", 
+          [name, email, hashedPassword, "kuch_bhi"],
           (err, result) => {
             if (err) {
-              return res.status(401).json({ success: false, message: err });
+              console.log(err);
+              return res.status(500).json({ success: false, message: err });
             }
 
             const newUserId = result.insertId; // Get the new user's ID
