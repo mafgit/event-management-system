@@ -17,6 +17,7 @@ const Account = () => {
           setEmail("");
           setFirstName("");
           setLastName("");
+          localStorage.removeItem("userData");
           toast("Successfully logged out!");
         } 
       })

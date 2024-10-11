@@ -42,14 +42,28 @@ export const AuthContext = createContext({
   setLastName: () => {},
 }); // todo: add default value
 
+
 function App() {
   const [auth, setAuth] = useState(false); // todo: set to false
   const [userId, setUserId] = useState(-1); // todo: set to false
   const [admin, setAdmin] = useState(true);
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [lastName, setLastName] = useState(""); 
   // todo: add loading use state
+
+  
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (userData) {
+      setAuth(true);
+      setUserId(userData.userId);
+      setEmail(userData.email);
+      setFirstName(userData.firstName);
+      setLastName(userData.lastName);
+      setAdmin(userData.admin);
+    }
+  }, []);
 
   return (
     <AuthContext.Provider

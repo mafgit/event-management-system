@@ -56,13 +56,21 @@ const Signup = ({ isLoginPage }) => {
       axios.post("/auth/signin", { email, password }).then((res) => {
         if (res.data.success){
           toast("Logged in!");
-          const { user_id, email, firstName, lastName, admin } = res.data.user;
+          const { user_id, email, first_name, last_name, admin } = res.data.user;
           setAuth(true);
           setUserId(user_id);
           setEmail(email);
-          setFirstName(firstName);
-          setLastName(lastName);
+          setFirstName(first_name);
+          setLastName(last_name);
           setAdmin(admin);
+          const userData = {
+            userId: user_id,
+            email,
+            firstName: first_name,
+            lastName: last_name,
+            admin,
+          };
+          localStorage.setItem("userData", JSON.stringify(userData));
         } 
         else {
           toast(res.data.message);
