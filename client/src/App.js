@@ -42,17 +42,15 @@ export const AuthContext = createContext({
   setLastName: () => {},
 }); // todo: add default value
 
-
 function App() {
-  const [auth, setAuth] = useState(false); // todo: set to false
-  const [userId, setUserId] = useState(-1); // todo: set to false
-  const [admin, setAdmin] = useState(true);
+  const [auth, setAuth] = useState(false);
+  const [userId, setUserId] = useState(-1);
+  const [admin, setAdmin] = useState(false);
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState(""); 
+  const [lastName, setLastName] = useState("");
   // todo: add loading use state
 
-  
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     if (userData) {
@@ -67,7 +65,20 @@ function App() {
 
   return (
     <AuthContext.Provider
-      value={{ auth, admin, email, firstName, lastName, userId, setAuth, setAdmin, setUserId, setEmail, setFirstName, setLastName}}
+      value={{
+        auth,
+        admin,
+        email,
+        firstName,
+        lastName,
+        userId,
+        setAuth,
+        setAdmin,
+        setUserId,
+        setEmail,
+        setFirstName,
+        setLastName,
+      }}
     >
       <div className="App">
         <Routes>

@@ -49,6 +49,8 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (organized_by) REFERENCES users (user_id),
     FOREIGN KEY (category) REFERENCES categories (name)
   );
+
+  -- alter table events modify column image_url varchar(1024);
   
   CREATE TABLE IF NOT EXISTS reviews (
     review_id INT NOT NULL AUTO_INCREMENT,

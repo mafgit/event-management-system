@@ -7,7 +7,6 @@ const create_event = async (req, res) => {
       description,
       capacity,
       venue,
-      organized_by,
       event_date,
       start_time,
       end_time,
@@ -19,7 +18,7 @@ const create_event = async (req, res) => {
 
     const q =
       "INSERT INTO events (name, description, capacity, venue, organized_by, event_date, start_time, end_time, category, status, verified, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-    
+
     db.execute(
       q,
       [
@@ -27,7 +26,7 @@ const create_event = async (req, res) => {
         description,
         capacity,
         venue,
-        organized_by,
+        req.user.id,
         event_date,
         start_time,
         end_time,
@@ -65,7 +64,9 @@ const get_event = async (req, res) => {
     db.query(q, [id], (err, result) => {
       if (err) throw err;
       if (result.length === 0)
-        return res.status(404).json({ success: false, message: "Event not found" });
+        return res
+          .status(404)
+          .json({ success: false, message: "Event not found" });
       res.status(200).json({ success: true, event: result[0] });
     });
   } catch (error) {
@@ -74,32 +75,38 @@ const get_event = async (req, res) => {
 };
 
 const get_featured = async (req, res) => {
-    try {
-      const q = "SELECT * FROM events WHERE event_date >= CURDATE() ORDER BY Attendees DESC, event_date ASC LIMIT 10;"
-      db.query(q, (err, result) => {
-        if (err) throw err;
-        if (result.length === 0)
-          return res.status(404).json({ success: false, message: "Event not found" });
-        res.status(200).json({ success: true, event: result[0] });
-      })
-    } catch (error) {
-      res.status(500).json({ success: false, error: error.message });
-    }
-}
-
-const get_upcoming = async (req, res) => {
   try {
-    const q = "SELECT * FROM events WHERE event_date >= CURDATE() ORDER BY event_date DESC LIMIT 3;"
+    const q =
+      "SELECT * FROM events WHERE event_date >= CURDATE() ORDER BY Attendees DESC, event_date ASC LIMIT 10;";
     db.query(q, (err, result) => {
       if (err) throw err;
       if (result.length === 0)
-        return res.status(404).json({ success: false, message: "Event not found" });
+        return res
+          .status(404)
+          .json({ success: false, message: "Event not found" });
       res.status(200).json({ success: true, event: result[0] });
-    })
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
-}
+};
+
+const get_upcoming = async (req, res) => {
+  try {
+    const q =
+      "SELECT * FROM events WHERE event_date >= CURDATE() ORDER BY event_date DESC LIMIT 3;";
+    db.query(q, (err, result) => {
+      if (err) throw err;
+      if (result.length === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "Event not found" });
+      res.status(200).json({ success: true, event: result[0] });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
 
 const update_event = async (req, res) => {
   try {
@@ -121,7 +128,7 @@ const update_event = async (req, res) => {
 
     const q =
       "UPDATE events SET name = ?, description = ?, capacity = ?, venue = ?, organized_by = ?, event_date = ?, start_time = ?, end_time = ?, category = ?, status = ?, verified = ?, image_url = ? WHERE id = ?;";
-    
+
     db.execute(
       q,
       [
@@ -142,8 +149,12 @@ const update_event = async (req, res) => {
       (err, results) => {
         if (err) throw err;
         if (results.affectedRows === 0)
-          return res.status(404).json({ success: false, message: "Event not found" });
-        res.status(200).json({ success: true, message: "Event updated successfully" });
+          return res
+            .status(404)
+            .json({ success: false, message: "Event not found" });
+        res
+          .status(200)
+          .json({ success: true, message: "Event updated successfully" });
       }
     );
   } catch (error) {
@@ -158,8 +169,12 @@ const delete_event = async (req, res) => {
     db.execute(q, [id], (err, results) => {
       if (err) throw err;
       if (results.affectedRows === 0)
-        return res.status(404).json({ success: false, message: "Event not found" });
-      res.status(200).json({ success: true, message: "Event deleted successfully" });
+        return res
+          .status(404)
+          .json({ success: false, message: "Event not found" });
+      res
+        .status(200)
+        .json({ success: true, message: "Event deleted successfully" });
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
