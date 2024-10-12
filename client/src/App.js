@@ -28,7 +28,7 @@ axios.defaults.baseURL = "http://localhost:5000/";
 axios.defaults.withCredentials = true;
 
 export const AuthContext = createContext({
-  auth: false, // todo: set to false
+  auth: false,
   admin: true,
   userId: -1,
   email: "",
@@ -40,7 +40,7 @@ export const AuthContext = createContext({
   setEmail: () => {},
   setFirstName: () => {},
   setLastName: () => {},
-}); // todo: add default value
+});
 
 function App() {
   const [auth, setAuth] = useState(false);

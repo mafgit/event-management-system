@@ -46,7 +46,7 @@ const verifyAdminOrOrganizer = (req, res, next) => {
   const q = `select event_id from events where organizer_id = ? and event_id = ?`;
   db.query(q, [req.user.id, req.query.id], (err, result) => {
     console.log(result);
-    // todo:
+    // todo: verifyAdminOrOrganizer
     let is_organizer = false;
     if (req.user.is_admin || is_organizer) next();
     else

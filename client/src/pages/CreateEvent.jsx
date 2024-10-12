@@ -10,12 +10,14 @@ import { RxUpload } from "react-icons/rx";
 import { MdError } from "react-icons/md";
 import { HiChevronDown } from "react-icons/hi2";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import { AuthContext } from "../App";
 
 function CreateEvent() {
+  // todo: category dropdown fetches categories from db
+  // todo: add upto 5 tags functionality
   const navigate = useNavigate();
   const { userId } = useContext(AuthContext);
   const imageRef = useRef(null);
@@ -40,14 +42,14 @@ function CreateEvent() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if(!validateDateTime()) return;
-    if (!formData.image_url){
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-      return setImageUploadError('Cover Image must be uploaded!');
-    } 
+    if (!validateDateTime()) return;
+    if (!formData.image_url) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+      return setImageUploadError("Cover Image must be uploaded!");
+    }
     try {
       const res = await axios.post(
         "http://localhost:5000/events/create_event",

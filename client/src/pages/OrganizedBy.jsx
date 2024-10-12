@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import "../styles/SearchPage.css";
-import EventCard from '../components/EventCard'; 
+import EventCard from "../components/EventCard";
+
+// todo: make get request and show real data
 
 const eventList = [
   {
@@ -70,13 +72,15 @@ const eventList = [
 ];
 
 const OrganizedBy = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("");
   const [filteredEvents, setFilteredEvents] = useState([]);
 
   useEffect(() => {
-    const events = eventList.filter((event) => event.organizerId === parseInt(id));
+    const events = eventList.filter(
+      (event) => event.organizerId === parseInt(id)
+    );
     setFilteredEvents(events);
   }, [id]);
 
@@ -102,7 +106,9 @@ const OrganizedBy = () => {
     });
 
   return (
-    <div className="searchPage"> {}
+    <div className="searchPage">
+      {" "}
+      {}
       <div className="contentWrapper">
         <div className="searchContainer">
           <input
@@ -130,8 +136,8 @@ const OrganizedBy = () => {
                 attendees={event.attendees}
                 type={event.type}
                 duration={event.duration}
-                venue={event.venue} 
-                imageUrl="D:\Semester-5(ME)\DB\event-management-system\client\public\form-bg-1.jpg" 
+                venue={event.venue}
+                imageUrl="D:\Semester-5(ME)\DB\event-management-system\client\public\form-bg-1.jpg"
               />
             ))
           ) : (

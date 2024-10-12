@@ -2,13 +2,18 @@ import { FaUser } from "react-icons/fa6";
 import Review from "../components/Review";
 
 const Event = () => {
+  // todo: share btn
+  // todo: edit event btn
+  // todo: EventTickets page (create and delete ticket types)
+  // todo: EventAnalytics page (revenue, registrations, tickets sold, add/remove attendee
+
   return (
     <div className="mx-[50px] my-[25px]">
       <div className="w-full h-[350px] relative">
         <img
           src="/form-bg-1.jpg"
           className="w-full h-full object-cover rounded-md"
-          alt="event image"
+          alt="event"
         />
         <div className="absolute left-0 top-0 w-full h-full opacity-50 bg-black z-20 rounded-md"></div>
         <h1 className="absolute left-6 bottom-5 z-30 text-white text-3xl font-bold">

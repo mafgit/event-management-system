@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
-import Footer from "../components/Footer";
 import EventCard from "../components/EventCard";
+
+// todo: make get request and show real data
 
 const eventList = [
   {
