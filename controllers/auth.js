@@ -146,9 +146,23 @@ const signout = async (req, res) => {
   }
 };
 
+const get_login_data = (req, res) => {
+  console.log("asdasd");
+  db.query(
+    "select first_name, last_name, user_id, is_admin, email from users where user_id = ?",
+    [req.user.id],
+    (err, result) => {
+      // console.log(result[0]);
+      if (err) res.status(403).json({ success: "false", message: err });
+      else res.json(result[0]);
+    }
+  );
+};
+
 module.exports = {
   signup,
   signin,
   google,
   signout,
+  get_login_data,
 };

@@ -52,15 +52,21 @@ function App() {
   // todo: add loading use state
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    if (userData) {
-      setAuth(true);
-      setUserId(userData.userId);
-      setEmail(userData.email);
-      setFirstName(userData.firstName);
-      setLastName(userData.lastName);
-      setAdmin(userData.admin);
-    }
+    axios
+      .get("/auth/get_login_data")
+      .then((res) => {
+        console.log(res);
+
+        setAuth(true);
+        setUserId(res.data.user_id);
+        setEmail(res.data.email);
+        setFirstName(res.data.first_name);
+        setLastName(res.data.last_name);
+        setAdmin(res.data.is_admin);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   return (

@@ -1,38 +1,48 @@
 import { useContext } from "react";
 import { AuthContext } from "../App";
 import { Link } from "react-router-dom";
-import axios from 'axios';
-import { toast } from 'react-toastify'; // If using toast notifications
+import axios from "axios";
+import { toast } from "react-toastify"; // If using toast notifications
 
 const Account = () => {
-  const { firstName, lastName, email, userId, setAuth, setAdmin, setUserId, setEmail, setFirstName, setLastName } = useContext(AuthContext);
+  const {
+    firstName,
+    lastName,
+    email,
+    userId,
+    setAuth,
+    setAdmin,
+    setUserId,
+    setEmail,
+    setFirstName,
+    setLastName,
+  } = useContext(AuthContext);
 
   const logOut = async () => {
     try {
-      await axios.post('/auth/signout').then((res) => {
-        if(res.data.success){
-          setAuth(false);
-          setAdmin(false);
-          setUserId(-1);
-          setEmail("");
-          setFirstName("");
-          setLastName("");
-          localStorage.removeItem("userData");
-          toast("Successfully logged out!");
-        } 
-      })
-      .catch((error) => {
-        if (error.response) {
-          toast(error.response.data.message);
-        }
-      });
-
+      await axios
+        .post("/auth/signout")
+        .then((res) => {
+          if (res.data.success) {
+            setAuth(false);
+            setAdmin(false);
+            setUserId(-1);
+            setEmail("");
+            setFirstName("");
+            setLastName("");
+            toast("Successfully logged out!");
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            toast(error.response.data.message);
+          }
+        });
     } catch (error) {
       console.error("Logout error:", error);
       toast("Failed to log out, please try again.");
     }
   };
-
 
   return (
     <div className="page">
@@ -71,7 +81,8 @@ const Account = () => {
             View Events Attended by You
           </Link>
 
-          <Link onClick={logOut}
+          <Link
+            onClick={logOut}
             to="/"
             className="btn m-auto  bg-red-600 text-white p-2 w-full text-center rounded-md"
           >
