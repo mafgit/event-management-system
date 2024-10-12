@@ -26,10 +26,10 @@ const get_user = async (req, res) => {
 
 const create_user = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { first_name, last_name, email, password } = req.body;
     const result = await db.query(
-      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-      [name, email, password]
+      "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
+      [first_name, last_name, email, password]
     );
     res
       .status(201)
@@ -42,10 +42,10 @@ const create_user = async (req, res) => {
 const update_user = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, password } = req.body;
+    const { first_name, last_name, email, password } = req.body;
     const [result] = await db.query(
-      "UPDATE users SET name = ?, email = ?, password = ? WHERE user_id = ?",
-      [name, email, password, id]
+      "UPDATE users SET first_name = ?, last_name = ?, email = ?, password = ? WHERE user_id = ?",
+      [first_name, last_name, email, password, id]
     );
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "User not found" });

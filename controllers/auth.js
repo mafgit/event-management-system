@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const db = require("../db.js");
 
 const signup = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { first_name, last_name, email, password } = req.body;
 
   const hashedPassword = bcryptjs.hashSync(password, 10);
   const query =
@@ -12,12 +12,8 @@ const signup = async (req, res) => {
   try {
     db.query(
       query,
-      [name, email, hashedPassword, "kuch_bhi"],
+      [first_name, email, hashedPassword, last_name],
       (err, result) => {
-        console.log(err);
-        console.log("-----------------------");
-        console.log(result);
-
         if (err) {
           return res.status(401).json({ success: false, message: err });
         }
@@ -77,7 +73,7 @@ const signin = async (req, res) => {
 };
 
 const google = async (req, res) => {
-  const { email, name } = req.body;
+  const { email, first_name, last_name } = req.body;
 
   try {
     db.query("SELECT * FROM users WHERE email = ?", [email], (err, result) => {
@@ -107,7 +103,7 @@ const google = async (req, res) => {
 
         db.query(
           "INSERT INTO users (first_name, email, password, last_name) VALUES (?, ?, ?, ?)",
-          [name, email, hashedPassword, "kuch_bhi"],
+          [first_name, email, hashedPassword, last_name],
           (err, result) => {
             if (err) {
               console.log(err);

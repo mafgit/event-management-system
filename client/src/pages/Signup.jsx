@@ -12,10 +12,11 @@ const Signup = ({ isLoginPage }) => {
   const { setAuth, setAdmin, setUserId, setEmail, setFirstName, setLastName } =
     useContext(AuthContext);
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [email, set_Email] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [first_name, set_first_name] = useState("");
+  const [last_name, set_last_name] = useState("");
+  const [email, set_email] = useState("");
+  const [password, set_password] = useState("");
+  const [confirm_password, set_confirm_password] = useState("");
 
   const handleGoogleLogin = async () => {
     try {
@@ -52,12 +53,18 @@ const Signup = ({ isLoginPage }) => {
     e.preventDefault();
 
     if (!isLoginPage) {
-      if (password !== confirmPassword) {
+      if (password !== confirm_password) {
         toast("Passwords don't match");
         return;
       }
 
-      if (!name || !email || !password || !confirmPassword) {
+      if (
+        !first_name ||
+        !last_name ||
+        !email ||
+        !password ||
+        !confirm_password
+      ) {
         toast("Fill all fields");
         return;
       }
@@ -68,7 +75,7 @@ const Signup = ({ isLoginPage }) => {
       }
 
       axios
-        .post("/auth/signup", { name, email, password })
+        .post("/auth/signup", { first_name, last_name, email, password })
         .then((res) => {
           if (res.data.success) {
             toast("Signed up!");
@@ -154,24 +161,45 @@ const Signup = ({ isLoginPage }) => {
           </h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLoginPage && (
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+              <>
+                <div>
+                  <label
+                    htmlFor="first_name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    First Name
+                  </label>
+                  <input
+                    id="first_name"
+                    type="text"
+                    value={first_name}
+                    onChange={(e) => set_first_name(e.target.value)}
+                    required
+                    className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                     focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
-                  placeholder="John Doe"
-                />
-              </div>
+                    placeholder="John"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="last_name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    id="last_name"
+                    type="text"
+                    value={last_name}
+                    onChange={(e) => set_last_name(e.target.value)}
+                    required
+                    className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+                    focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                    placeholder="Doe"
+                  />
+                </div>
+              </>
             )}
             <div>
               <label
@@ -184,7 +212,7 @@ const Signup = ({ isLoginPage }) => {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => set_Email(e.target.value)}
+                onChange={(e) => set_email(e.target.value)}
                 required
                 className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
@@ -202,7 +230,7 @@ const Signup = ({ isLoginPage }) => {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => set_password(e.target.value)}
                 required
                 className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
@@ -220,8 +248,8 @@ const Signup = ({ isLoginPage }) => {
                 <input
                   id="confirmPassword"
                   type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  value={confirm_password}
+                  onChange={(e) => set_confirm_password(e.target.value)}
                   required
                   className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                     focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
