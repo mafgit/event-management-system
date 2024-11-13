@@ -6,6 +6,8 @@ const {
   get_upcoming,
   update_event,
   delete_event,
+  get_organized_by,
+  get_attended_by_me,
 } = require("../controllers/event.js");
 const {
   verifyToken,
@@ -16,6 +18,8 @@ const router = require("express").Router();
 
 router.post("/create_event", verifyToken, create_event);
 router.get("/get_events", get_events);
+router.get("/get_organized_by/:id", get_organized_by);
+router.get("/get_attended_by_me", verifyToken, get_attended_by_me);
 router.get("/get_event/:id", get_event);
 router.get("/get_featured", get_featured);
 router.get("/get_upcoming", get_upcoming);

@@ -58,6 +58,31 @@ const get_events = async (req, res) => {
   }
 };
 
+const get_organized_by = async (req, res) => {
+  try {
+    const q = "SELECT * FROM events where organized_by = ?;";
+    db.query(q, [req.params.id], (err, results) => {
+      if (err) throw err;
+      res.status(200).json({ success: true, events: results });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+const get_attended_by_me = async (req, res) => {
+  try {
+    const q =
+      "SELECT * FROM events where event_id in (select event_id from attendance where user_id = ?);";
+    db.query(q, [req.user.id], (err, results) => {
+      if (err) throw err;
+      res.status(200).json({ success: true, events: results });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 const get_event = async (req, res) => {
   try {
     const { id } = req.params;
@@ -204,4 +229,6 @@ module.exports = {
   get_upcoming,
   update_event,
   delete_event,
+  get_organized_by,
+  get_attended_by_me,
 };

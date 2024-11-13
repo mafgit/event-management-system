@@ -2,7 +2,7 @@ import { FaBuilding, FaLayerGroup, FaPeopleGroup } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 const EventCard = ({
-  image_url = "form-bg-1.jpg",
+  image_url = "/form-bg-1.jpg",
   name = "Undefined",
   capacity = 0,
   venue = "Undefined",
@@ -11,7 +11,7 @@ const EventCard = ({
   category = "Undefined",
 }) => {
   return (
-    <div className="border-slate-200 border rounded-xl flex flex-col justify-between min-h-[125px] group overflow-hidden">
+    <div className="border-slate-200 border rounded-xl flex flex-col justify-between min-h-[125px] group overflow-hidden max-w-[400px]">
       <div className="relative h-[125px] w-full overflow-hidden">
         <img
           src={image_url}

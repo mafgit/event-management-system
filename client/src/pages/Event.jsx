@@ -21,7 +21,7 @@ const Event = () => {
     <div className="mx-[50px] my-[25px]">
       <div className="w-full h-[350px] relative">
         <img
-          src="/form-bg-1.jpg"
+          src={event.image_url}
           className="w-full h-full object-cover rounded-md"
           alt="event"
         />
