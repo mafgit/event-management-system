@@ -60,7 +60,7 @@ const get_events = async (req, res) => {
 const get_event = async (req, res) => {
   try {
     const { id } = req.params;
-    const q = "SELECT * FROM events WHERE id = ?;";
+    const q = "SELECT * FROM events WHERE event_id = ?;";
     db.query(q, [id], (err, result) => {
       if (err) throw err;
       if (result.length === 0)

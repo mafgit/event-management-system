@@ -1,4 +1,5 @@
 import { FaBuilding, FaPeopleGroup } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 const EventCard = ({
   image_url = "form-bg-1.jpg",
@@ -6,6 +7,7 @@ const EventCard = ({
   capacity = 100,
   venue = "Abcd, efgh, ijkl",
   edit = false,
+  id,
 }) => {
   return (
     <div className="border-slate-200 border rounded-xl flex flex-col justify-between min-h-[125px] group overflow-hidden">
@@ -35,9 +37,12 @@ const EventCard = ({
             Edit Event
           </button>
         )}
-        <button className="btn bg-gradient-to-r from-blue-600 text-white to-pink-800 w-full p-1 rounded-md">
+        <Link
+          to={`/event/${id}`}
+          className="text-center btn bg-gradient-to-r from-blue-600 text-white to-pink-800 w-full p-1 rounded-md"
+        >
           Show Event
-        </button>
+        </Link>
       </div>
     </div>
   );

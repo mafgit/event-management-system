@@ -1,11 +1,21 @@
 import { FaUser } from "react-icons/fa6";
 import Review from "../components/Review";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const Event = () => {
   // todo: share btn
   // todo: edit event btn
   // todo: EventTickets page (create and delete ticket types)
   // todo: EventAnalytics page (revenue, registrations, tickets sold, add/remove attendee
+  const [event, setEvent] = useState({});
+  const { id } = useParams();
+  useEffect(() => {
+    axios.get("/events/get_event/" + id).then((res) => {
+      setEvent(res.data.event);
+    });
+  }, [id]);
 
   return (
     <div className="mx-[50px] my-[25px]">
@@ -17,7 +27,7 @@ const Event = () => {
         />
         <div className="absolute left-0 top-0 w-full h-full opacity-50 bg-black z-20 rounded-md"></div>
         <h1 className="absolute left-6 bottom-5 z-30 text-white text-3xl font-bold">
-          Event Name
+          {event.name}
         </h1>
       </div>
 
@@ -26,24 +36,24 @@ const Event = () => {
           {/* details etc */}
           <div className="flex flex-wrap gap-3">
             <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
-              <FaUser /> 250
+              <FaUser /> {event.capacity}
             </div>
 
             <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
-              <FaUser /> Lorem ipsum dolor sit.
+              <FaUser /> {event.venue}
             </div>
 
             <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
-              <FaUser /> Lorem, ipsum.
+              <FaUser /> {event.category}
             </div>
-
-            <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
-              <FaUser /> 250
-            </div>
-
+            {/* 
             <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
               <FaUser /> 250
             </div>
+
+            <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
+              <FaUser /> 250
+            </div> */}
           </div>
           <div className="flex flex-col gap-2">
             {/* desc etc */}
@@ -51,9 +61,7 @@ const Event = () => {
               <b>Organized by: </b> Sarim Asif
             </p>
             <p className="italic">
-              <b>Description:</b> Lorem ipsum dolor, sit amet consectetur
-              adipisicing elit. Nisi, porro sit? Aperiam, dolores corrupti
-              corporis voluptate alias sunt officiis aut?
+              <b>Description:</b> {event.description}
             </p>
           </div>
         </div>

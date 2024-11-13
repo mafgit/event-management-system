@@ -143,7 +143,6 @@ const signout = async (req, res) => {
 };
 
 const get_login_data = (req, res) => {
-  console.log("asdasd");
   db.query(
     "select first_name, last_name, user_id, is_admin, email from users where user_id = ?",
     [req.user.id],

@@ -1,87 +1,107 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
 import EventCard from "../components/EventCard";
-
+import axios from "axios";
 // todo: make get request and show real data
 
-const eventList = [
-  {
-    id: 1,
-    title: "My Conference",
-    attendees: 250,
-    type: "Lecture",
-    duration: "1 hour",
-    venue: "aaa",
-  },
-  {
-    id: 2,
-    title: "My Conference",
-    attendees: 250,
-    type: "Lecture",
-    duration: "1 hour",
-    venue: "bbbb",
-  },
-  {
-    id: 3,
-    title: "My Conference",
-    attendees: 250,
-    type: "Lecture",
-    duration: "1 hour",
-    venue: "bbbb",
-  },
-  {
-    id: 4,
-    title: "My Conference",
-    attendees: 250,
-    type: "Lecture",
-    duration: "1 hour",
-    venue: "bbbb",
-  },
-  {
-    id: 5,
-    title: "My Conference",
-    attendees: 50,
-    type: "Lecture",
-    duration: "1 hour",
-    venue: "bbbb",
-  },
-  {
-    id: 6,
-    title: "My Conference",
-    attendees: 25,
-    type: "Lecture",
-    duration: "1 hour",
-    venue: "bbbb",
-  },
-  {
-    id: 7,
-    title: "My Conference",
-    attendees: 2500,
-    type: "Lecture",
-    duration: "1 hour",
-    venue: "bbbb",
-  },
-  {
-    id: 8,
-    title: "My Conference",
-    attendees: 250,
-    type: "Lecture",
-    duration: "1 hour",
-    venue: "bbbb",
-  },
-  {
-    id: 9,
-    title: "My Conference",
-    attendees: 250,
-    type: "Lecture",
-    duration: "1 hour",
-    venue: "bbbb",
-  },
-];
+// const eventList = [
+//   {
+//     id: 1,
+//     title: "My Conference",
+//     attendees: 250,
+//     type: "Lecture",
+//     duration: "1 hour",
+//     venue: "aaa",
+//   },
+//   {
+//     id: 2,
+//     title: "My Conference",
+//     attendees: 250,
+//     type: "Lecture",
+//     duration: "1 hour",
+//     venue: "bbbb",
+//   },
+//   {
+//     id: 3,
+//     title: "My Conference",
+//     attendees: 250,
+//     type: "Lecture",
+//     duration: "1 hour",
+//     venue: "bbbb",
+//   },
+//   {
+//     id: 4,
+//     title: "My Conference",
+//     attendees: 250,
+//     type: "Lecture",
+//     duration: "1 hour",
+//     venue: "bbbb",
+//   },
+//   {
+//     id: 5,
+//     title: "My Conference",
+//     attendees: 50,
+//     type: "Lecture",
+//     duration: "1 hour",
+//     venue: "bbbb",
+//   },
+//   {
+//     id: 6,
+//     title: "My Conference",
+//     attendees: 25,
+//     type: "Lecture",
+//     duration: "1 hour",
+//     venue: "bbbb",
+//   },
+//   {
+//     id: 7,
+//     title: "My Conference",
+//     attendees: 2500,
+//     type: "Lecture",
+//     duration: "1 hour",
+//     venue: "bbbb",
+//   },
+//   {
+//     id: 8,
+//     title: "My Conference",
+//     attendees: 250,
+//     type: "Lecture",
+//     duration: "1 hour",
+//     venue: "bbbb",
+//   },
+//   {
+//     id: 9,
+//     title: "My Conference",
+//     attendees: 250,
+//     type: "Lecture",
+//     duration: "1 hour",
+//     venue: "bbbb",
+//   },
+// ];
 
 export default function Component() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("");
+  const [eventList, setEventList] = useState([]);
+
+  useEffect(() => {
+    axios.get("/events/get_events").then((res) => {
+      setEventList(res.data.events);
+
+      // const filteredEvents = eventList
+      //   .filter((event) =>
+      //     event.title.toLowerCase().includes(searchTerm.toLowerCase())
+      //   )
+      //   .sort((a, b) => {
+      //     if (sortOption === "attendees") {
+      //       return b.attendees - a.attendees;
+      //     } else if (sortOption === "title") {
+      //       return a.title.localeCompare(b.title);
+      //     }
+      //     return 0;
+      //   });
+    });
+  }, []);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value.trim());
@@ -90,19 +110,6 @@ export default function Component() {
   const handleSort = (e) => {
     setSortOption(e.target.value);
   };
-
-  const filteredEvents = eventList
-    .filter((event) =>
-      event.title.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => {
-      if (sortOption === "attendees") {
-        return b.attendees - a.attendees;
-      } else if (sortOption === "title") {
-        return a.title.localeCompare(b.title);
-      }
-      return 0;
-    });
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -138,9 +145,10 @@ export default function Component() {
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredEvents.map((event) => (
+            {eventList.map((event) => (
               <EventCard
-                key={event.id}
+                key={event.event_id}
+                id={event.event_id}
                 title={event.title}
                 attendees={event.attendees}
                 type={event.type}
