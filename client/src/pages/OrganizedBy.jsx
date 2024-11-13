@@ -132,9 +132,11 @@ const OrganizedBy = () => {
             searchedAndSortedEvents.map((event) => (
               <EventCard
                 key={event.id}
-                title={event.title}
-                attendees={event.attendees}
-                type={event.type}
+                id={event.id}
+                name={event.name}
+                capacity={event.capacity}
+                // attendees={event.attendees}
+                category={event.category}
                 duration={event.duration}
                 venue={event.venue}
                 imageUrl="D:\Semester-5(ME)\DB\event-management-system\client\public\form-bg-1.jpg"

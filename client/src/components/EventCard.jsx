@@ -1,13 +1,14 @@
-import { FaBuilding, FaPeopleGroup } from "react-icons/fa6";
+import { FaBuilding, FaLayerGroup, FaPeopleGroup } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 const EventCard = ({
   image_url = "form-bg-1.jpg",
-  name = "My Event",
-  capacity = 100,
-  venue = "Abcd, efgh, ijkl",
+  name = "Undefined",
+  capacity = 0,
+  venue = "Undefined",
   edit = false,
-  id,
+  id = -1,
+  category = "Undefined",
 }) => {
   return (
     <div className="border-slate-200 border rounded-xl flex flex-col justify-between min-h-[125px] group overflow-hidden">
@@ -25,6 +26,11 @@ const EventCard = ({
           <div className="flex gap-1 justify-center items-center">
             <FaPeopleGroup className="text-blue-600" />
             {capacity}
+          </div>
+
+          <div className="flex gap-1 justify-center items-center">
+            <FaLayerGroup className="text-blue-600" />
+            {category}
           </div>
 
           <div className="flex gap-1 justify-center items-center">

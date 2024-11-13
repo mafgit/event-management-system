@@ -1,4 +1,4 @@
-import { FaUser } from "react-icons/fa6";
+import { FaBuilding, FaLayerGroup, FaPeopleGroup } from "react-icons/fa6";
 import Review from "../components/Review";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -36,15 +36,15 @@ const Event = () => {
           {/* details etc */}
           <div className="flex flex-wrap gap-3">
             <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
-              <FaUser /> {event.capacity}
+              <FaPeopleGroup className="text-blue-600" /> {event.capacity}
             </div>
 
             <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
-              <FaUser /> {event.venue}
+              <FaBuilding className="text-blue-600" /> {event.venue}
             </div>
 
             <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
-              <FaUser /> {event.category}
+              <FaLayerGroup className="text-blue-600" /> {event.category}
             </div>
             {/* 
             <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
@@ -58,7 +58,7 @@ const Event = () => {
           <div className="flex flex-col gap-2">
             {/* desc etc */}
             <p>
-              <b>Organized by: </b> Sarim Asif
+              <b>Organized by: </b> {event.organizer_name}
             </p>
             <p className="italic">
               <b>Description:</b> {event.description}

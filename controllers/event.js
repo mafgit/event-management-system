@@ -60,8 +60,11 @@ const get_events = async (req, res) => {
 const get_event = async (req, res) => {
   try {
     const { id } = req.params;
-    const q = "SELECT * FROM events WHERE event_id = ?;";
+    const q =
+      "SELECT e.*, concat(u.first_name, ' ', u.last_name) as organizer_name FROM events e inner join users u on e.organized_by = u.user_id WHERE e.event_id = ?;";
     db.query(q, [id], (err, result) => {
+      console.log(result);
+
       if (err) throw err;
       if (result.length === 0)
         return res

@@ -119,7 +119,68 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
 
 db.query(create_tables_query, (err) => {
   if (err) console.log(err);
-  else console.log("-> tables are ready");
+  else {
+    console.log("-> tables are ready");
+
+    const insert_sample = process.env.INSERT_SAMPLE || "no";
+
+    if (insert_sample == "yes") {
+      const insert_sample_data_query = `INSERT INTO users (first_name, last_name, email, is_admin, password) VALUES 
+('John', 'Doe', 'john@example.com', 1, 'hashedpassword1'),
+('Jane', 'Smith', 'jane@example.com', 0, 'hashedpassword2'),
+('Alex', 'Brown', 'alex@example.com', 0, 'hashedpassword3');
+
+INSERT INTO categories (name) VALUES 
+('Music'),
+('Art'),
+('Technology'),
+('Sports');
+
+INSERT INTO events (name, description, capacity, venue, image_url, organized_by, event_date, start_time, end_time, category, status, verified) VALUES 
+('Tech Conference', 'Annual tech conference', 200, 'Tech Hall', 'http://example.com/image1.jpg', 1, '2024-11-12', '09:00:00', '17:00:00', 'Technology', 'Scheduled', 1),
+('Art Exhibition', 'Modern art showcase', 150, 'Art Gallery', 'http://example.com/image2.jpg', 2, '2024-12-05', '10:00:00', '18:00:00', 'Art', 'Scheduled', 0),
+('Music Festival', 'Outdoor music event', 300, 'City Park', 'http://example.com/image3.jpg', 3, '2025-01-15', '12:00:00', '22:00:00', 'Music', 'Scheduled', 1);
+
+INSERT INTO reviews (text, user_id, event_id, rating) VALUES 
+('Amazing event!', 1, 1, 9),
+('Great experience.', 2, 2, 8),
+('Could have been better.', 3, 3, 6);
+
+INSERT INTO tags (name) VALUES 
+('Outdoor'),
+('Networking'),
+('Workshop'),
+('Exhibition');
+
+INSERT INTO event_tags (event_id, tag_id) VALUES 
+(1, 'Networking'),
+(1, 'Workshop'),
+(2, 'Exhibition'),
+(3, 'Outdoor');
+
+INSERT INTO tickets (ticket_name, event_id, capacity, price) VALUES 
+('VIP Pass', 1, 50, 100),
+('General Admission', 1, 150, 50),
+('Standard Ticket', 2, 100, 30),
+('Early Bird', 3, 200, 25);
+
+INSERT INTO registrations (event_id, user_id, ticket_id, status, amount) VALUES 
+(1, 1, 1, 'Confirmed', 100),
+(2, 2, 3, 'Pending', 30),
+(3, 3, 4, 'Confirmed', 25);
+
+INSERT INTO attendance (user_id, event_id) VALUES 
+(1, 1),
+(2, 2),
+(3, 3);
+`;
+
+      db.query(insert_sample_data_query, (err) => {
+        if (err) console.log(err);
+        else console.log("-> sample data is ready");
+      });
+    }
+  }
 });
 
 module.exports = db;
