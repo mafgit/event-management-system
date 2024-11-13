@@ -35,7 +35,7 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     venue VARCHAR(45) NOT NULL,
     image_url VARCHAR(1024),
     organized_by INT NOT NULL,
-    event_date DATE NOT NULL,
+    event_date DATETIME NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     category VARCHAR(20) NOT NULL,
@@ -115,7 +115,10 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     INDEX event_id_idx (event_id),
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (event_id) REFERENCES events (event_id)
-  );`;
+  );
+  
+  -- alter table events modify column event_date datetime;
+  `;
 
 db.query(create_tables_query, (err) => {
   if (err) console.log(err);
@@ -125,10 +128,10 @@ db.query(create_tables_query, (err) => {
     const insert_sample = process.env.INSERT_SAMPLE || "no";
 
     if (insert_sample == "yes") {
-      const insert_sample_data_query = `INSERT INTO users (first_name, last_name, email, is_admin, password) VALUES 
-('John', 'Doe', 'john@example.com', 1, 'hashedpassword1'),
-('Jane', 'Smith', 'jane@example.com', 0, 'hashedpassword2'),
-('Alex', 'Brown', 'alex@example.com', 0, 'hashedpassword3');
+      const insert_sample_data_query = `INSERT INTO users (first_name, last_name, email, is_admin, password) VALUES
+('John', 'Doe', 'john@example.com', 1, '$2b$10$rYtKZE7waf47K32R2tO/H.m7eRQsgVseliYK6PewZz71dVrTobSki'),
+('Jane', 'Smith', 'jane@example.com', 0, '$2b$10$Zxg2hhYCbIvsCByfa4QQ1en88uSTQ5f.0XGSdYuZEtUUV1zDRMcpW'),
+('Alex', 'Brown', 'alex@example.com', 0, '$2b$10$cwGHtfilnUP1c0sThvscHeZGRG5XKDiV1HG3CUko0HRA9w43OXD7q');
 
 INSERT INTO categories (name) VALUES 
 ('Music'),

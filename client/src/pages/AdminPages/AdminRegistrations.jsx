@@ -221,16 +221,6 @@ const AdminRegistrations = () => {
           >
             <Input type="number" />
           </Form.Item>
-
-          <Form.Item
-            name="modified_at"
-            label="Modified At"
-            rules={[
-              { required: true, message: "Please input the modified date!" },
-            ]}
-          >
-            <DatePicker showTime />
-          </Form.Item>
         </Form>
       </Modal>
 

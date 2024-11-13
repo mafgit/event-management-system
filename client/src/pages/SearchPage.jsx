@@ -152,6 +152,7 @@ export default function Component() {
                 name={event.name}
                 // title={event.title}
                 // attendees={event.attendees}
+                capacity={event.capacity}
                 category={event.category}
                 duration={event.duration}
                 venue={event.venue}

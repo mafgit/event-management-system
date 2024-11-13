@@ -9,7 +9,7 @@ const Event = () => {
   // todo: edit event btn
   // todo: EventTickets page (create and delete ticket types)
   // todo: EventAnalytics page (revenue, registrations, tickets sold, add/remove attendee
-  const [event, setEvent] = useState({});
+  const [event, setEvent] = useState({ tags: [] });
   const { id } = useParams();
   useEffect(() => {
     axios.get("/events/get_event/" + id).then((res) => {
@@ -35,26 +35,35 @@ const Event = () => {
         <div className="bg-gray-300 p-5 rounded-md grow-[4] basis-0 flex flex-col gap-3">
           {/* details etc */}
           <div className="flex flex-wrap gap-3">
-            <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
+            <div className="flex gap-2 px-2 py-[1px] items-center justify-center w-max bg-white rounded-full">
               <FaPeopleGroup className="text-blue-600" /> {event.capacity}
             </div>
 
-            <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
+            <div className="flex gap-2 px-2 py-[1px] items-center justify-center w-max bg-white rounded-full">
               <FaBuilding className="text-blue-600" /> {event.venue}
             </div>
 
-            <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
+            <div className="flex gap-2 px-2 py-[1px] items-center justify-center w-max bg-white rounded-full">
               <FaLayerGroup className="text-blue-600" /> {event.category}
             </div>
             {/* 
-            <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
+            <div className="flex gap-2 px-2 py-[1px] items-center justify-center w-max bg-white rounded-full">
               <FaUser /> 250
             </div>
 
-            <div className="flex gap-2 px-2 py-0 items-center justify-center w-max bg-white rounded-full">
+            <div className="flex gap-2 px-2 py-[1px] items-center justify-center w-max bg-white rounded-full">
               <FaUser /> 250
             </div> */}
           </div>
+
+          <div className="flex gap-2">
+            {event.tags.map((tag) => (
+              <div className="px-3 py-[1px] text-center w-max bg-blue-700 text-white rounded-full">
+                {tag.tag_id}
+              </div>
+            ))}
+          </div>
+
           <div className="flex flex-col gap-2">
             {/* desc etc */}
             <p>

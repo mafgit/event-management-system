@@ -43,14 +43,14 @@ const verifyAdmin = (req, res, next) => {
 };
 
 const verifyAdminOrOrganizer = (req, res, next) => {
+  if (req.user.is_admin) return next();
+
   const q = `select event_id from events where organizer_id = ? and event_id = ?`;
-  db.query(q, [req.user.id, req.query.id], (err, result) => {
-    console.log(result);
-    // todo: verifyAdminOrOrganizer
-    let is_organizer = false;
-    if (req.user.is_admin || is_organizer) next();
+  db.query(q, [req.user.id, req.params.id], (err, result) => {
+    console.log("result: ", result);
+    if (result != undefined && result.length > 0) return next();
     else
-      return res
+      res
         .status(403)
         .json({ message: "Forbidden! Admin and organizer are allowed only" });
   });

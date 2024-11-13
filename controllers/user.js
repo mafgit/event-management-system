@@ -1,74 +1,76 @@
 const db = require("../db");
 
-const get_users = async (req, res) => {
-  try {
-    const [results] = await db.query("SELECT * FROM users");
+const get_users = (req, res) => {
+  db.query("SELECT * FROM users", [], (error, results) => {
+    if (error) {
+      return;
+      res.status(500).json({ error: error.message });
+    }
+
     res.status(200).json(results);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  });
 };
 
-const get_user = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const [results] = await db.query("SELECT * FROM users WHERE user_id = ?", [
-      id,
-    ]);
+const get_user = (req, res) => {
+  const { id } = req.params;
+  db.query("SELECT * FROM users WHERE user_id = ?", [id], (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
     if (results.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
     res.status(200).json(results[0]);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  });
 };
 
-const create_user = async (req, res) => {
-  try {
-    const { first_name, last_name, email, password } = req.body;
-    const result = await db.query(
-      "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
-      [first_name, last_name, email, password]
-    );
-    res
-      .status(201)
-      .json({ message: "User created", userId: result[0].insertId });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const update_user = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { first_name, last_name, email, password } = req.body;
-    const [result] = await db.query(
-      "UPDATE users SET first_name = ?, last_name = ?, email = ?, password = ? WHERE user_id = ?",
-      [first_name, last_name, email, password, id]
-    );
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "User not found" });
+const create_user = (req, res) => {
+  const { first_name, last_name, email, password } = req.body;
+  db.query(
+    "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)",
+    [first_name, last_name, email, password],
+    (error, result) => {
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+      res
+        .status(201)
+        .json({ message: "User created", userId: result[0].insertId });
     }
-    res.status(200).json({ message: "User updated" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  );
 };
 
-const delete_user = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const [result] = await db.query("DELETE FROM users WHERE user_id = ?", [
-      id,
-    ]);
+const update_user = (req, res) => {
+  const { id } = req.params;
+  const { first_name, last_name, email, password } = req.body;
+  db.query(
+    "UPDATE users SET first_name = ?, last_name = ?, email = ?, password = ? WHERE user_id = ?",
+    [first_name, last_name, email, password, id],
+    (error, result) => {
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.status(200).json({ message: "User updated" });
+    }
+  );
+};
+
+const delete_user = (req, res) => {
+  const { id } = req.params;
+  db.query("DELETE FROM users WHERE user_id = ?", [id], (error, result) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "User not found" });
     }
     res.status(200).json({ message: "User deleted" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  });
 };
 
 module.exports = {

@@ -1,4 +1,5 @@
 const db = require("../db");
+const moment = require("moment");
 
 const create_event = async (req, res) => {
   try {
@@ -63,14 +64,21 @@ const get_event = async (req, res) => {
     const q =
       "SELECT e.*, concat(u.first_name, ' ', u.last_name) as organizer_name FROM events e inner join users u on e.organized_by = u.user_id WHERE e.event_id = ?;";
     db.query(q, [id], (err, result) => {
-      console.log(result);
-
       if (err) throw err;
       if (result.length === 0)
         return res
           .status(404)
           .json({ success: false, message: "Event not found" });
-      res.status(200).json({ success: true, event: result[0] });
+
+      db.query(
+        "select * from event_tags where event_id = ?",
+        [id],
+        (err2, result2) => {
+          res
+            .status(200)
+            .json({ success: true, event: { ...result[0], tags: result2 } });
+        }
+      );
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -113,13 +121,12 @@ const get_upcoming = async (req, res) => {
 
 const update_event = async (req, res) => {
   try {
-    const { id } = req.params;
-    const {
+    let { id } = req.params;
+    let {
       name,
       description,
       capacity,
       venue,
-      organized_by,
       event_date,
       start_time,
       end_time,
@@ -129,8 +136,12 @@ const update_event = async (req, res) => {
       image_url,
     } = req.body;
 
-    const q =
-      "UPDATE events SET name = ?, description = ?, capacity = ?, venue = ?, organized_by = ?, event_date = ?, start_time = ?, end_time = ?, category = ?, status = ?, verified = ?, image_url = ? WHERE id = ?;";
+    event_date = moment(event_date).format("YYYY-MM-DD HH:mm:ss");
+    start_time = moment(event_date).format("HH:mm:ss");
+    end_time = moment(event_date).format("HH:mm:ss");
+
+    let q =
+      "UPDATE events SET name = ?, description = ?, capacity = ?, venue = ?, event_date = ?, start_time = ?, end_time = ?, category = ?, status = ?, verified = ?, image_url = ? WHERE event_id = ?;";
 
     db.execute(
       q,
@@ -139,7 +150,6 @@ const update_event = async (req, res) => {
         description,
         capacity,
         venue,
-        organized_by,
         event_date,
         start_time,
         end_time,
@@ -155,13 +165,15 @@ const update_event = async (req, res) => {
           return res
             .status(404)
             .json({ success: false, message: "Event not found" });
-        res
+        return res
           .status(200)
           .json({ success: true, message: "Event updated successfully" });
       }
     );
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.log(error);
+
+    return res.status(500).json({ success: false, error: error.message });
   }
 };
 

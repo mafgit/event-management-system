@@ -20,53 +20,56 @@ const AdminUsers = () => {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    // setLoading(true);
-    // try {
-    //   const response = await axios.get("/users/get_users");
-    //   setData(response.data);
-    // } catch (error) {
-    //   message.error("Failed to fetch data");
-    // }
-    // setLoading(false);
+  const fetchData = () => {
+    setLoading(true);
+    axios
+      .get("/users/get_users")
+      .then((res) => {
+        setData(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        message.error("Failed to fetch data");
+        setLoading(false);
+      });
 
-    setData([
-      {
-        user_id: 1,
-        first_name: "ab",
-        last_name: "cd",
-        is_admin: true,
-        password: "avbs",
-        email: "a@a.com",
-      },
-      {
-        user_id: 2,
-        first_name: "cd",
-        last_name: "ed",
-        is_admin: false,
-        password: "avbs",
-        email: "b@b.com",
-      },
-      {
-        user_id: 3,
-        first_name: "ad",
-        last_name: "casdf",
-        is_admin: false,
-        password: "asdasdasdsad",
-        email: "asdasd@a.com",
-      },
-    ]);
+    // setData([
+    //   {
+    //     user_id: 1,
+    //     first_name: "ab",
+    //     last_name: "cd",
+    //     is_admin: true,
+    //     password: "avbs",
+    //     email: "a@a.com",
+    //   },
+    //   {
+    //     user_id: 2,
+    //     first_name: "cd",
+    //     last_name: "ed",
+    //     is_admin: false,
+    //     password: "avbs",
+    //     email: "b@b.com",
+    //   },
+    //   {
+    //     user_id: 3,
+    //     first_name: "ad",
+    //     last_name: "casdf",
+    //     is_admin: false,
+    //     password: "asdasdasdsad",
+    //     email: "asdasd@a.com",
+    //   },
+    // ]);
   };
 
   // Delete Row
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`/users/delete_user/${id}`);
-      message.success("User deleted successfully");
-      fetchData(); // Refresh data after deletion
-    } catch (error) {
-      message.error("Failed to delete user");
-    }
+  const handleDelete = (id) => {
+    axios
+      .delete(`/users/delete_user/${id}`)
+      .then((res) => {
+        message.success("User deleted successfully");
+        fetchData(); // Refresh data after deletion
+      })
+      .catch(() => message.error("Failed to delete user"));
   };
 
   // Edit Row
@@ -88,29 +91,30 @@ const AdminUsers = () => {
   };
 
   // Save Edited Data
-  const handleSave = async () => {
-    try {
-      await axios.put(
-        `/users/update_user/${editingRecord.id}`,
-        form.getFieldsValue()
-      );
-      message.success("User updated successfully");
-      setIsEditing(false);
-      fetchData(); // Refresh data after edit
-    } catch (error) {
-      message.error("Failed to update user");
-    }
+  const handleSave = () => {
+    axios
+      .put(`/users/update_user/${editingRecord.id}`, form.getFieldsValue())
+      .then((res) => {
+        message.success("User updated successfully");
+        setIsEditing(false);
+        fetchData(); // Refresh data after edit
+      })
+      .catch((error) => {
+        message.error("Failed to update user");
+      });
   };
 
-  const handleCreate = async () => {
-    try {
-      await axios.post("/users/create_user", form.getFieldsValue());
-      message.success("User created successfully");
-      setIsCreating(false);
-      fetchData(); // Refresh data after user creation
-    } catch (error) {
-      message.error("Failed to create user");
-    }
+  const handleCreate = () => {
+    axios
+      .post("/users/create_user", form.getFieldsValue())
+      .then((res) => {
+        message.success("User created successfully");
+        setIsCreating(false);
+        fetchData(); // Refresh data after user creation
+      })
+      .catch((error) => {
+        message.error("Failed to create user");
+      });
   };
 
   // Define Table Columns
