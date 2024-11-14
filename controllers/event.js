@@ -123,11 +123,11 @@ const get_analytics = (req, res) => {
     // users
     const q2 = `select u.*, r.*, t.*, a.created_at as 'attendance_created_at' from users u
 inner join registrations r on u.user_id = r.user_id
-inner join attendance a on a.user_id = r.user_id
+left join attendance a on a.user_id = r.user_id
 inner join tickets t on r.ticket_id = t.ticket_id
-where a.event_id = 1 and r.event_id = 1 and t.event_id = 1;`;
+where r.event_id = ? and t.event_id = ? and r.status = 'Confirmed';`;
 
-    db.query(q2, [id], (error2, results2) => {
+    db.query(q2, [id, id], (error2, results2) => {
       if (error2) {
         res.status(500).json({ error: error2 });
         throw error2;
@@ -135,6 +135,32 @@ where a.event_id = 1 and r.event_id = 1 and t.event_id = 1;`;
 
       res.json({ name: results1[0].name, results: results2 });
     });
+  });
+};
+
+const mark_present = (req, res) => {
+  const { user_id, event_id } = req.params;
+  const q = `insert ignore into attendance(user_id, event_id) values(?, ?);`;
+  db.query(q, [user_id, event_id], (error, results) => {
+    if (error) {
+      res.status(500).json(error);
+      throw error;
+    }
+
+    res.json(results);
+  });
+};
+
+const mark_absent = (req, res) => {
+  const { user_id, event_id } = req.params;
+  const q = `delete from attendance where user_id = ? and event_id = ?`;
+  db.query(q, [user_id, event_id], (error, results) => {
+    if (error) {
+      res.status(500).json(error);
+      throw error;
+    }
+
+    res.json(results);
   });
 };
 
@@ -260,4 +286,6 @@ module.exports = {
   get_organized_by,
   get_attended_by_me,
   get_analytics,
+  mark_present,
+  mark_absent,
 };

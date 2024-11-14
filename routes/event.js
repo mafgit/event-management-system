@@ -9,6 +9,8 @@ const {
   get_organized_by,
   get_attended_by_me,
   get_analytics,
+  mark_present,
+  mark_absent,
 } = require("../controllers/event.js");
 const {
   verifyToken,
@@ -22,7 +24,24 @@ router.post("/create_event", verifyToken, create_event);
 router.get("/get_events", get_events);
 router.get("/get_organized_by/:id", get_organized_by);
 router.get("/get_attended_by_me", verifyToken, get_attended_by_me);
-router.get("/get_analytics/:id", verifyToken, verifyOrganizer, get_analytics);
+router.get(
+  "/get_analytics/:id",
+  verifyToken,
+  verifyAdminOrOrganizer,
+  get_analytics
+);
+router.get(
+  "/mark_present/:event_id/:user_id",
+  verifyToken,
+  verifyAdminOrOrganizer,
+  mark_present
+);
+router.get(
+  "/mark_absent/:event_id/:user_id",
+  verifyToken,
+  verifyAdminOrOrganizer,
+  mark_absent
+);
 router.get("/get_event/:id", get_event);
 router.get("/get_featured", get_featured);
 router.get("/get_upcoming", get_upcoming);

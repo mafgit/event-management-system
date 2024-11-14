@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FaMagnifyingGlass, FaSackXmark } from "react-icons/fa6";
 import axios from "axios";
+import moment from "moment";
 
 const EventAnalytics = () => {
   const { id } = useParams();
@@ -28,6 +29,44 @@ const EventAnalytics = () => {
     setRevenue(sum);
   }, [data]);
 
+  const markPresent = (user_id) => {
+    axios
+      .get("/events/mark_present/" + id + "/" + user_id)
+      .then((res) => {
+        let arr = data.results.map((user) => {
+          if (user.user_id == user_id) {
+            return { ...user, attendance_created_at: "now" };
+          } else {
+            return user;
+          }
+        });
+
+        setData({ ...data, results: arr });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const markAbsent = (user_id) => {
+    axios
+      .get("/events/mark_absent/" + id + "/" + user_id)
+      .then((res) => {
+        let arr = data.results.map((user) => {
+          if (user.user_id == user_id) {
+            return { ...user, attendance_created_at: "" };
+          } else {
+            return user;
+          }
+        });
+
+        setData({ ...data, results: arr });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="p-[25px]">
       <div className="flex justify-between">
@@ -49,7 +88,7 @@ const EventAnalytics = () => {
           </Link>
         </div>
         <div className="btn px-3 py-1 text-white rounded-full flex items-center justify-center gap-2 bg-green-600 max-w-max">
-          <FaSackXmark /> Revenue: PKR. {revenue}
+          <FaSackXmark /> Revenue: PKR {revenue}
         </div>
       </div>
 
@@ -92,14 +131,29 @@ const EventAnalytics = () => {
                 </td>
                 <td className="p-3">
                   {user.attendance_created_at ? (
-                    <button className="btn bg-red-600 px-3 py-[3px] rounded-full text-white">
+                    <button
+                      onClick={() => markAbsent(user.user_id)}
+                      className="btn bg-red-600 px-3 py-[3px] rounded-full text-white"
+                    >
                       Mark absent
                     </button>
                   ) : (
-                    <button>Mark present</button>
+                    <button
+                      className="btn bg-green-600 px-3 py-[3px] rounded-full text-white"
+                      onClick={() => markPresent(user.user_id)}
+                    >
+                      Mark present
+                    </button>
                   )}
                 </td>
-                <td className="p-3">{user.attendance_created_at}</td>
+                <td className="p-3">
+                  {["", "now", null].includes(user.attendance_created_at) ==
+                  false
+                    ? moment(user.attendance_created_at).format(
+                        "DD MMM, YYYY HH:MM"
+                      )
+                    : user.attendance_created_at}
+                </td>
               </tr>
             ))}
           </table>
