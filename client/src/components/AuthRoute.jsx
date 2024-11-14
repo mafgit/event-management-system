@@ -4,18 +4,22 @@ import Navbar from "../components/Navbar";
 import { AuthContext } from "../App";
 import Footer from "./Footer";
 
-const AdminRoute = ({ children }) => {
+const AuthRoute = ({ children, loading }) => {
   const { auth } = useContext(AuthContext);
 
-  return auth ? (
+  return !loading && auth ? (
     <div>
       <Navbar />
       {children}
       <Footer />
     </div>
-  ) : (
+  ) : !loading && !auth ? (
     <Navigate to="/" />
+  ) : loading ? (
+    <>Loading...</>
+  ) : (
+    <></>
   );
 };
 
-export default AdminRoute;
+export default AuthRoute;

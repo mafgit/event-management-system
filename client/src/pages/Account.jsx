@@ -75,7 +75,7 @@ const Account = () => {
           </Link>
 
           <Link
-            to="/visited-by-me"
+            to="/attended-by-me"
             className="btn m-auto bg-gray-100 p-2 w-full text-center rounded-md"
           >
             View Events Attended by You

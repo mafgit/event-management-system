@@ -21,8 +21,11 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import CreateEvent from "./pages/CreateEvent";
 import OrganizedBy from "./pages/OrganizedBy";
-import VisitedByMe from "./pages/VisitedByMe";
+import AttendedByMe from "./pages/AttendedByMe";
 import Account from "./pages/Account";
+import EventAnalytics from "./pages/EventAnalytics";
+import TicketTypes from "./pages/TicketTypes";
+import EditEvent from "./pages/EditEvent";
 
 axios.defaults.baseURL = "http://localhost:5000/";
 axios.defaults.withCredentials = true;
@@ -49,13 +52,14 @@ function App() {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [loading, setLoading] = useState(true);
   // todo: add loading use state
 
   useEffect(() => {
     axios
       .get("/auth/get_login_data")
       .then((res) => {
-        console.log(res);
+        // console.log(res);
 
         setAuth(true);
         setUserId(res.data.user_id);
@@ -63,6 +67,7 @@ function App() {
         setFirstName(res.data.first_name);
         setLastName(res.data.last_name);
         setAdmin(res.data.is_admin);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -139,17 +144,44 @@ function App() {
           <Route
             path="/create-event"
             element={
-              <AuthRoute>
+              <AuthRoute loading={loading}>
                 <CreateEvent />
               </AuthRoute>
             }
           />
 
           <Route
-            path="/visited-by-me"
+            path="/event/:id/analytics"
             element={
-              <AuthRoute>
-                <VisitedByMe />
+              <AuthRoute loading={loading}>
+                <EventAnalytics />
+              </AuthRoute>
+            }
+          />
+
+          <Route
+            path="/event/:id/ticket-types"
+            element={
+              <AuthRoute loading={loading}>
+                <TicketTypes />
+              </AuthRoute>
+            }
+          />
+
+          <Route
+            path="/event/:id/edit"
+            element={
+              <AuthRoute loading={loading}>
+                <EditEvent />
+              </AuthRoute>
+            }
+          />
+
+          <Route
+            path="/attended-by-me"
+            element={
+              <AuthRoute loading={loading}>
+                <AttendedByMe />
               </AuthRoute>
             }
           />
@@ -157,7 +189,7 @@ function App() {
           <Route
             path="/account"
             element={
-              <AuthRoute>
+              <AuthRoute loading={loading}>
                 <Account />
               </AuthRoute>
             }
@@ -167,7 +199,7 @@ function App() {
           <Route
             path="/admin"
             element={
-              <AdminRoute>
+              <AdminRoute loading={loading}>
                 <AdminHome />
               </AdminRoute>
             }
@@ -175,7 +207,7 @@ function App() {
           <Route
             path="/admin/users"
             element={
-              <AdminRoute>
+              <AdminRoute loading={loading}>
                 <AdminUsers />
               </AdminRoute>
             }
@@ -183,7 +215,7 @@ function App() {
           <Route
             path="/admin/categories"
             element={
-              <AdminRoute>
+              <AdminRoute loading={loading}>
                 <AdminCategories />
               </AdminRoute>
             }
@@ -191,7 +223,7 @@ function App() {
           <Route
             path="/admin/events"
             element={
-              <AdminRoute>
+              <AdminRoute loading={loading}>
                 <AdminEvents />
               </AdminRoute>
             }
@@ -199,7 +231,7 @@ function App() {
           <Route
             path="/admin/registrations"
             element={
-              <AdminRoute>
+              <AdminRoute loading={loading}>
                 <AdminRegistrations />
               </AdminRoute>
             }
@@ -207,7 +239,7 @@ function App() {
           <Route
             path="/admin/reviews"
             element={
-              <AdminRoute>
+              <AdminRoute loading={loading}>
                 <AdminReviews />
               </AdminRoute>
             }
@@ -215,7 +247,7 @@ function App() {
           <Route
             path="/admin/tags"
             element={
-              <AdminRoute>
+              <AdminRoute loading={loading}>
                 <AdminTags />
               </AdminRoute>
             }
@@ -223,7 +255,7 @@ function App() {
           <Route
             path="/admin/tickets"
             element={
-              <AdminRoute>
+              <AdminRoute loading={loading}>
                 <AdminTickets />
               </AdminRoute>
             }

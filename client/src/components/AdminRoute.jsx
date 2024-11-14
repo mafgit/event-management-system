@@ -3,16 +3,20 @@ import { Navigate } from "react-router-dom";
 import AdminNavbar from "../components/AdminNavbar";
 import { AuthContext } from "../App";
 
-const AdminRoute = ({ children }) => {
+const AdminRoute = ({ children, loading }) => {
   const { admin } = useContext(AuthContext);
 
-  return admin ? (
+  return !loading && admin ? (
     <div>
       <AdminNavbar />
       {children}
     </div>
-  ) : (
+  ) : !loading && !admin ? (
     <Navigate to="/" />
+  ) : loading ? (
+    <>Loading...</>
+  ) : (
+    <></>
   );
 };
 

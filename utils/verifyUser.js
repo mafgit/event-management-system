@@ -42,6 +42,21 @@ const verifyAdmin = (req, res, next) => {
   next();
 };
 
+const verifyOrganizer = (req, res, next) => {
+  const q = `select event_id from events where organized_by = ? and event_id = ?;`;
+  console.log("u:", req.user.id);
+  console.log("e:", req.params.id);
+
+  db.query(q, [req.user.id, req.params.id], (err, result) => {
+    console.log("result: ", result);
+    if (result != undefined && result.length > 0) return next();
+    else
+      res
+        .status(403)
+        .json({ message: "Forbidden! Admin and organizer are allowed only" });
+  });
+};
+
 const verifyAdminOrOrganizer = (req, res, next) => {
   if (req.user.is_admin) return next();
 
@@ -56,4 +71,9 @@ const verifyAdminOrOrganizer = (req, res, next) => {
   });
 };
 
-module.exports = { verifyToken, verifyAdmin, verifyAdminOrOrganizer };
+module.exports = {
+  verifyToken,
+  verifyAdmin,
+  verifyOrganizer,
+  verifyAdminOrOrganizer,
+};

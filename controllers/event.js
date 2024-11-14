@@ -110,6 +110,34 @@ const get_event = async (req, res) => {
   }
 };
 
+const get_analytics = (req, res) => {
+  const { id } = req.params;
+
+  // name
+  const q1 = "select name from events where event_id = ?;";
+  db.query(q1, [id], (error1, results1) => {
+    if (error1) {
+      res.status(500).json({ error: error1 });
+      throw error1;
+    }
+    // users
+    const q2 = `select u.*, r.*, t.*, a.created_at as 'attendance_created_at' from users u
+inner join registrations r on u.user_id = r.user_id
+inner join attendance a on a.user_id = r.user_id
+inner join tickets t on r.ticket_id = t.ticket_id
+where a.event_id = 1 and r.event_id = 1 and t.event_id = 1;`;
+
+    db.query(q2, [id], (error2, results2) => {
+      if (error2) {
+        res.status(500).json({ error: error2 });
+        throw error2;
+      }
+
+      res.json({ name: results1[0].name, ...results2[0] });
+    });
+  });
+};
+
 const get_featured = async (req, res) => {
   try {
     const q =
@@ -231,4 +259,5 @@ module.exports = {
   delete_event,
   get_organized_by,
   get_attended_by_me,
+  get_analytics,
 };
