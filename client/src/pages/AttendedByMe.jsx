@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import "../styles/SearchPage.css";
 import EventCard from "../components/EventCard";
 import axios from "axios";
-// todo: make get request and show real data
 
 const OrganizedBy = () => {
   const { id } = useParams();

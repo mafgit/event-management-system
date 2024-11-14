@@ -31,13 +31,13 @@ router.get(
   get_analytics
 );
 router.get(
-  "/mark_present/:event_id/:user_id",
+  "/mark_present/:id/:user_id",
   verifyToken,
   verifyAdminOrOrganizer,
   mark_present
 );
 router.get(
-  "/mark_absent/:event_id/:user_id",
+  "/mark_absent/:id/:user_id",
   verifyToken,
   verifyAdminOrOrganizer,
   mark_absent

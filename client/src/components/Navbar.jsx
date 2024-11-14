@@ -21,10 +21,12 @@ const Navbar = () => {
         ) : (
           <Link to="/login">Login</Link>
         )}
-        {admin && (
+        {admin ? (
           <Link to="/admin" className="bg-white px-2 rounded-md btn">
             Admin
           </Link>
+        ) : (
+          <></>
         )}
       </div>
     </div>

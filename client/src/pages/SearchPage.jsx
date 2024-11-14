@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
 import EventCard from "../components/EventCard";
 import axios from "axios";
-// todo: make get request and show real data
 
 // const eventList = [
 //   {

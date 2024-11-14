@@ -139,9 +139,9 @@ where r.event_id = ? and t.event_id = ? and r.status = 'Confirmed';`;
 };
 
 const mark_present = (req, res) => {
-  const { user_id, event_id } = req.params;
+  const { user_id, id } = req.params;
   const q = `insert ignore into attendance(user_id, event_id) values(?, ?);`;
-  db.query(q, [user_id, event_id], (error, results) => {
+  db.query(q, [user_id, id], (error, results) => {
     if (error) {
       res.status(500).json(error);
       throw error;
@@ -152,9 +152,9 @@ const mark_present = (req, res) => {
 };
 
 const mark_absent = (req, res) => {
-  const { user_id, event_id } = req.params;
+  const { user_id, id } = req.params;
   const q = `delete from attendance where user_id = ? and event_id = ?`;
-  db.query(q, [user_id, event_id], (error, results) => {
+  db.query(q, [user_id, id], (error, results) => {
     if (error) {
       res.status(500).json(error);
       throw error;

@@ -7,17 +7,15 @@ import {
   FaTicketSimple,
 } from "react-icons/fa6";
 import Review from "../components/Review";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "../App";
 
 const Event = () => {
-  // todo: share btn
-  // todo: edit event btn
-  // todo: EventTickets page (create and delete ticket types)
-  // todo: EventAnalytics page (revenue, registrations, tickets sold, add/remove attendee
   const [event, setEvent] = useState({ tags: [] });
   const { id } = useParams();
+  const { userId } = useContext(AuthContext);
   useEffect(() => {
     axios.get("/events/get_event/" + id).then((res) => {
       setEvent(res.data.event);
@@ -36,26 +34,30 @@ const Event = () => {
         <h1 className="absolute left-6 bottom-5 z-30 text-white text-3xl font-bold">
           {event.name}
         </h1>
-        <div className="absolute right-6 bottom-5 flex gap-2 z-50">
-          <Link
-            to={"/event/" + id + "/edit"}
-            className="btn bg-blue-600 px-3 py-1 rounded-full text-white flex gap-2 items-center justify-center"
-          >
-            <FaPen /> Edit
-          </Link>
-          <Link
-            to={"/event/" + id + "/analytics/"}
-            className="btn bg-orange-600 px-3 py-1 rounded-full text-white flex gap-2 items-center justify-center"
-          >
-            <FaChartSimple /> Analytics
-          </Link>
-          <Link
-            to={"/event/" + id + "/ticket-types"}
-            className="btn bg-green-600 px-3 py-1 rounded-full text-white flex gap-2 items-center justify-center"
-          >
-            <FaTicketSimple /> Ticket Types
-          </Link>
-        </div>
+        {event.organized_by == userId ? (
+          <div className="absolute right-6 bottom-5 flex gap-2 z-50">
+            <Link
+              to={"/event/" + id + "/edit"}
+              className="btn bg-blue-600 px-3 py-1 rounded-full text-white flex gap-2 items-center justify-center"
+            >
+              <FaPen /> Edit
+            </Link>
+            <Link
+              to={"/event/" + id + "/analytics/"}
+              className="btn bg-orange-600 px-3 py-1 rounded-full text-white flex gap-2 items-center justify-center"
+            >
+              <FaChartSimple /> Analytics
+            </Link>
+            <Link
+              to={"/event/" + id + "/ticket-types"}
+              className="btn bg-green-600 px-3 py-1 rounded-full text-white flex gap-2 items-center justify-center"
+            >
+              <FaTicketSimple /> Ticket Types
+            </Link>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
 
       <div className="flex my-[10px] gap-2 items-stretch">

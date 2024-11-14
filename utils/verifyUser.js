@@ -60,9 +60,10 @@ const verifyOrganizer = (req, res, next) => {
 const verifyAdminOrOrganizer = (req, res, next) => {
   if (req.user.is_admin) return next();
 
-  const q = `select event_id from events where organizer_id = ? and event_id = ?`;
+  const q = `select event_id from events where organized_by = ? and event_id = ?;`;
   db.query(q, [req.user.id, req.params.id], (err, result) => {
     console.log("result: ", result);
+
     if (result != undefined && result.length > 0) return next();
     else
       res

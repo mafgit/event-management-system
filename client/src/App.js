@@ -53,7 +53,6 @@ function App() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [loading, setLoading] = useState(true);
-  // todo: add loading use state
 
   useEffect(() => {
     axios
@@ -70,6 +69,7 @@ function App() {
         setLoading(false);
       })
       .catch((err) => {
+        setLoading(false);
         console.log(err);
       });
   }, []);
