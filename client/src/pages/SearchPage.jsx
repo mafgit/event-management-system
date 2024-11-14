@@ -155,7 +155,7 @@ export default function Component() {
                 category={event.category}
                 duration={event.duration}
                 venue={event.venue}
-                imageUrl="https://media.istockphoto.com/id/499517325/photo/a-man-speaking-at-a-business-conference.jpg?s=612x612&w=0&k=20&c=gWTTDs_Hl6AEGOunoQ2LsjrcTJkknf9G8BGqsywyEtE="
+                image_url={event.image_url}
               />
             ))}
           </div>

@@ -3,12 +3,28 @@ const db = require("../db");
 const get_tickets = (req, res) => {
   const { id } = req.params;
 
-  const query = "SELECT * FROM tickets WHERE event_id = ?";
+  // const query = "SELECT * FROM tickets WHERE event_id = ?";
+  const query = `SELECT 
+  t.ticket_name,
+  t.price,
+  t.capacity,
+  (t.capacity - IFNULL(COUNT(r.registration_id), 0)) AS tickets_left
+FROM 
+  tickets t
+LEFT JOIN 
+  registrations r 
+  ON t.ticket_name = r.ticket_name AND r.status = 'Confirmed'
+WHERE 
+  t.event_id = ?
+GROUP BY 
+  t.ticket_name;
+`;
   db.query(query, [id], (err, result) => {
     if (err) {
       return res.status(500).json({ message: "Error fetching tickets" });
     }
-    res.status(200).json(result);
+
+    res.status(200).json({ tickets: result });
   });
 };
 

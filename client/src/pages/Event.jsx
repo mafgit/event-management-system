@@ -14,11 +14,15 @@ import { AuthContext } from "../App";
 
 const Event = () => {
   const [event, setEvent] = useState({ tags: [] });
+  const [tickets, setTickets] = useState([]);
   const { id } = useParams();
   const { userId } = useContext(AuthContext);
   useEffect(() => {
     axios.get("/events/get_event/" + id).then((res) => {
       setEvent(res.data.event);
+      axios.get("/tickets/get_tickets/" + id).then((res) => {
+        setTickets(res.data.tickets);
+      });
     });
   }, [id]);
 
@@ -103,22 +107,26 @@ const Event = () => {
             </p>
           </div>
         </div>
-        <div className="grow-[1] w-full h-full bg-gray-300 rounded-md basis-0 p-5">
+        <div className="grow-[1] w-full h-full bg-gray-300 rounded-md basis-0 p-5 flex flex-col gap-4">
           {/* tickets etc */}
-          <div className="flex flex-col gap-2">
-            <button className="text-white bg-gradient-to-r from-pink-700 to-blue-700 p-2 w-full rounded-md font-bold uppercase">
-              Register (Normal)
-            </button>
+          {tickets.map((ticket) => (
+            <div className="flex flex-col gap-2">
+              <button className="text-white bg-gradient-to-r from-pink-700 to-blue-700 p-2 w-full rounded-md font-bold uppercase">
+                Register ({ticket.ticket_name})
+              </button>
 
-            <div className="flex">
-              <h1 className="flex flex-col text-center basis-0 grow-[1] w-full items-center justify-center">
-                <b>249</b> Tickets left
-              </h1>
-              <div className="flex basis-0 grow-[1] w-full items-center justify-center bg-white rounded-full">
-                <h1 className="text-gradient text-xl font-bold">PKR 999</h1>
+              <div className="flex">
+                <h1 className="flex flex-col text-center basis-0 grow-[1] w-full items-center justify-center">
+                  <b>{ticket.tickets_left}</b> Tickets left
+                </h1>
+                <div className="flex basis-0 grow-[1] w-full items-center justify-center bg-white rounded-full">
+                  <h1 className="text-gradient text-xl font-bold">
+                    PKR {ticket.price}
+                  </h1>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
 

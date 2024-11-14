@@ -8,12 +8,7 @@ const {
 } = require("../controllers/ticket");
 const { verifyAdminOrOrganizer, verifyToken } = require("../utils/verifyUser");
 
-router.get(
-  "/get_tickets/:id",
-  verifyToken,
-  verifyAdminOrOrganizer,
-  get_tickets
-);
+router.get("/get_tickets/:id", get_tickets);
 // router.get("/get_ticket/:id", get_ticket);
 router.post(
   "/create_ticket/:id",
