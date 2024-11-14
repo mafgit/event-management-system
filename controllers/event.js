@@ -164,6 +164,19 @@ const mark_absent = (req, res) => {
   });
 };
 
+const get_ticket_types = (req, res) => {
+  const { id } = req.params;
+  const q = `select * from tickets where event_id = ?;`;
+  db.query(q, [id], (error, results) => {
+    if (error) {
+      res.status(500).json(error);
+      throw error;
+    }
+
+    res.json(results);
+  });
+};
+
 const get_featured = async (req, res) => {
   try {
     const q =

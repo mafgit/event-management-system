@@ -62,11 +62,15 @@ const verifyAdminOrOrganizer = (req, res, next) => {
 
   const q = `select event_id from events where organized_by = ? and event_id = ?;`;
   db.query(q, [req.user.id, req.params.id], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Server error" });
+    }
     console.log("result: ", result);
 
-    if (result != undefined && result.length > 0) return next();
+    if (result && result.length > 0) return next();
     else
-      res
+      return res
         .status(403)
         .json({ message: "Forbidden! Admin and organizer are allowed only" });
   });
