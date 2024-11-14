@@ -133,7 +133,7 @@ where a.event_id = 1 and r.event_id = 1 and t.event_id = 1;`;
         throw error2;
       }
 
-      res.json({ name: results1[0].name, ...results2[0] });
+      res.json({ name: results1[0].name, results: results2 });
     });
   });
 };
