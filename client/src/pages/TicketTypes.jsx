@@ -33,7 +33,7 @@ const TicketTypes = () => {
     axios
       .get("/tickets/get_tickets/" + id)
       .then((res) => {
-        setTickets(res.data);
+        setTickets(res.data.tickets);
       })
       .catch((err) => {
         console.log(err);
