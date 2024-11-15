@@ -11,6 +11,10 @@ const {
   get_analytics,
   mark_present,
   mark_absent,
+  get_categories,
+  get_tags,
+  get_event_tags,
+  get_can_review,
 } = require("../controllers/event.js");
 const {
   verifyToken,
@@ -42,6 +46,10 @@ router.get(
   verifyAdminOrOrganizer,
   mark_absent
 );
+router.get("/get_categories", get_categories);
+router.get("/get_tags", get_tags);
+router.get("/get_event_tags/:id", get_event_tags);
+router.get("/get_can_review/:id", verifyToken, get_can_review);
 router.get("/get_event/:id", get_event);
 router.get("/get_featured", get_featured);
 router.get("/get_upcoming", get_upcoming);

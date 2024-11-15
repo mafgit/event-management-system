@@ -72,11 +72,11 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
   
   CREATE TABLE IF NOT EXISTS event_tags (
     event_id INT NOT NULL,
-    tag_id VARCHAR(20) NOT NULL,
-    PRIMARY KEY (event_id, tag_id),
-    INDEX tag_id_idx (tag_id),
+    tag_name VARCHAR(20) NOT NULL,
+    PRIMARY KEY (event_id, tag_name),
+    INDEX tag_name_idx (tag_name),
     FOREIGN KEY (event_id) REFERENCES events (event_id),
-    FOREIGN KEY (tag_id) REFERENCES tags (name)
+    FOREIGN KEY (tag_name) REFERENCES tags (name)
   );
   
   CREATE TABLE IF NOT EXISTS tickets (
@@ -150,11 +150,11 @@ INSERT INTO events (name, description, capacity, venue, image_url, organized_by,
 
 -- Reviews
 INSERT INTO reviews (text, user_id, event_id, rating) VALUES 
-('Amazing event!', 1, 1, 9),
-('Great experience.', 2, 2, 8),
-('Could have been better.', 3, 3, 6),
-('Loved it!', 4, 1, 10),
-('Not worth the price.', 5, 3, 5);
+('Amazing event!', 1, 1, 4),
+('Great experience.', 2, 2, 3),
+('Could have been better.', 3, 3, 2),
+('Loved it!', 4, 1, 5),
+('Not worth the price.', 5, 3, 1);
 
 -- Tags
 INSERT INTO tags (name) VALUES 
@@ -164,7 +164,7 @@ INSERT INTO tags (name) VALUES
 ('Exhibition');
 
 -- Event Tags
-INSERT INTO event_tags (event_id, tag_id) VALUES 
+INSERT INTO event_tags (event_id, tag_name) VALUES 
 (1, 'Networking'),
 (1, 'Workshop'),
 (2, 'Exhibition'),

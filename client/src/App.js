@@ -172,7 +172,7 @@ function App() {
             path="/event/:id/edit"
             element={
               <AuthRoute loading={loading}>
-                <EditEvent />
+                <CreateEvent edit={true} />
               </AuthRoute>
             }
           />

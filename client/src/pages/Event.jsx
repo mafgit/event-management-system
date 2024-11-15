@@ -4,6 +4,8 @@ import {
   FaLayerGroup,
   FaPen,
   FaPeopleGroup,
+  FaRegStar,
+  FaStar,
   FaTicketSimple,
 } from "react-icons/fa6";
 import Review from "../components/Review";
@@ -11,23 +13,39 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../App";
+import { toast, ToastContainer } from "react-toastify";
 
 const Event = () => {
   const [event, setEvent] = useState({ tags: [] });
   const [tickets, setTickets] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [canReview, setCanReview] = useState(false);
   const { id } = useParams();
   const { userId } = useContext(AuthContext);
+  const [rating, setRating] = useState(5);
+  const [text, setText] = useState("");
+
   useEffect(() => {
     axios.get("/events/get_event/" + id).then((res) => {
       setEvent(res.data.event);
+
       axios.get("/tickets/get_tickets/" + id).then((res) => {
         setTickets(res.data.tickets);
+      });
+
+      axios.get("/reviews/get_reviews/" + id).then((res) => {
+        setReviews(res.data);
+      });
+
+      axios.get("/events/get_can_review/" + id).then((res) => {
+        setCanReview(res.data.attended && !res.data.reviewed);
       });
     });
   }, [id]);
 
   return (
     <div className="mx-[50px] my-[25px]">
+      <ToastContainer />
       <div className="w-full h-[350px] relative">
         <img
           src={event.image_url}
@@ -92,7 +110,7 @@ const Event = () => {
           <div className="flex gap-2">
             {event.tags.map((tag) => (
               <div className="px-3 py-[1px] text-center w-max bg-blue-700 text-white rounded-full">
-                {tag.tag_id}
+                {tag.tag_name}
               </div>
             ))}
           </div>
@@ -107,19 +125,18 @@ const Event = () => {
             </p>
           </div>
         </div>
-        <div className="grow-[1] w-full h-full bg-gray-300 rounded-md basis-0 p-5 flex flex-col gap-4">
+        <div className="grow-[1] w-full h-full bg-gray-300 basis-0 p-5 flex flex-col gap-4">
           {/* tickets etc */}
           {tickets.map((ticket) => (
-            <div className="flex flex-col gap-2">
-              <button className="text-white bg-gradient-to-r from-pink-700 to-blue-700 p-2 w-full rounded-md font-bold uppercase">
+            <div className="flex flex-col">
+              <button className="btn text-white bg-gradient-to-r from-pink-700 to-blue-700 p-2 w-full font-bold uppercase rounded-tl-md rounded-tr-md">
                 Register ({ticket.ticket_name})
               </button>
-
-              <div className="flex">
-                <h1 className="flex flex-col text-center basis-0 grow-[1] w-full items-center justify-center">
-                  <b>{ticket.tickets_left}</b> Tickets left
+              <div className="flex bg-white rounded-bl-md rounded-br-md p-[5px]">
+                <h1 className="flex text-center basis-0 gap-1 grow-[1] w-full items-center justify-center">
+                  <b>{ticket.tickets_left} </b> LEFT
                 </h1>
-                <div className="flex basis-0 grow-[1] w-full items-center justify-center bg-white rounded-full">
+                <div className="flex basis-0 grow-[1] w-full items-center justify-center">
                   <h1 className="text-gradient text-xl font-bold">
                     PKR {ticket.price}
                   </h1>
@@ -132,11 +149,83 @@ const Event = () => {
 
       {/* reviews */}
       <div className="">
-        <h1 className="text-xl">Reviews</h1>
-        <div className="">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <Review />
-          ))}
+        <h1 className="text-xl mb-2 mt-4">Reviews</h1>
+        {canReview && (
+          <>
+            <div className="bg-gray-200 max-w-min mb-4 p-2 rounded-md">
+              <textarea
+                onChange={(e) => setText(e.target.value)}
+                type="text"
+                placeholder="Write a review"
+                className="bg-gray-300 p-2 min-w-[300px] max-w-[300px] min-h-[100px] max-h-[100px]"
+              ></textarea>
+
+              <div className="flex justify-between items-center">
+                <div className="cursor-pointer flex gap-1">
+                  {Array(rating)
+                    .fill(1)
+                    .map((_, i) => (
+                      <FaStar
+                        className="text-yellow-500"
+                        onClick={() => {
+                          setRating(i + 1);
+                        }}
+                      />
+                    ))}
+                  {rating < 5 &&
+                    Array(5 - rating)
+                      .fill(1)
+                      .map((_, i) => (
+                        <FaRegStar
+                          className="text-yellow-500"
+                          onClick={() => {
+                            setRating(i + 1 + rating);
+                          }}
+                        />
+                      ))}
+                </div>
+
+                <button
+                  className="btn rounded-md bg-blue-600 text-white py-1 px-2"
+                  onClick={() => {
+                    if (text.trim().length < 4) {
+                      toast.error("Review must be at least 4 characters long");
+                      return;
+                    }
+                    axios
+                      .post("/reviews/create_review", {
+                        text,
+                        rating: rating,
+                        eventId: id,
+                        userId,
+                      })
+                      .then((res) => {
+                        window.location.reload();
+                      });
+                  }}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+        <div className="flex gap-2 flex-wrap">
+          {reviews.length ? (
+            reviews.map((r) => {
+              return (
+                <Review
+                  user_id={r.user_id}
+                  name={r.name}
+                  text={r.text}
+                  rating={r.rating}
+                  review_id={r.review_id}
+                />
+              );
+            })
+          ) : (
+            <div className="text-gray-500">No reviews yet</div>
+          )}
         </div>
       </div>
     </div>

@@ -1,6 +1,9 @@
 const db = require("../db");
 const moment = require("moment");
 
+// todo: in create and update event, update tags
+// todo: check update event
+
 const create_event = async (req, res) => {
   try {
     const {
@@ -13,6 +16,7 @@ const create_event = async (req, res) => {
       end_time,
       category,
       image_url,
+      tags,
     } = req.body;
     const verified = req.body.verified ?? false;
     const status = req.body.verified ?? "Upcoming"; //Canceled, Featured, Completed, Postponed
@@ -99,15 +103,53 @@ const get_event = async (req, res) => {
         "select * from event_tags where event_id = ?",
         [id],
         (err2, result2) => {
-          res
+          if (err2) {
+            res.status(500).json({ success: false, error: err2.message });
+            throw err2;
+          }
+
+          return res
             .status(200)
             .json({ success: true, event: { ...result[0], tags: result2 } });
         }
       );
     });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    return res.status(500).json({ success: false, error: error.message });
   }
+};
+
+const get_can_review = (req, res) => {
+  const { id } = req.params;
+  const q = `select * from attendance where event_id = ? and user_id = ?;`;
+
+  db.query(q, [id, req.user.id], (error, results) => {
+    if (error) {
+      res.status(500).json({ error: error });
+      throw error;
+    }
+
+    if (results.length === 0) {
+      return res.json({ attended: false, reviewed: false });
+    } else {
+      db.query(
+        "select * from reviews where event_id = ? and user_id = ?;",
+        [id, req.user.id],
+        (error2, results2) => {
+          if (error2) {
+            res.status(500).json({ error: error2 });
+            throw error2;
+          }
+
+          if (results2.length === 0) {
+            return res.json({ attended: true, reviewed: false });
+          } else {
+            return res.json({ attended: true, reviewed: true });
+          }
+        }
+      );
+    }
+  });
 };
 
 const get_analytics = (req, res) => {
@@ -211,6 +253,40 @@ const get_upcoming = async (req, res) => {
   }
 };
 
+const get_categories = (req, res) => {
+  db.query("select name from categories", (err, results) => {
+    if (err) {
+      return res.status(500).json({ message: "Server error" });
+    }
+
+    res.json(results);
+  });
+};
+
+const get_tags = (req, res) => {
+  db.query("select name from tags", (err, results) => {
+    if (err) {
+      return res.status(500).json({ message: "Server error" });
+    }
+
+    res.json(results);
+  });
+};
+
+const get_event_tags = (req, res) => {
+  db.query(
+    "select tag_name from event_tags where event_id = ?",
+    [req.params.id],
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: "Server error" });
+      }
+
+      res.json(results);
+    }
+  );
+};
+
 const update_event = async (req, res) => {
   try {
     let { id } = req.params;
@@ -226,6 +302,7 @@ const update_event = async (req, res) => {
       status,
       verified,
       image_url,
+      tags,
     } = req.body;
 
     event_date = moment(event_date).format("YYYY-MM-DD HH:mm:ss");
@@ -301,4 +378,8 @@ module.exports = {
   get_analytics,
   mark_present,
   mark_absent,
+  get_categories,
+  get_tags,
+  get_event_tags,
+  get_can_review,
 };

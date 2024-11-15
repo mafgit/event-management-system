@@ -10,14 +10,13 @@ import { RxUpload } from "react-icons/rx";
 import { MdError } from "react-icons/md";
 import { HiChevronDown } from "react-icons/hi2";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 import { AuthContext } from "../App";
 
-function CreateEvent() {
-  // todo: category dropdown fetches categories from db
-  // todo: add upto 5 tags functionality
+function CreateEvent({ edit = false }) {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { userId } = useContext(AuthContext);
   const imageRef = useRef(null);
@@ -26,6 +25,8 @@ function CreateEvent() {
   const [dateError, setDateError] = useState(false);
   const [startTimeError, setStartTimeError] = useState(false);
   const [endTimeError, setEndTimeError] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -37,6 +38,7 @@ function CreateEvent() {
     end_time: "",
     category: "",
     image_url: null,
+    tags: [],
   });
 
   async function handleSubmit(e) {
@@ -75,6 +77,28 @@ function CreateEvent() {
   useEffect(() => {
     console.log(formData);
   }, [formData]);
+
+  useEffect(() => {
+    axios.get("/events/get_categories").then((res) => {
+      setCategories(res.data);
+    });
+
+    axios.get("/events/get_tags").then((res) => {
+      setTags(res.data);
+    });
+
+    if (edit) {
+      axios.get("/events/get_event/" + id).then((res) => {
+        setFormData(res.data.event);
+        console.log(res.data.event);
+      });
+
+      axios.get("/events/get_event_tags/" + id).then((res) => {
+        console.log(res.data);
+        setFormData((p) => ({ ...p, tags: res.data }));
+      });
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -440,11 +464,57 @@ function CreateEvent() {
                       className="block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none"
                     >
                       <option value="">Select a category</option>
-                      <option value="Conference">Conference</option>
-                      <option value="Seminar">Seminar</option>
-                      <option value="Workshop">Workshop</option>
-                      <option value="Party">Party</option>
-                      <option value="Other">Other</option>
+                      {categories.length &&
+                        categories.map(({ name }) => (
+                          <option value={name}>{name}</option>
+                        ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <HiChevronDown
+                        className="h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="tags"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Tags (hold CTRL while selecting multiple)
+                  </label>
+                  <div className="mt-1 relative rounded-md shadow-sm">
+                    <select
+                      id="select-tags"
+                      name="tags"
+                      // value={formData.tags}
+                      onChange={(e) => {
+                        const selected = document.querySelectorAll(
+                          "#select-tags option:checked"
+                        );
+                        // todo: tags not highlighting on edit
+
+                        const values = Array.from(selected).map(
+                          (el) => el.value
+                        );
+
+                        setFormData((prev) => ({ ...prev, tags: values }));
+                      }}
+                      required
+                      multiple
+                      className="block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent appearance-none"
+                    >
+                      {tags.length &&
+                        tags.map(({ name }) => (
+                          <option
+                            selected={formData.tags.includes(name)}
+                            value={name}
+                          >
+                            {name}
+                          </option>
+                        ))}
                     </select>
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                       <HiChevronDown
