@@ -36,3 +36,7 @@
   filter: brightness(0.8);
   cursor: pointer;
 }
+
+.register-btn {
+  @apply btn text-white bg-gradient-to-r from-pink-700 to-blue-700 p-2 w-full font-bold uppercase rounded-tl-md rounded-tr-md;
+}

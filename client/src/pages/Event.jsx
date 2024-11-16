@@ -1,6 +1,7 @@
 import {
   FaBuilding,
   FaChartSimple,
+  FaClock,
   FaLayerGroup,
   FaPen,
   FaPeopleGroup,
@@ -14,17 +15,19 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../App";
 import { toast, ToastContainer } from "react-toastify";
+import moment from "moment";
 
 const Event = () => {
   const [event, setEvent] = useState({ tags: [] });
   const [tickets, setTickets] = useState([]);
+  const [ticketsWithStatus, setTicketsWithStatus] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [canReview, setCanReview] = useState(false);
   const { id } = useParams();
   const { userId } = useContext(AuthContext);
   const [rating, setRating] = useState(5);
   const [text, setText] = useState("");
-
+  const { auth } = useContext(AuthContext);
   useEffect(() => {
     axios.get("/events/get_event/" + id).then((res) => {
       setEvent(res.data.event);
@@ -40,8 +43,50 @@ const Event = () => {
       axios.get("/events/get_can_review/" + id).then((res) => {
         setCanReview(res.data.attended && !res.data.reviewed);
       });
+
+      if (auth)
+        axios.get("/tickets/get_tickets_with_status/" + id).then((res) => {
+          setTicketsWithStatus(res.data.tickets);
+        });
     });
-  }, [id]);
+  }, [id, auth]);
+
+  useEffect(() => {
+    console.log("tickets: ", tickets);
+    console.log("ticketsWithStatus: ", ticketsWithStatus);
+  }, [tickets, ticketsWithStatus]);
+
+  const has_paid_this = (ticket_name) => {
+    for (let i = 0; i < ticketsWithStatus.length; i++) {
+      if (ticketsWithStatus[i].ticket_name == ticket_name) {
+        if (ticketsWithStatus[i].has_paid == true) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  const has_registered = (ticket_name) => {
+    for (let i = 0; i < ticketsWithStatus.length; i++) {
+      if (ticketsWithStatus[i].ticket_name == ticket_name) {
+        if (ticketsWithStatus[i].has_registered == true) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  const has_paid_any = () => {
+    for (let i = 0; i < ticketsWithStatus.length; i++) {
+      if (ticketsWithStatus[i].has_registered == true) {
+        return true;
+      }
+    }
+
+    return false;
+  };
 
   return (
     <div className="mx-[50px] my-[25px]">
@@ -54,7 +99,7 @@ const Event = () => {
         />
         <div className="absolute left-0 top-0 w-full h-full opacity-50 bg-black z-20 rounded-md"></div>
         <h1 className="absolute left-6 bottom-5 z-30 text-white text-3xl font-bold">
-          {event.name}
+          {event.event_id} - {event.name}
         </h1>
         {event.organized_by == userId ? (
           <div className="absolute right-6 bottom-5 flex gap-2 z-50">
@@ -97,6 +142,12 @@ const Event = () => {
             <div className="flex gap-2 px-2 py-[1px] items-center justify-center w-max bg-white rounded-full">
               <FaLayerGroup className="text-blue-600" /> {event.category}
             </div>
+
+            <div className="flex gap-2 px-2 py-[1px] items-center justify-center w-max bg-white rounded-full">
+              <FaClock className="text-blue-600" />{" "}
+              {moment(event.event_date).format("DD-MMM-YYYY")},{" "}
+              {event.start_time} - {event.end_time}
+            </div>
             {/* 
             <div className="flex gap-2 px-2 py-[1px] items-center justify-center w-max bg-white rounded-full">
               <FaUser /> 250
@@ -125,109 +176,162 @@ const Event = () => {
             </p>
           </div>
         </div>
-        <div className="grow-[1] w-full h-full bg-gray-300 basis-0 p-5 flex flex-col gap-4">
-          {/* tickets etc */}
-          {tickets.map((ticket) => (
-            <div className="flex flex-col">
-              <button className="btn text-white bg-gradient-to-r from-pink-700 to-blue-700 p-2 w-full font-bold uppercase rounded-tl-md rounded-tr-md">
-                Register ({ticket.ticket_name})
-              </button>
-              <div className="flex bg-white rounded-bl-md rounded-br-md p-[5px]">
-                <h1 className="flex text-center basis-0 gap-1 grow-[1] w-full items-center justify-center">
-                  <b>{ticket.tickets_left} </b> LEFT
-                </h1>
-                <div className="flex basis-0 grow-[1] w-full items-center justify-center">
-                  <h1 className="text-gradient text-xl font-bold">
-                    PKR {ticket.price}
+        {event.status == "Scheduled" && (
+          <div className="grow-[1] w-full h-full bg-gray-300 basis-0 p-5 flex flex-col gap-4">
+            {/* tickets etc */}
+            {tickets.map((ticket) => (
+              <div className="flex flex-col">
+                {!has_paid_this(ticket.ticket_name) &&
+                has_registered(ticket.ticket_name) ? (
+                  <button
+                    onClick={() => {
+                      axios
+                        .delete(
+                          "/tickets/unregister_ticket/" +
+                            id +
+                            "/" +
+                            ticket.ticket_name
+                        )
+                        .then((res) => {
+                          toast.success("You have unregistered");
+                          window.location.reload();
+                        })
+                        .catch((err) => {
+                          toast.error(err.response.data.message);
+                        });
+                    }}
+                    className="register-btn"
+                  >
+                    Pending - {ticket.ticket_name}
+                  </button>
+                ) : has_paid_this(ticket.ticket_name) ? (
+                  <button className="register-btn">
+                    Paid - {ticket.ticket_name}
+                  </button>
+                ) : (
+                  <button
+                    className="disabled:bg-slate-400 register-btn disabled:cursor-not-allowed"
+                    disabled={has_paid_any()}
+                    onClick={() => {
+                      axios
+                        .post("/tickets/register_ticket", {
+                          id,
+                          ticket_name: ticket.ticket_name,
+                        })
+                        .then((res) => {
+                          if (res.data.success) {
+                            window.location.reload();
+                          }
+                        })
+                        .catch((err) => {
+                          toast.error(err.response.data.message);
+                        });
+                    }}
+                  >
+                    Register - {ticket.ticket_name}
+                  </button>
+                )}
+                <div className="flex bg-white rounded-bl-md rounded-br-md p-[5px]">
+                  <h1 className="flex text-center basis-0 gap-1 grow-[1] w-full items-center justify-center">
+                    <b>{ticket.tickets_left} </b> LEFT
                   </h1>
+                  <div className="flex basis-0 grow-[1] w-full items-center justify-center">
+                    <h1 className="text-gradient text-xl font-bold">
+                      PKR {ticket.price}
+                    </h1>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* reviews */}
-      <div className="">
-        <h1 className="text-xl mb-2 mt-4">Reviews</h1>
-        {canReview && (
-          <>
-            <div className="bg-gray-200 max-w-min mb-4 p-2 rounded-md">
-              <textarea
-                onChange={(e) => setText(e.target.value)}
-                type="text"
-                placeholder="Write a review"
-                className="bg-gray-300 p-2 min-w-[300px] max-w-[300px] min-h-[100px] max-h-[100px]"
-              ></textarea>
+      {event.status == "Completed" && (
+        <div className="">
+          <h1 className="text-xl mb-2 mt-4">Reviews</h1>
+          {canReview && (
+            <>
+              <div className="bg-gray-200 max-w-min mb-4 p-2 rounded-md">
+                <textarea
+                  onChange={(e) => setText(e.target.value)}
+                  type="text"
+                  placeholder="Write a review"
+                  className="bg-gray-300 p-2 min-w-[300px] max-w-[300px] min-h-[100px] max-h-[100px]"
+                ></textarea>
 
-              <div className="flex justify-between items-center">
-                <div className="cursor-pointer flex gap-1">
-                  {Array(rating)
-                    .fill(1)
-                    .map((_, i) => (
-                      <FaStar
-                        className="text-yellow-500"
-                        onClick={() => {
-                          setRating(i + 1);
-                        }}
-                      />
-                    ))}
-                  {rating < 5 &&
-                    Array(5 - rating)
+                <div className="flex justify-between items-center">
+                  <div className="cursor-pointer flex gap-1">
+                    {Array(rating)
                       .fill(1)
                       .map((_, i) => (
-                        <FaRegStar
+                        <FaStar
                           className="text-yellow-500"
                           onClick={() => {
-                            setRating(i + 1 + rating);
+                            setRating(i + 1);
                           }}
                         />
                       ))}
-                </div>
+                    {rating < 5 &&
+                      Array(5 - rating)
+                        .fill(1)
+                        .map((_, i) => (
+                          <FaRegStar
+                            className="text-yellow-500"
+                            onClick={() => {
+                              setRating(i + 1 + rating);
+                            }}
+                          />
+                        ))}
+                  </div>
 
-                <button
-                  className="btn rounded-md bg-blue-600 text-white py-1 px-2"
-                  onClick={() => {
-                    if (text.trim().length < 4) {
-                      toast.error("Review must be at least 4 characters long");
-                      return;
-                    }
-                    axios
-                      .post("/reviews/create_review", {
-                        text,
-                        rating: rating,
-                        eventId: id,
-                        userId,
-                      })
-                      .then((res) => {
-                        window.location.reload();
-                      });
-                  }}
-                >
-                  Submit
-                </button>
+                  <button
+                    className="btn rounded-md bg-blue-600 text-white py-1 px-2"
+                    onClick={() => {
+                      if (text.trim().length < 4) {
+                        toast.error(
+                          "Review must be at least 4 characters long"
+                        );
+                        return;
+                      }
+                      axios
+                        .post("/reviews/create_review", {
+                          text,
+                          rating: rating,
+                          eventId: id,
+                          userId,
+                        })
+                        .then((res) => {
+                          window.location.reload();
+                        });
+                    }}
+                  >
+                    Submit
+                  </button>
+                </div>
               </div>
-            </div>
-          </>
-        )}
-        <div className="flex gap-2 flex-wrap">
-          {reviews.length ? (
-            reviews.map((r) => {
-              return (
-                <Review
-                  user_id={r.user_id}
-                  name={r.name}
-                  text={r.text}
-                  rating={r.rating}
-                  review_id={r.review_id}
-                />
-              );
-            })
-          ) : (
-            <div className="text-gray-500">No reviews yet</div>
+            </>
           )}
+          <div className="flex gap-2 flex-wrap">
+            {reviews.length ? (
+              reviews.map((r) => {
+                return (
+                  <Review
+                    user_id={r.user_id}
+                    name={r.name}
+                    text={r.text}
+                    rating={r.rating}
+                    review_id={r.review_id}
+                  />
+                );
+              })
+            ) : (
+              <div className="text-gray-500">No reviews yet</div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

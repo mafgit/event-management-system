@@ -146,15 +146,16 @@ INSERT INTO categories (name) VALUES
 INSERT INTO events (name, description, capacity, venue, image_url, organized_by, event_date, start_time, end_time, category, status, verified) VALUES 
 ('Tech Conference', 'Annual tech conference', 200, 'Tech Hall', 'https://images.unsplash.com/photo-1511578314322-379afb476865?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTl8fHxlbnwwfHx8fHw%3D', 1, '2024-11-12', '09:00:00', '17:00:00', 'Technology', 'Scheduled', 1),
 ('Art Exhibition', 'Modern art showcase', 150, 'Art Gallery', 'https://images.unsplash.com/photo-1568304603980-85ff55550db2?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXVsYXxlbnwwfHwwfHx8MA%3D%3D', 2, '2024-12-05', '10:00:00', '18:00:00', 'Art', 'Scheduled', 0),
-('Music Festival', 'Outdoor music event', 300, 'City Park', 'https://images.unsplash.com/photo-1561489396-888724a1543d?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YnVzaW5lc3MlMjBldmVudHxlbnwwfHwwfHx8MA%3D%3D', 3, '2025-01-15', '12:00:00', '22:00:00', 'Music', 'Scheduled', 1);
+('Music Festival', 'Outdoor music event', 300, 'City Park', 'https://images.unsplash.com/photo-1561489396-888724a1543d?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YnVzaW5lc3MlMjBldmVudHxlbnwwfHwwfHx8MA%3D%3D', 3, '2025-01-15', '12:00:00', '22:00:00', 'Music', 'Scheduled', 1),
+('Sports Meetup', 'Community sports event', 250, 'Sports Arena', 'https://images.unsplash.com/photo-1587720286139-377ba2f2e6b7?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3', 4, '2024-09-15', '08:00:00', '14:00:00', 'Sports', 'Completed', 1),
+('Business Networking', 'Professional networking event', 100, 'Conference Hall', 'https://images.unsplash.com/photo-1592194863042-23c68d84e10d?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3', 5, '2024-10-10', '14:00:00', '18:00:00', 'Technology', 'Completed', 1);
 
 -- Reviews
 INSERT INTO reviews (text, user_id, event_id, rating) VALUES 
 ('Amazing event!', 1, 1, 4),
-('Great experience.', 2, 2, 3),
-('Could have been better.', 3, 3, 2),
 ('Loved it!', 4, 1, 5),
-('Not worth the price.', 5, 3, 1);
+('Great meetup!', 3, 4, 4),
+('Very helpful for networking.', 5, 5, 5);
 
 -- Tags
 INSERT INTO tags (name) VALUES 
@@ -168,14 +169,18 @@ INSERT INTO event_tags (event_id, tag_name) VALUES
 (1, 'Networking'),
 (1, 'Workshop'),
 (2, 'Exhibition'),
-(3, 'Outdoor');
+(3, 'Outdoor'),
+(4, 'Outdoor'),
+(5, 'Networking');
 
 -- Tickets
 INSERT INTO tickets (ticket_name, event_id, capacity, price) VALUES 
 ('VIP Pass', 1, 50, 100),
 ('General Admission', 1, 150, 50),
 ('Standard Ticket', 2, 100, 30),
-('Early Bird', 3, 200, 25);
+('Early Bird', 3, 200, 25),
+('Sports Entry', 4, 200, 20),
+('Networking Premium', 5, 50, 100);
 
 -- Registrations
 INSERT INTO registrations (event_id, user_id, ticket_name, status, amount) VALUES 
@@ -183,7 +188,9 @@ INSERT INTO registrations (event_id, user_id, ticket_name, status, amount) VALUE
 (2, 2, 'Standard Ticket', 'Pending', 30),
 (3, 3, 'Early Bird', 'Confirmed', 25),
 (1, 4, 'General Admission', 'Confirmed', 50),
-(3, 5, 'Early Bird', 'Confirmed', 25);
+(3, 5, 'Early Bird', 'Confirmed', 25),
+(4, 3, 'Sports Entry', 'Confirmed', 20),
+(5, 5, 'Networking Premium', 'Confirmed', 100);
 
 -- Attendance
 INSERT INTO attendance (user_id, event_id) VALUES 
@@ -191,7 +198,10 @@ INSERT INTO attendance (user_id, event_id) VALUES
 (2, 2),
 (3, 3),
 (4, 1),
-(5, 3);
+(5, 3),
+(3, 4),
+(5, 5);
+
 `;
 
       db.query(insert_sample_data_query, (err) => {

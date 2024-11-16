@@ -14,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 import { AuthContext } from "../App";
+import moment from "moment";
 
 function CreateEvent({ edit = false }) {
   const { id } = useParams();
@@ -44,38 +45,56 @@ function CreateEvent({ edit = false }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (!validateDateTime()) return;
-    if (!formData.image_url) {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-      return setImageUploadError("Cover Image must be uploaded!");
-    }
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/events/create_event",
-        { ...formData, organized_by: userId },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await res.data;
-      if (data.success === false) {
-        console.log("Event creation failed!");
-        return;
+    if (!edit) {
+      if (!validateDateTime()) return;
+      if (!formData.image_url) {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+        return setImageUploadError("Cover Image must be uploaded!");
       }
-      navigate(`/event/${data.event_id}`);
-    } catch (error) {
-      console.log(error);
+      try {
+        const res = await axios.post(
+          "http://localhost:5000/events/create_event",
+          { ...formData, organized_by: userId },
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await res.data;
+        if (data.success === false) {
+          console.log("Event creation failed!");
+          return;
+        }
+        navigate(`/event/${data.event_id}`);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        await axios.put(
+          `http://localhost:5000/events/update_event/${id}`,
+          formData,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        navigate(`/event/${id}`);
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
   useEffect(() => {
-    console.log(formData);
+    // console.log(moment(formData.event_date).format("YYYY-MM-DD"));
   }, [formData]);
 
   useEffect(() => {
@@ -258,7 +277,7 @@ function CreateEvent({ edit = false }) {
           <div className="px-4 py-8 sm:px-10">
             <div className="mb-10 text-center">
               <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
-                Create Your Epic Event
+                {edit ? "Edit" : "Create"} Your Epic Event
               </h1>
               <p className="text-xl text-gray-600">
                 Let's make something unforgettable
@@ -343,7 +362,7 @@ function CreateEvent({ edit = false }) {
                   />
                 </div>
 
-                <div>
+                {/* <div>
                   <label
                     htmlFor="organized_by"
                     className="block text-sm font-medium text-gray-700"
@@ -360,7 +379,7 @@ function CreateEvent({ edit = false }) {
                     className="mt-1 block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     placeholder="Who's behind this awesome event?"
                   />
-                </div>
+                </div> */}
 
                 <div>
                   <label
@@ -374,7 +393,7 @@ function CreateEvent({ edit = false }) {
                       type="date"
                       name="event_date"
                       id="event_date"
-                      value={formData.event_date}
+                      value={moment(formData.event_date).format("YYYY-MM-DD")}
                       onChange={handleChange}
                       min={new Date().toISOString().split("T")[0]}
                       required
@@ -531,7 +550,7 @@ function CreateEvent({ edit = false }) {
                   type="submit"
                   className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
                 >
-                  Create Epic Event
+                  {edit ? "Edit" : "Create"} Epic Event
                 </button>
               </div>
             </form>
