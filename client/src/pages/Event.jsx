@@ -185,20 +185,25 @@ const Event = () => {
                 has_registered(ticket.ticket_name) ? (
                   <button
                     onClick={() => {
-                      axios
-                        .delete(
-                          "/tickets/unregister_ticket/" +
-                            id +
-                            "/" +
-                            ticket.ticket_name
-                        )
+                      axios({
+                        method: "delete",
+                        url: "/tickets/unregister_ticket",
+                        data: JSON.stringify({
+                          id,
+                          ticket_name: ticket.ticket_name,
+                        }),
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                      })
                         .then((res) => {
-                          toast.success("You have unregistered");
                           window.location.reload();
+                          toast.success("You have unregistered");
                         })
                         .catch((err) => {
                           toast.error(err.response.data.message);
                         });
+                      // using this format of axios to send data in body in delete request
                     }}
                     className="register-btn"
                   >
@@ -219,9 +224,10 @@ const Event = () => {
                           ticket_name: ticket.ticket_name,
                         })
                         .then((res) => {
-                          if (res.data.success) {
-                            window.location.reload();
-                          }
+                          window.location.reload();
+                          toast.success(
+                            "You have registered, but payment is pending"
+                          );
                         })
                         .catch((err) => {
                           toast.error(err.response.data.message);

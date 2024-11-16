@@ -25,11 +25,7 @@ router.post(
   create_ticket
 );
 router.post("/register_ticket", verifyToken, register_ticket);
-router.delete(
-  "/unregister_ticket/:id/:ticket_id",
-  verifyToken,
-  unregister_ticket
-);
+router.delete("/unregister_ticket", verifyToken, unregister_ticket);
 // router.put("/update_ticket/:id", update_ticket);
 router.delete(
   "/delete_ticket/:id/:ticket_id",

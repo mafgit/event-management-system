@@ -186,7 +186,8 @@ const register_ticket = (req, res) => {
 };
 
 const unregister_ticket = (req, res) => {
-  const { id, ticket_name } = req.params;
+  const { id, ticket_name } = req.body;
+  console.log(id, ticket_name);
 
   const query = `DELETE FROM registrations WHERE event_id = ? and user_id = ? and ticket_name = ?;`;
   db.query(query, [id, req.user.id, ticket_name], (err, result) => {
