@@ -22,9 +22,12 @@ const TicketTypes = () => {
         capacity,
       })
       .then((res) => {
+        window.location.reload();
+        toast.success("Ticket created successfully!");
         console.log(res);
       })
       .catch((err) => {
+        toast.error("Failed to create ticket");
         console.log(err);
       });
   };
@@ -43,7 +46,7 @@ const TicketTypes = () => {
   return (
     <div className="flex justify-center items-center flex-col">
       <form
-        className="flex flex-col gap-3 items-center justify-center mt-10"
+        className="flex flex-col gap-3 items-center justify-center mt-10 bg-gray-200 p-8 rounded-md"
         onSubmit={handleSubmit}
       >
         <h1 className="font-bold text-xl">Create Ticket Type</h1>
@@ -51,7 +54,7 @@ const TicketTypes = () => {
         <div className="flex flex-col gap-2">
           <label className="text-center">Ticket Name:</label>
           <input
-            className="bg-gray-300 px-4 py-2 rounded-full"
+            className="bg-gray-100 px-4 py-2 rounded-full"
             type="text"
             name=""
             id=""
@@ -63,7 +66,7 @@ const TicketTypes = () => {
         <div className="flex flex-col gap-2">
           <label className="text-center">Ticket Price:</label>
           <input
-            className="bg-gray-300 px-4 py-2 rounded-full"
+            className="bg-gray-100 px-4 py-2 rounded-full"
             type="number"
             name=""
             id=""
@@ -75,7 +78,7 @@ const TicketTypes = () => {
         <div className="flex flex-col gap-2">
           <label className="text-center">Capacity:</label>
           <input
-            className="bg-gray-300 px-4 py-2 rounded-full"
+            className="bg-gray-100 px-4 py-2 rounded-full"
             type="number"
             name=""
             id=""
@@ -92,61 +95,74 @@ const TicketTypes = () => {
         </button>
       </form>
 
-      <h1 className="font-bold text-xl mt-10">Ticket Types</h1>
-      <table>
-        <tr>
-          <th className="p-5">Name</th>
-          <th className="p-5">Price</th>
-          <th className="p-5">Capacity</th>
-          <th className="p-5">Action</th>
-        </tr>
-
-        {tickets.map((ticket) => {
-          return (
+      <div className="bg-gray-200 rounded-md p-8 flex flex-col items-center justify-center my-10">
+        <h1 className="font-bold text-xl mb-5">Ticket Types</h1>
+        <table className="text-center">
+          <thead>
             <tr>
-              <td className="p-5">{ticket.ticket_name}</td>
-              <td className="p-5">{ticket.price}</td>
-              <td className="p-5">{ticket.capacity}</td>
-              <td
-                className="p-5"
-                onClick={() => {
-                  axios
-                    .delete(
-                      "/tickets/delete_ticket/" + id + "/" + ticket.ticket_id
-                    )
-                    .then((res) => {
-                      window.location.reload();
-                    })
-                    .catch((err) => {
-                      console.log(err);
-                    });
-                }}
-              >
-                <button
-                  onClick={() => {
-                    axios
-                      .delete(
-                        "/tickets/delete_ticket_type/" +
-                          id +
-                          "/" +
-                          ticket.ticket_id
-                      )
-                      .then((res) => {
-                        window.location.reload();
-                      })
-                      .catch((err) => {
-                        console.log(err);
-                        toast.error("Couldn't delete this ticket type");
-                      });
-                  }}
-                >
-                  Delete
-                </button>
-              </td>
+              <th className="px-5 text-left">Name</th>
+              <th className="px-5 text-left">Price</th>
+              <th className="px-5 text-left">Capacity</th>
+              <th className="px-5 text-left">Action</th>
             </tr>
-          );
-        })}
-      </table>
+          </thead>
+
+          <tbody>
+            {tickets.map((ticket) => {
+              return (
+                <tr key={ticket.ticket_id}>
+                  <td className="p-5">
+                    <p className=" bg-purple-500 text-white p-1 w-max rounded-full px-3 text-center">
+                      {ticket.ticket_name}
+                    </p>
+                  </td>
+                  <td className="p-5">{ticket.price}</td>
+                  <td className="p-5">{ticket.capacity}</td>
+                  <td className="p-5">
+                    <button
+                      className="btn bg-red-600 px-3 py-[3px] rounded-full text-white"
+                      onClick={() => {
+                        // axios
+                        //   .delete(
+                        //     "/tickets/delete_ticket_type/" +
+                        //       id +
+                        //       "/" +
+                        //       ticket.ticket_id
+                        //   )
+                        //   .then((res) => {
+                        //     window.location.reload();
+                        //     toast.success("Ticket deleted successfully!");
+                        //   })
+                        //   .catch((err) => {
+                        //     console.log(err);
+                        //     toast.error("Couldn't delete this ticket type");
+                        //   });
+                        axios
+                          .delete(
+                            "/tickets/delete_ticket/" +
+                              id +
+                              "/" +
+                              ticket.ticket_id
+                          )
+                          .then((res) => {
+                            window.location.reload();
+                            toast.success("Ticket deleted successfully!");
+                          })
+                          .catch((err) => {
+                            //     console.log(err);
+                            //     toast.error("Couldn't delete this ticket type");
+                          });
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
       <ToastContainer />
     </div>
   );

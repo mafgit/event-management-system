@@ -1,9 +1,6 @@
 const db = require("../db");
 const moment = require("moment");
 
-// todo: in create and update event, update tags
-// todo: check update event
-
 const create_event = async (req, res) => {
   try {
     const {
@@ -18,6 +15,7 @@ const create_event = async (req, res) => {
       image_url,
       tags,
     } = req.body;
+    console.log(tags);
     const verified = req.body.verified ?? false;
     const status = req.body.verified ?? "Upcoming"; //Canceled, Featured, Completed, Postponed
 
@@ -42,7 +40,20 @@ const create_event = async (req, res) => {
       ],
       (err, results) => {
         if (err) throw err;
-        res.status(201).json({ success: true, event_id: results.insertId });
+
+        // insert tags
+        tags.forEach((tag_name) => {
+          let q2 = `insert ignore into event_tags(event_id, tag_name) values(?, ?);`;
+          db.execute(q2, [results.insertId, tag_name], (err, results) => {
+            if (err) {
+              console.log(err);
+            }
+          });
+        });
+
+        return res
+          .status(201)
+          .json({ success: true, event_id: results.insertId });
       }
     );
   } catch (error) {
@@ -334,6 +345,23 @@ const update_event = async (req, res) => {
           return res
             .status(404)
             .json({ success: false, message: "Event not found" });
+
+        // delete tags of that event
+        let q1 = `delete from event_tags where event_id = ?;`;
+        db.execute(q1, [id], (err, results) => {
+          if (err) throw err;
+
+          // insert tags
+          tags.forEach((tag_name) => {
+            let q2 = `insert ignore into event_tags(event_id, tag_name) values(?, ?);`;
+            db.execute(q2, [id, tag_name], (err, results) => {
+              if (err) {
+                console.log(err);
+              }
+            });
+          });
+        });
+
         return res
           .status(200)
           .json({ success: true, message: "Event updated successfully" });

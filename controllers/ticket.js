@@ -5,6 +5,7 @@ const get_tickets = (req, res) => {
 
   // const query = "SELECT * FROM tickets WHERE event_id = ?";
   const query = `SELECT 
+  t.ticket_id,
   t.ticket_name,
   t.price,
   t.capacity,
@@ -13,11 +14,11 @@ FROM
   tickets t
 LEFT JOIN 
   registrations r 
-  ON t.ticket_name = r.ticket_name AND r.status = 'Confirmed'
+  ON t.ticket_id = r.ticket_id AND r.status = 'Confirmed'
 WHERE 
   t.event_id = ?
 GROUP BY 
-  t.ticket_name;
+  t.ticket_id;
 `;
   db.query(query, [id], (err, result) => {
     if (err) {
@@ -32,19 +33,20 @@ const get_tickets_with_status = (req, res) => {
   const { id } = req.params;
 
   const query = `SELECT 
+  t.ticket_id,
   t.ticket_name,
   t.price,
   t.capacity,
   EXISTS (
     SELECT 1 
     FROM registrations r 
-    WHERE r.ticket_name = t.ticket_name 
+    WHERE r.ticket_id = t.ticket_id 
       AND r.user_id = ?
   ) AS has_registered,
   EXISTS (
     SELECT 1 
     FROM registrations r 
-    WHERE r.ticket_name = t.ticket_name 
+    WHERE r.ticket_id = t.ticket_id 
       AND r.user_id = ?
       AND r.status = 'Confirmed'
   ) AS has_paid
@@ -86,6 +88,7 @@ const create_ticket = (req, res) => {
     "INSERT INTO tickets (event_id, ticket_name, price, capacity) VALUES (?, ?, ?, ?)";
   db.query(query, [id, ticket_name, price, capacity], (err, result) => {
     if (err) {
+      console.log(err);
       return res.status(500).json({ message: "Error creating ticket" });
     }
     res.status(201).json({ message: "Ticket created successfully!" });
@@ -127,7 +130,7 @@ const delete_ticket = (req, res) => {
 };
 
 const register_ticket = (req, res) => {
-  const { id, ticket_name } = req.body;
+  const { id, ticket_name, ticket_id } = req.body;
 
   // if capacity - tickets_bought = 0, reject
 
@@ -163,10 +166,10 @@ const register_ticket = (req, res) => {
         }
 
         const query4 =
-          "INSERT INTO registrations (event_id, user_id, ticket_name, status, amount) VALUES (?, ?, ?, ?, ?)";
+          "INSERT INTO registrations (event_id, user_id, ticket_id, status, amount) VALUES (?, ?, ?, ?, ?)";
         db.query(
           query4,
-          [id, req.user.id, ticket_name, "Pending", result3[0].price],
+          [id, req.user.id, ticket_id, "Pending", result3[0].price],
           (err4, result4) => {
             if (err4) {
               console.log(err4);
@@ -186,11 +189,11 @@ const register_ticket = (req, res) => {
 };
 
 const unregister_ticket = (req, res) => {
-  const { id, ticket_name } = req.body;
+  const { id, ticket_name, ticket_id } = req.body;
   console.log(id, ticket_name);
 
-  const query = `DELETE FROM registrations WHERE event_id = ? and user_id = ? and ticket_name = ?;`;
-  db.query(query, [id, req.user.id, ticket_name], (err, result) => {
+  const query = `DELETE FROM registrations WHERE event_id = ? and user_id = ? and ticket_id = ?;`;
+  db.query(query, [id, req.user.id, ticket_id], (err, result) => {
     if (err) {
       return res.status(500).json({ message: "Error unregistering ticket" });
     }

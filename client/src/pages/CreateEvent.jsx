@@ -67,12 +67,13 @@ function CreateEvent({ edit = false }) {
         );
         const data = await res.data;
         if (data.success === false) {
-          console.log("Event creation failed!");
+          // console.log("Event creation failed!");
           return;
         }
         navigate(`/event/${data.event_id}`);
+        window.location.reload();
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     } else {
       try {
@@ -87,15 +88,12 @@ function CreateEvent({ edit = false }) {
           }
         );
         navigate(`/event/${id}`);
+        window.location.reload();
       } catch (error) {
         console.log(error);
       }
     }
   }
-
-  useEffect(() => {
-    // console.log(moment(formData.event_date).format("YYYY-MM-DD"));
-  }, [formData]);
 
   useEffect(() => {
     axios.get("/events/get_categories").then((res) => {
@@ -109,11 +107,11 @@ function CreateEvent({ edit = false }) {
     if (edit) {
       axios.get("/events/get_event/" + id).then((res) => {
         setFormData(res.data.event);
-        console.log(res.data.event);
+        // console.log(res.data.event);
       });
 
       axios.get("/events/get_event_tags/" + id).then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setFormData((p) => ({ ...p, tags: res.data }));
       });
     }
@@ -160,14 +158,14 @@ function CreateEvent({ edit = false }) {
       }
     }
 
-    if (start_time && end_time) {
-      const endDateTime = new Date(`${event_date}T${end_time}`);
-      if (endDateTime <= new Date(`${event_date}T${start_time}`)) {
-        setEndTimeError("End time must be after start time");
-      } else {
-        setEndTimeError("");
-      }
-    }
+    // if (start_time && end_time) {
+    //   const endDateTime = new Date(`${event_date}T${end_time}`);
+    //   if (endDateTime <= new Date(`${event_date}T${start_time}`)) {
+    //     setEndTimeError("End time must be after start time");
+    //   } else {
+    //     setEndTimeError("");
+    //   }
+    // }
   };
 
   const validateDateTime = () => {
@@ -187,7 +185,7 @@ function CreateEvent({ edit = false }) {
             return { ...prev, image_url: downloadURL };
           });
           setIsUploading(false);
-          console.log("File available at", downloadURL);
+          // console.log("File available at", downloadURL);
         })
         .catch((error) => {
           setIsUploading(false);
@@ -208,7 +206,7 @@ function CreateEvent({ edit = false }) {
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(progress);
+          // console.log(progress);
         },
         (error) => {
           reject(error);
@@ -485,7 +483,9 @@ function CreateEvent({ edit = false }) {
                       <option value="">Select a category</option>
                       {categories.length &&
                         categories.map(({ name }) => (
-                          <option value={name}>{name}</option>
+                          <option key={name} value={name}>
+                            {name}
+                          </option>
                         ))}
                     </select>
                     <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -513,7 +513,6 @@ function CreateEvent({ edit = false }) {
                         const selected = document.querySelectorAll(
                           "#select-tags option:checked"
                         );
-                        // todo: tags not highlighting on edit
 
                         const values = Array.from(selected).map(
                           (el) => el.value
@@ -528,8 +527,17 @@ function CreateEvent({ edit = false }) {
                       {tags.length &&
                         tags.map(({ name }) => (
                           <option
-                            selected={formData.tags.includes(name)}
+                            selected={formData.tags
+                              .map((t) => t.tag_name)
+                              .includes(name)}
                             value={name}
+                            key={name}
+                            defaultChecked={formData.tags
+                              .map((t) => t.tag_name)
+                              .includes(name)}
+                            defaultValue={formData.tags
+                              .map((t) => t.tag_name)
+                              .includes(name)}
                           >
                             {name}
                           </option>
@@ -552,6 +560,17 @@ function CreateEvent({ edit = false }) {
                 >
                   {edit ? "Edit" : "Create"} Epic Event
                 </button>
+                {
+                  <button
+                    onClick={() => {
+                      // todo: cancel event
+                    }}
+                    type="submit"
+                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 mt-3 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+                  >
+                    {edit ? "Edit" : "Create"} Cancel Event
+                  </button>
+                }
               </div>
             </form>
           </div>

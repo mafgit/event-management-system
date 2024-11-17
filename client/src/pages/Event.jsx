@@ -191,6 +191,7 @@ const Event = () => {
                         data: JSON.stringify({
                           id,
                           ticket_name: ticket.ticket_name,
+                          ticket_id: ticket.ticket_id,
                         }),
                         headers: {
                           "Content-Type": "application/json",
@@ -210,7 +211,7 @@ const Event = () => {
                     Pending - {ticket.ticket_name}
                   </button>
                 ) : has_paid_this(ticket.ticket_name) ? (
-                  <button className="register-btn">
+                  <button className="paid-btn">
                     Paid - {ticket.ticket_name}
                   </button>
                 ) : (
@@ -222,6 +223,7 @@ const Event = () => {
                         .post("/tickets/register_ticket", {
                           id,
                           ticket_name: ticket.ticket_name,
+                          ticket_id: ticket.ticket_id,
                         })
                         .then((res) => {
                           window.location.reload();
@@ -237,7 +239,14 @@ const Event = () => {
                     Register - {ticket.ticket_name}
                   </button>
                 )}
-                <div className="flex bg-white rounded-bl-md rounded-br-md p-[5px]">
+                <div
+                  className={
+                    "flex bg-white rounded-bl-md rounded-br-md p-[5px]" +
+                    (has_paid_this(ticket.ticket_name)
+                      ? " register-btn-down-paid"
+                      : "")
+                  }
+                >
                   <h1 className="flex text-center basis-0 gap-1 grow-[1] w-full items-center justify-center">
                     <b>{ticket.tickets_left} </b> LEFT
                   </h1>
