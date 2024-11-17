@@ -45,9 +45,10 @@ const OrganizedBy = () => {
 
   return (
     <div className="searchPage">
-      {" "}
-      {}
       <div className="contentWrapper">
+        <h1 className="text-xl font-bold text-center my-5">
+          Events Organized By You
+        </h1>
         {/* <div className="searchContainer">
           <input
             type="text"
@@ -65,7 +66,7 @@ const OrganizedBy = () => {
           </div>
         </div> */}
 
-        <div className="eventsGrid">
+        <div className="eventsGrid max-w-[1200px] m-auto">
           {eventList.length > 0 ? (
             eventList.map((event) => (
               <EventCard

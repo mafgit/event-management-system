@@ -92,8 +92,8 @@ const EventAnalytics = () => {
         </div>
       </div>
 
-      <div className="flex flex-col text-center items-center justify-center w-full mt-5">
-        <h1 className="text-xl font-bold">Users that have bought a ticket</h1>
+      <div className="flex flex-col text-center items-center justify-center w-full mt-5 bg-gray-200 p-5 rounded-md">
+        <h1 className="text-xl font-bold">Users who have bought a ticket</h1>
         <div className="w-[500px] flex gap-2 justify-center items-center h-[35px] mt-5">
           <input
             className="w-full bg-gray-300 h-full rounded-full px-4"

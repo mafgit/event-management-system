@@ -45,8 +45,6 @@ const OrganizedBy = () => {
 
   return (
     <div className="searchPage">
-      {" "}
-      {}
       <div className="contentWrapper">
         {/* <div className="searchContainer">
           <input
@@ -65,7 +63,11 @@ const OrganizedBy = () => {
           </div>
         </div> */}
 
-        <div className="eventsGrid">
+        <h1 className="text-xl font-bold text-center my-5">
+          Events Organized By You
+        </h1>
+
+        <div className="eventsGrid max-w-[1200px] m-auto">
           {eventList.length > 0 ? (
             eventList.map((event) => (
               <EventCard
@@ -78,6 +80,8 @@ const OrganizedBy = () => {
                 duration={event.duration}
                 venue={event.venue}
                 image_url={event.image_url}
+                event_date={event.event_date}
+                status={event.status}
               />
             ))
           ) : (

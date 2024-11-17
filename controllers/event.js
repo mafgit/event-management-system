@@ -63,7 +63,7 @@ const create_event = async (req, res) => {
 
 const get_events = async (req, res) => {
   try {
-    const q = "SELECT * FROM events;";
+    const q = "SELECT * FROM events where status <> 'Cancelled';";
     db.query(q, (err, results) => {
       if (err) throw err;
       res.status(200).json({ success: true, events: results });
@@ -393,6 +393,35 @@ const delete_event = async (req, res) => {
   }
 };
 
+const cancel_event = (req, res) => {
+  const { id } = req.params;
+
+  // cancel only if no registration is confirmed
+  const q1 =
+    "SELECT * FROM registrations WHERE event_id = ? AND status = 'Confirmed';";
+  db.execute(q1, [id], (err, results) => {
+    if (err) throw err;
+    if (results.length > 0)
+      return res.status(400).json({
+        success: false,
+        message:
+          "Users have already paid for this event. Approach admin for cancellation of this event.",
+      });
+
+    const q = "UPDATE events SET status = 'Cancelled' WHERE event_id = ?;";
+    db.execute(q, [id], (err, results) => {
+      if (err) throw err;
+      if (results.affectedRows === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "Event not found" });
+      res
+        .status(200)
+        .json({ success: true, message: "Event cancelled successfully" });
+    });
+  });
+};
+
 module.exports = {
   create_event,
   get_events,
@@ -410,4 +439,5 @@ module.exports = {
   get_tags,
   get_event_tags,
   get_can_review,
+  cancel_event,
 };

@@ -14,6 +14,7 @@ const {
   get_categories,
   get_tags,
   get_event_tags,
+  cancel_event,
   get_can_review,
 } = require("../controllers/event.js");
 const {
@@ -64,6 +65,13 @@ router.delete(
   verifyToken,
   verifyAdminOrOrganizer,
   delete_event
+);
+
+router.get(
+  "/cancel_event/:id",
+  verifyToken,
+  verifyAdminOrOrganizer,
+  cancel_event
 );
 
 module.exports = router;

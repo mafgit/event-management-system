@@ -15,6 +15,7 @@ import axios from "axios";
 
 import { AuthContext } from "../App";
 import moment from "moment";
+import { toast, ToastContainer } from "react-toastify";
 
 function CreateEvent({ edit = false }) {
   const { id } = useParams();
@@ -47,13 +48,13 @@ function CreateEvent({ edit = false }) {
 
     if (!edit) {
       if (!validateDateTime()) return;
-      if (!formData.image_url) {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-        return setImageUploadError("Cover Image must be uploaded!");
-      }
+      // if (!formData.image_url) {
+      //   window.scrollTo({
+      //     top: 0,
+      //     behavior: "smooth",
+      //   });
+      //   return setImageUploadError("Cover Image must be uploaded!");
+      // }
       try {
         const res = await axios.post(
           "http://localhost:5000/events/create_event",
@@ -222,6 +223,7 @@ function CreateEvent({ edit = false }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100">
+      <ToastContainer />
       <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="bg-white bg-opacity-80 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden">
           <div className="relative h-48 sm:h-64 md:h-80 overflow-hidden">
@@ -267,7 +269,6 @@ function CreateEvent({ edit = false }) {
               type="file"
               accept="image/*"
               className="hidden"
-              required
               onChange={(e) => handleImageUpload(e)}
             />
           </div>
@@ -535,9 +536,6 @@ function CreateEvent({ edit = false }) {
                             defaultChecked={formData.tags
                               .map((t) => t.tag_name)
                               .includes(name)}
-                            defaultValue={formData.tags
-                              .map((t) => t.tag_name)
-                              .includes(name)}
                           >
                             {name}
                           </option>
@@ -564,8 +562,20 @@ function CreateEvent({ edit = false }) {
                   <button
                     onClick={() => {
                       // todo: cancel event
+                      axios
+                        .get("/events/cancel_event/" + id)
+                        .then((res) => {
+                          if (res.status === 200) {
+                            navigate("/search");
+                            toast.success("Event cancelled successfully");
+                          } else {
+                            toast.error(res.data.message);
+                          }
+                        })
+                        .catch((err) => {
+                          toast.error(err.response.data.message);
+                        });
                     }}
-                    type="submit"
                     className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 mt-3 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
                   >
                     {edit ? "Edit" : "Create"} Cancel Event

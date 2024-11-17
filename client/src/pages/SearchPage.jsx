@@ -156,6 +156,8 @@ export default function Component() {
                 duration={event.duration}
                 venue={event.venue}
                 image_url={event.image_url}
+                event_date={event.event_date}
+                status={event.status}
               />
             ))}
           </div>
