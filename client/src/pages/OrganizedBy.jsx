@@ -4,7 +4,7 @@ import "../styles/SearchPage.css";
 import EventCard from "../components/EventCard";
 import axios from "axios";
 
-const OrganizedBy = () => {
+const OrganizedBy = ({ attended = false }) => {
   const { id } = useParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("");
@@ -12,7 +12,10 @@ const OrganizedBy = () => {
   const [eventList, setEventList] = useState([]);
 
   useEffect(() => {
-    axios.get("/events/get_organized_by/" + id).then((res) => {
+    let req = "";
+    if (attended) req = "/events/get_attended_by_me";
+    else req = "/events/get_organized_by/" + id;
+    axios.get(req).then((res) => {
       setEventList(res.data.events);
     });
     // const events = eventList.filter(

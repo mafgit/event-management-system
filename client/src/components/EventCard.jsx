@@ -1,5 +1,10 @@
 import moment from "moment";
-import { FaBuilding, FaLayerGroup, FaPeopleGroup } from "react-icons/fa6";
+import {
+  FaBuilding,
+  FaCalendar,
+  FaLayerGroup,
+  FaPeopleGroup,
+} from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 const EventCard = ({
@@ -22,17 +27,14 @@ const EventCard = ({
           className="w-full h-full object-cover rounded-t-xl absolute left-0 top-0 z-10 group-hover:scale-110 transition ease-linear duration-150"
         />
         {status === "Scheduled" ? (
-          <div className="z-50 absolute right-2 top-2 rounded-full px-2 py-1 bg-green-600 text-white text-[12px]">
+          <div className="flex gap-[6px] items-center justify-center event-card-top-right bg-green-600">
+            <FaCalendar />
             {moment(event_date).format("MMM DD")}
           </div>
         ) : status === "Completed" ? (
-          <div className="z-50 absolute right-2 top-2 rounded-full px-2 py-1 bg-red-600 text-white text-[12px]">
-            Completed
-          </div>
+          <div className="event-card-top-right bg-red-600">Completed</div>
         ) : (
-          <div className="z-50 absolute right-2 top-2 rounded-full px-2 py-1 bg-red-600 text-white text-[12px]">
-            Cancelled
-          </div>
+          <div className="event-card-top-right bg-black">Cancelled</div>
         )}
         {/* <div className="rounded-t-xl absolute left-0 top-0 w-full h-full opacity-50 bg-black z-20 "></div> */}
       </div>
