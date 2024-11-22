@@ -8,11 +8,16 @@ export default function Component() {
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedType, setSelectedType] = useState("All");
 
   useEffect(() => {
-    axios.get("/events/get_events").then((res) => {
-      setEventList(res.data.events);
-    });
+    axios
+      .get("/events/get_events?q=&tags=all&category=all&type=all")
+      .then((res) => {
+        setEventList(res.data.events);
+      });
 
     // get categories
     axios.get("/events/get_categories").then((res) => {
@@ -39,21 +44,49 @@ export default function Component() {
                 placeholder="Search events"
               />
               <button
-                onClick={() => {}}
+                onClick={() => {
+                  // console.log(
+                  //   `/events/search?q=${search.trim()}&tags=${
+                  //     selectedTags.length >= 1 ? selectedTags.join(",") : "all"
+                  //   }&category=${
+                  //     selectedCategory === "All" ? "all" : selectedCategory
+                  //   }&type=${selectedType === "All" ? "all" : selectedType}`
+                  // );
+
+                  axios
+                    .get(
+                      `/events/get_events?q=${search.trim()}&tags=${
+                        selectedTags.length >= 1
+                          ? selectedTags.join(",")
+                          : "all"
+                      }&category=${
+                        selectedCategory === "All" ? "all" : selectedCategory
+                      }&type=${selectedType === "All" ? "all" : selectedType}`
+                    )
+                    .then((res) => {
+                      setEventList(res.data.events);
+                    });
+                }}
                 className="btn text-white bg-blue-500 p-2 rounded-full ml-2"
               >
                 <FaMagnifyingGlass />
               </button>
 
               {/* status of event */}
-              <select className="ml-5 p-2 rounded-full">
+              <select
+                className="ml-5 p-2 rounded-full"
+                onChange={(e) => setSelectedType(e.target.value)}
+              >
                 <option value="All">All Events</option>
                 <option value="Scheduled">Scheduled</option>
                 <option value="Completed">Completed</option>
               </select>
 
               {/* category */}
-              <select className="ml-5 p-2 rounded-full">
+              <select
+                className="ml-5 p-2 rounded-full"
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
                 <option value="All">All Categories</option>
                 {categories.map((category) => (
                   <option value={category}>{category}</option>
@@ -63,28 +96,50 @@ export default function Component() {
             {/* tags */}
             <div className="flex gap-1 m-auto">
               {tags.map((tag) => (
-                <div className="btn rounded-full bg-white py-1 px-2">{tag}</div>
+                <div
+                  className={
+                    "btn rounded-full py-1 px-2" +
+                    (selectedTags.includes(tag)
+                      ? " bg-blue-500 text-white"
+                      : " bg-white text-black")
+                  }
+                  onClick={() => {
+                    if (selectedTags.includes(tag)) {
+                      setSelectedTags(selectedTags.filter((i) => i !== tag));
+                    } else {
+                      setSelectedTags([...selectedTags, tag]);
+                    }
+                  }}
+                >
+                  {tag}
+                </div>
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {eventList.map((event) => (
-              <EventCard
-                key={event.event_id}
-                id={event.event_id}
-                name={event.name}
-                // title={event.title}
-                // attendees={event.attendees}
-                capacity={event.capacity}
-                category={event.category}
-                duration={event.duration}
-                venue={event.venue}
-                image_url={event.image_url}
-                event_date={event.event_date}
-                status={event.status}
-              />
-            ))}
-          </div>
+          {eventList.length ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {eventList.map((event) => (
+                <EventCard
+                  key={event.event_id}
+                  id={event.event_id}
+                  name={event.name}
+                  // title={event.title}
+                  // attendees={event.attendees}
+                  capacity={event.capacity}
+                  category={event.category}
+                  duration={event.duration}
+                  venue={event.venue}
+                  image_url={event.image_url}
+                  event_date={event.event_date}
+                  status={event.status}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="m-auto text-center w-full">
+              No events found organized by you.
+            </p>
+          )}
         </div>
       </div>
     </div>

@@ -7,13 +7,15 @@ import moment from "moment";
 const EventAnalytics = () => {
   const { id } = useParams();
   const [data, setData] = useState({ results: [] });
+  const [filteredData, setFilteredData] = useState({ results: [] });
   const [revenue, setRevenue] = useState(0);
   useEffect(() => {
     axios
       .get("/events/get_analytics/" + id)
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setData(res.data);
+        setFilteredData(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -42,6 +44,7 @@ const EventAnalytics = () => {
         });
 
         setData({ ...data, results: arr });
+        setFilteredData({ ...data, results: arr });
       })
       .catch((err) => {
         console.log(err);
@@ -61,6 +64,7 @@ const EventAnalytics = () => {
         });
 
         setData({ ...data, results: arr });
+        setFilteredData({ ...data, results: arr });
       })
       .catch((err) => {
         console.log(err);
@@ -101,61 +105,75 @@ const EventAnalytics = () => {
             name=""
             id=""
             placeholder="Search by id or email"
+            onChange={(e) => {
+              let arr = data.results.filter((user) => {
+                return (
+                  user.user_id == parseInt(e.target.value) ||
+                  user.email.includes(e.target.value)
+                );
+              });
+              // setData({ ...data, results: arr });
+              setFilteredData({ ...data, results: arr });
+            }}
           />
-          <button className="bg-blue-600 text-white min-w-[35px] h-full rounded-full flex items-center justify-center">
+          {/* <button className="bg-blue-600 text-white min-w-[35px] h-full rounded-full flex items-center justify-center">
             <FaMagnifyingGlass />
-          </button>
+          </button> */}
         </div>
         <div className="mt-5">
           <table>
-            <tr>
-              <th className="p-3">User ID</th>
-              <th className="p-3">User Email</th>
-              <th className="p-3">User Name</th>
-              <th className="p-3">Ticket Type</th>
-              <th className="p-3">Mark Attendance</th>
-              <th className="p-3">Attended at</th>
-            </tr>
-            {data.results.map((user) => (
+            <thead>
               <tr>
-                <td className="p-3">{user.user_id}</td>
-                <td className="p-3">{user.email}</td>
-                <td className="p-3">
-                  {" "}
-                  {user.first_name} {user.last_name}
-                </td>
-                <td>
-                  <p className="p-3 px-3 py-[3px] bg-purple-500 rounded-full text-white">
-                    {user.ticket_name}
-                  </p>
-                </td>
-                <td className="p-3">
-                  {user.attendance_created_at ? (
-                    <button
-                      onClick={() => markAbsent(user.user_id)}
-                      className="btn bg-red-600 px-3 py-[3px] rounded-full text-white"
-                    >
-                      Mark absent
-                    </button>
-                  ) : (
-                    <button
-                      className="btn bg-green-600 px-3 py-[3px] rounded-full text-white"
-                      onClick={() => markPresent(user.user_id)}
-                    >
-                      Mark present
-                    </button>
-                  )}
-                </td>
-                <td className="p-3">
-                  {["", "now", null].includes(user.attendance_created_at) ==
-                  false
-                    ? moment(user.attendance_created_at).format(
-                        "DD MMM, YYYY HH:MM"
-                      )
-                    : user.attendance_created_at}
-                </td>
+                <th className="p-3">User ID</th>
+                <th className="p-3">User Email</th>
+                <th className="p-3">User Name</th>
+                <th className="p-3">Ticket Type</th>
+                <th className="p-3">Mark Attendance</th>
+                <th className="p-3">Attended at</th>
               </tr>
-            ))}
+            </thead>
+            <tbody>
+              {filteredData.results.map((user) => (
+                <tr key={user.user_id}>
+                  <td className="p-3">{user.user_id}</td>
+                  <td className="p-3">{user.email}</td>
+                  <td className="p-3">
+                    {" "}
+                    {user.first_name} {user.last_name}
+                  </td>
+                  <td>
+                    <p className="p-3 px-3 py-[3px] bg-purple-500 rounded-full text-white">
+                      {user.ticket_name}
+                    </p>
+                  </td>
+                  <td className="p-3">
+                    {user.attendance_created_at ? (
+                      <button
+                        onClick={() => markAbsent(user.user_id)}
+                        className="btn bg-red-600 px-3 py-[3px] rounded-full text-white"
+                      >
+                        Mark absent
+                      </button>
+                    ) : (
+                      <button
+                        className="btn bg-green-600 px-3 py-[3px] rounded-full text-white"
+                        onClick={() => markPresent(user.user_id)}
+                      >
+                        Mark present
+                      </button>
+                    )}
+                  </td>
+                  <td className="p-3">
+                    {["", "now", null].includes(user.attendance_created_at) ==
+                    false
+                      ? moment(user.attendance_created_at).format(
+                          "DD MMM, YYYY HH:MM"
+                        )
+                      : user.attendance_created_at}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       </div>

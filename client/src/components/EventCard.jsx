@@ -8,21 +8,23 @@ import {
 import { Link } from "react-router-dom";
 
 const EventCard = ({
-  image_url = "/form-bg-1.jpg",
-  name = "-",
-  capacity = 0,
-  venue = "-",
-  edit = false,
-  id = -1,
-  category = "-",
-  event_date = "-",
-  status = "-",
+  image_url,
+  name,
+  capacity,
+  venue,
+  edit,
+  id,
+  category,
+  event_date,
+  status,
 }) => {
+  console.log(name, image_url);
+
   return (
     <div className="border-slate-200 border rounded-xl flex flex-col justify-between min-h-[125px] group overflow-hidden max-w-[400px]">
       <div className="relative h-[125px] w-full overflow-hidden">
         <img
-          src={image_url}
+          src={image_url || "/form-bg-1.jpg"}
           alt="event-pic"
           className="w-full h-full object-cover rounded-t-xl absolute left-0 top-0 z-10 group-hover:scale-110 transition ease-linear duration-150"
         />

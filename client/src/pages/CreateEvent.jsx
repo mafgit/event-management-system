@@ -20,7 +20,7 @@ import { toast, ToastContainer } from "react-toastify";
 function CreateEvent({ edit = false }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { userId } = useContext(AuthContext);
+  const { userId, admin } = useContext(AuthContext);
   const imageRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
   const [imageUploadError, setImageUploadError] = useState(false);
@@ -29,6 +29,7 @@ function CreateEvent({ edit = false }) {
   const [endTimeError, setEndTimeError] = useState(false);
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -39,7 +40,7 @@ function CreateEvent({ edit = false }) {
     start_time: "",
     end_time: "",
     category: "",
-    image_url: null,
+    image_url: "",
     tags: [],
   });
 
@@ -58,7 +59,9 @@ function CreateEvent({ edit = false }) {
       try {
         const res = await axios.post(
           "http://localhost:5000/events/create_event",
-          { ...formData, organized_by: userId },
+          {
+            formData: { ...formData, organized_by: userId, tags: selectedTags },
+          },
           {
             withCredentials: true,
             headers: {
@@ -80,7 +83,7 @@ function CreateEvent({ edit = false }) {
       try {
         await axios.put(
           `http://localhost:5000/events/update_event/${id}`,
-          formData,
+          { formData: { ...formData, tags: selectedTags } },
           {
             withCredentials: true,
             headers: {
@@ -91,6 +94,7 @@ function CreateEvent({ edit = false }) {
         navigate(`/event/${id}`);
         window.location.reload();
       } catch (error) {
+        toast.error("Failed to update event");
         console.log(error);
       }
     }
@@ -103,17 +107,24 @@ function CreateEvent({ edit = false }) {
 
     axios.get("/events/get_tags").then((res) => {
       setTags(res.data);
+      // console.log("107: ", res.data);
+      // [{name: ""}]
     });
 
     if (edit) {
       axios.get("/events/get_event/" + id).then((res) => {
+        if (res.data.event.organized_by != userId && !admin) {
+          return navigate("/");
+        }
+
         setFormData(res.data.event);
         // console.log(res.data.event);
-      });
 
-      axios.get("/events/get_event_tags/" + id).then((res) => {
-        // console.log(res.data);
-        setFormData((p) => ({ ...p, tags: res.data }));
+        axios.get("/events/get_event_tags/" + id).then((res) => {
+          // console.log(res.data);
+          setFormData((p) => ({ ...p, tags: res.data.map((i) => i.tag_name) }));
+          setSelectedTags(res.data.map((i) => i.tag_name));
+        });
       });
     }
   }, []);
@@ -499,13 +510,46 @@ function CreateEvent({ edit = false }) {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="tags"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Tags (hold CTRL while selecting multiple)
-                  </label>
-                  <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="flex gap-1 m-auto flex-col bg-gray-200 p-3 rounded-md">
+                    <label
+                      htmlFor="tags"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Tags (At most 4)
+                    </label>
+                    <div className="mt-2 flex gap-3 flex-wrap">
+                      {tags.map((tag) => (
+                        <div
+                          className={
+                            "btn rounded-full py-1 px-2" +
+                            (selectedTags.includes(tag.name)
+                              ? " bg-blue-500 text-white"
+                              : " bg-white text-black")
+                          }
+                          onClick={() => {
+                            if (selectedTags.includes(tag.name)) {
+                              setSelectedTags(
+                                selectedTags.filter((i) => i !== tag.name)
+                              );
+                            } else {
+                              if (selectedTags.length < 4) {
+                                setSelectedTags([...selectedTags, tag.name]);
+                              }
+                            }
+
+                            setFormData((prev) => ({
+                              ...prev,
+                              tags: selectedTags,
+                            }));
+                          }}
+                        >
+                          {tag.name}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  {/*  */}
+                  {/* <div className="mt-1 relative rounded-md shadow-sm">
                     <select
                       id="select-tags"
                       name="tags"
@@ -547,7 +591,7 @@ function CreateEvent({ edit = false }) {
                         aria-hidden="true"
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -558,10 +602,9 @@ function CreateEvent({ edit = false }) {
                 >
                   {edit ? "Edit" : "Create"} Epic Event
                 </button>
-                {
+                {edit && (
                   <button
                     onClick={() => {
-                      // todo: cancel event
                       axios
                         .get("/events/cancel_event/" + id)
                         .then((res) => {
@@ -578,9 +621,9 @@ function CreateEvent({ edit = false }) {
                     }}
                     className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 mt-3 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
                   >
-                    {edit ? "Edit" : "Create"} Cancel Event
+                    Cancel Event
                   </button>
-                }
+                )}
               </div>
             </form>
           </div>

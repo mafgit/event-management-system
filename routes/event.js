@@ -60,12 +60,12 @@ router.put(
   verifyAdminOrOrganizer,
   update_event
 );
-router.delete(
-  "/delete_event/:id",
-  verifyToken,
-  verifyAdminOrOrganizer,
-  delete_event
-);
+// router.delete(
+//   "/delete_event/:id",
+//   verifyToken,
+//   verifyAdminOrOrganizer,
+//   delete_event
+// );
 
 router.get(
   "/cancel_event/:id",

@@ -152,11 +152,11 @@ INSERT INTO events (name, description, capacity, venue, image_url, organized_by,
 ('Tech Conference', 'Annual tech conference', 200, 'Tech Hall', 'https://images.unsplash.com/photo-1511578314322-379afb476865?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTl8fHxlbnwwfHx8fHw%3D', 1, '2024-11-12', '09:00:00', '17:00:00', 'Technology', 'Scheduled', 1),
 ('Art Exhibition', 'Modern art showcase', 150, 'Art Gallery', 'https://images.unsplash.com/photo-1568304603980-85ff55550db2?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXVsYXxlbnwwfHwwfHx8MA%3D%3D', 2, '2024-12-05', '10:00:00', '18:00:00', 'Art', 'Scheduled', 0),
 ('Music Festival', 'Outdoor music event', 300, 'City Park', 'https://images.unsplash.com/photo-1561489396-888724a1543d?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YnVzaW5lc3MlMjBldmVudHxlbnwwfHwwfHx8MA%3D%3D', 3, '2025-01-15', '12:00:00', '22:00:00', 'Music', 'Scheduled', 1),
-('Sports Meetup', 'Community sports event', 250, 'Sports Arena', 'https://images.unsplash.com/photo-1587720286139-377ba2f2e6b7?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3', 4, '2024-09-15', '08:00:00', '14:00:00', 'Sports', 'Completed', 1),
-('Business Networking', 'Professional networking event', 100, 'Conference Hall', 'https://images.unsplash.com/photo-1592194863042-23c68d84e10d?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3', 5, '2024-10-10', '14:00:00', '18:00:00', 'Technology', 'Completed', 1),
-('Gaming Expo', 'Annual gaming event', 500, 'Gaming Arena', 'https://images.unsplash.com/photo-1518105779142-d975f22f1b0f?fm=jpg&q=60&w=3000', 6, '2024-08-20', '10:00:00', '20:00:00', 'Gaming', 'Completed', 1),
+('Sports Meetup', 'Community sports event', 250, 'Sports Arena', NULL, 4, '2024-09-15', '08:00:00', '14:00:00', 'Sports', 'Completed', 1),
+('Business Networking', 'Professional networking event', 100, 'Conference Hall', NULL, 5, '2024-10-10', '14:00:00', '18:00:00', 'Technology', 'Completed', 1),
+('Gaming Expo', 'Annual gaming event', 500, 'Gaming Arena', NULL, 6, '2024-08-20', '10:00:00', '20:00:00', 'Gaming', 'Completed', 1),
 ('Health Workshop', 'Interactive health session', 100, 'Health Center', 'https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?fm=jpg&q=60&w=3000', 7, '2024-09-10', '09:00:00', '12:00:00', 'Health & Wellness', 'Completed', 1),
-('Education Summit', 'Forum on modern education', 300, 'Education Hall', 'https://images.unsplash.com/photo-1526240171110-915830b5a46d?fm=jpg&q=60&w=3000', 8, '2025-03-25', '10:00:00', '17:00:00', 'Education', 'Scheduled', 1);
+('Education Summit', 'Forum on modern education', 300, 'Education Hall', NULL, 8, '2025-03-25', '10:00:00', '17:00:00', 'Education', 'Scheduled', 1);
 
 -- Reviews
 INSERT INTO reviews (text, user_id, event_id, rating) VALUES 

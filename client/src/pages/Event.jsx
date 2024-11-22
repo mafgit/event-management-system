@@ -24,7 +24,7 @@ const Event = () => {
   const [reviews, setReviews] = useState([]);
   const [canReview, setCanReview] = useState(false);
   const { id } = useParams();
-  const { userId } = useContext(AuthContext);
+  const { userId, admin } = useContext(AuthContext);
   const [rating, setRating] = useState(5);
   const [text, setText] = useState("");
   const { auth } = useContext(AuthContext);
@@ -51,10 +51,10 @@ const Event = () => {
     });
   }, [id, auth]);
 
-  useEffect(() => {
-    console.log("tickets: ", tickets);
-    console.log("ticketsWithStatus: ", ticketsWithStatus);
-  }, [tickets, ticketsWithStatus]);
+  // useEffect(() => {
+  //   console.log("tickets: ", tickets);
+  //   console.log("ticketsWithStatus: ", ticketsWithStatus);
+  // }, [tickets, ticketsWithStatus]);
 
   const has_paid_this = (ticket_name) => {
     for (let i = 0; i < ticketsWithStatus.length; i++) {
@@ -93,15 +93,24 @@ const Event = () => {
       <ToastContainer />
       <div className="w-full h-[350px] relative">
         <img
-          src={event.image_url}
+          src={event.image_url || "/form-bg-1.jpg"}
           className="w-full h-full object-cover rounded-md"
           alt="event"
         />
         <div className="absolute left-0 top-0 w-full h-full opacity-50 bg-black z-20 rounded-md"></div>
-        <h1 className="absolute left-6 bottom-5 z-30 text-white text-3xl font-bold">
-          {event.event_id} - {event.name}
-        </h1>
-        {event.organized_by == userId ? (
+        <div className="absolute left-6 bottom-5 z-30 flex">
+          <h1 className="text-white text-3xl font-bold">{event.name} </h1>
+          <span className="text-gray-300 text-lg flex items-end ml-2">
+            #{event.event_id}
+          </span>
+          {!event.verified && (
+            <h1 className="ml-3 bg-red-500 px-2 rounded-md font-bold text-xl text-white flex items-center justify-center">
+              Unverified Event
+            </h1>
+          )}
+        </div>
+
+        {event.organized_by == userId || admin ? (
           <div className="absolute right-6 bottom-5 flex gap-2 z-50">
             <Link
               to={"/event/" + id + "/edit"}
@@ -160,7 +169,10 @@ const Event = () => {
 
           <div className="flex gap-2">
             {event.tags.map((tag) => (
-              <div className="px-3 py-[1px] text-center w-max bg-blue-700 text-white rounded-full">
+              <div
+                key={tag.tag_name}
+                className="px-3 py-[1px] text-center w-max bg-blue-700 text-white rounded-full"
+              >
                 {tag.tag_name}
               </div>
             ))}
@@ -176,88 +188,94 @@ const Event = () => {
             </p>
           </div>
         </div>
-        {event.status == "Scheduled" && (
-          <div className="grow-[1] w-full h-full bg-gray-300 basis-0 p-5 flex flex-col gap-4">
+        {event.status === "Scheduled" && (
+          <div className="grow-[1] w-full h-full bg-gray-300 basis-0 p-5 flex flex-col gap-4 rounded-md">
             {/* tickets etc */}
-            {tickets.map((ticket) => (
-              <div className="flex flex-col">
-                {!has_paid_this(ticket.ticket_name) &&
-                has_registered(ticket.ticket_name) ? (
-                  <button
-                    onClick={() => {
-                      axios({
-                        method: "delete",
-                        url: "/tickets/unregister_ticket",
-                        data: JSON.stringify({
-                          id,
-                          ticket_name: ticket.ticket_name,
-                          ticket_id: ticket.ticket_id,
-                        }),
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                      })
-                        .then((res) => {
-                          window.location.reload();
-                          toast.success("You have unregistered");
+            {tickets.length ? (
+              tickets.map((ticket) => (
+                <div className="flex flex-col" key={ticket.ticket_id}>
+                  {!has_paid_this(ticket.ticket_name) &&
+                  has_registered(ticket.ticket_name) ? (
+                    <button
+                      onClick={() => {
+                        axios({
+                          method: "delete",
+                          url: "/tickets/unregister_ticket",
+                          data: JSON.stringify({
+                            id,
+                            ticket_name: ticket.ticket_name,
+                            ticket_id: ticket.ticket_id,
+                          }),
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
                         })
-                        .catch((err) => {
-                          toast.error(err.response.data.message);
-                        });
-                      // using this format of axios to send data in body in delete request
-                    }}
-                    className="register-btn"
+                          .then((res) => {
+                            window.location.reload();
+                            toast.success("You have unregistered");
+                          })
+                          .catch((err) => {
+                            toast.error(err.response.data.message);
+                          });
+                        // using this format of axios to send data in body in delete request
+                      }}
+                      className="register-btn"
+                    >
+                      Pending - {ticket.ticket_name}
+                    </button>
+                  ) : has_paid_this(ticket.ticket_name) ? (
+                    <button className="paid-btn">
+                      Paid - {ticket.ticket_name}
+                    </button>
+                  ) : (
+                    <button
+                      className="disabled:bg-slate-400 register-btn disabled:cursor-not-allowed"
+                      disabled={has_paid_any()}
+                      onClick={() => {
+                        axios
+                          .post("/tickets/register_ticket", {
+                            id,
+                            ticket_name: ticket.ticket_name,
+                            ticket_id: ticket.ticket_id,
+                          })
+                          .then((res) => {
+                            window.location.reload();
+                            toast.success(
+                              "You have registered, but payment is pending"
+                            );
+                          })
+                          .catch((err) => {
+                            toast.error(err.response.data.message);
+                          });
+                      }}
+                    >
+                      Register - {ticket.ticket_name}
+                    </button>
+                  )}
+                  <div
+                    className={
+                      "flex bg-white rounded-bl-md rounded-br-md p-[5px]" +
+                      (has_paid_this(ticket.ticket_name)
+                        ? " register-btn-down-paid"
+                        : "")
+                    }
                   >
-                    Pending - {ticket.ticket_name}
-                  </button>
-                ) : has_paid_this(ticket.ticket_name) ? (
-                  <button className="paid-btn">
-                    Paid - {ticket.ticket_name}
-                  </button>
-                ) : (
-                  <button
-                    className="disabled:bg-slate-400 register-btn disabled:cursor-not-allowed"
-                    disabled={has_paid_any()}
-                    onClick={() => {
-                      axios
-                        .post("/tickets/register_ticket", {
-                          id,
-                          ticket_name: ticket.ticket_name,
-                          ticket_id: ticket.ticket_id,
-                        })
-                        .then((res) => {
-                          window.location.reload();
-                          toast.success(
-                            "You have registered, but payment is pending"
-                          );
-                        })
-                        .catch((err) => {
-                          toast.error(err.response.data.message);
-                        });
-                    }}
-                  >
-                    Register - {ticket.ticket_name}
-                  </button>
-                )}
-                <div
-                  className={
-                    "flex bg-white rounded-bl-md rounded-br-md p-[5px]" +
-                    (has_paid_this(ticket.ticket_name)
-                      ? " register-btn-down-paid"
-                      : "")
-                  }
-                >
-                  <h1 className="flex text-center basis-0 gap-1 grow-[1] w-full items-center justify-center">
-                    <b>{ticket.tickets_left} </b> LEFT
-                  </h1>
-                  <div className="flex basis-0 grow-[1] w-full items-center justify-center">
-                    <h1 className="text-gradient text-xl font-bold">
-                      PKR {ticket.price}
+                    <h1 className="flex text-center basis-0 gap-1 grow-[1] w-full items-center justify-center">
+                      <b>{ticket.tickets_left} </b> LEFT
                     </h1>
+                    <div className="flex basis-0 grow-[1] w-full items-center justify-center">
+                      <h1 className="text-gradient text-xl font-bold">
+                        PKR {ticket.price}
+                      </h1>
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="h-full flex items-center justify-center rounded-md">
+                <h1 className="italic">No tickets yet</h1>
               </div>
-            ))}
+            )}
           </div>
         )}
       </div>
@@ -333,6 +351,7 @@ const Event = () => {
               reviews.map((r) => {
                 return (
                   <Review
+                    key={r.review_id}
                     user_id={r.user_id}
                     name={r.name}
                     text={r.text}
