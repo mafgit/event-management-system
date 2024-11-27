@@ -1,5 +1,17 @@
 const db = require("../db");
 
+const get_all_tickets = (req, res) => {
+  const query = "SELECT * FROM tickets";
+
+  db.query(query, (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: "Error fetching tickets" });
+    }
+
+    res.status(200).json(result);
+  });
+};
+
 const get_tickets = (req, res) => {
   const { id } = req.params;
 
@@ -213,4 +225,5 @@ module.exports = {
   register_ticket,
   unregister_ticket,
   get_tickets_with_status,
+  get_all_tickets,
 };

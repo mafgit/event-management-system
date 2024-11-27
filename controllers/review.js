@@ -14,6 +14,16 @@ const get_reviews = (req, res) => {
   });
 };
 
+const get_all_reviews = (req, res) => {
+  const query = "SELECT * from reviews";
+  db.query(query, (err, result) => {
+    if (err) {
+      return res.status(500).json({ message: "Error fetching reviews" });
+    }
+    res.status(200).json(result);
+  });
+};
+
 const get_review = (req, res) => {
   const reviewId = req.params.reviewId;
 
@@ -79,4 +89,5 @@ module.exports = {
   create_review,
   update_review,
   delete_review,
+  get_all_reviews,
 };

@@ -19,7 +19,7 @@ const AdminReviews = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/reviews/get_reviews");
+      const response = await axios.get("/reviews/get_all_reviews");
       setData(response.data);
     } catch (error) {
       message.error("Failed to fetch data");

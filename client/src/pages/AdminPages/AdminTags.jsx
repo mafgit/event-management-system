@@ -20,7 +20,7 @@ const AdminTags = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/tags/get_tags");
+      const response = await axios.get("/events/get_tags");
       setData(response.data);
     } catch (error) {
       message.error("Failed to fetch data");

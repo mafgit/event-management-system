@@ -60,6 +60,26 @@ const create_event = async (req, res) => {
   }
 };
 
+const get_admin_counts = (req, res) => {
+  // count of users, categories, reviews, etc
+  db.query(
+    `
+    select count(*) as users from users;
+    select count(*) as categories from categories;
+    select count(*) as registrations from registrations;
+    select count(*) as tags from tags;
+    select count(*) as events from events;
+    select count(*) as tickets from tickets;
+    select count(*) as reviews from reviews;
+    `,
+    (err, results) => {
+      if (err) throw err;
+
+      res.status(200).json(results.map((res) => res[0]));
+    }
+  );
+};
+
 const get_events = async (req, res) => {
   const { q, tags, category, type } = req.query;
   str = "SELECT * FROM events where status <> 'Cancelled' and verified = 1";
@@ -470,4 +490,5 @@ module.exports = {
   get_event_tags,
   get_can_review,
   cancel_event,
+  get_admin_counts,
 };

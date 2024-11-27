@@ -8,10 +8,12 @@ const {
   register_ticket,
   unregister_ticket,
   get_tickets_with_status,
+  get_all_tickets,
 } = require("../controllers/ticket");
 const { verifyAdminOrOrganizer, verifyToken } = require("../utils/verifyUser");
 
 router.get("/get_tickets/:id", get_tickets);
+router.get("/get_all_tickets", get_all_tickets);
 router.get(
   "/get_tickets_with_status/:id",
   verifyToken,

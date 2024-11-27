@@ -16,6 +16,7 @@ const {
   get_event_tags,
   cancel_event,
   get_can_review,
+  get_admin_counts,
 } = require("../controllers/event.js");
 const {
   verifyToken,
@@ -54,6 +55,7 @@ router.get("/get_can_review/:id", verifyToken, get_can_review);
 router.get("/get_event/:id", get_event);
 router.get("/get_featured", get_featured);
 router.get("/get_upcoming", get_upcoming);
+router.get("/get_admin_counts", get_admin_counts);
 router.put(
   "/update_event/:id",
   verifyToken,

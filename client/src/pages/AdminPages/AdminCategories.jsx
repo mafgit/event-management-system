@@ -12,7 +12,6 @@ const AdminCategories = () => {
   const [isCreating, setIsCreating] = useState(false); // State for creating category
   const [form] = Form.useForm();
 
-  // Fetch Data from API
   useEffect(() => {
     fetchData();
   }, []);
@@ -20,7 +19,7 @@ const AdminCategories = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/categories/get_categories");
+      const response = await axios.get("/events/get_categories");
       setData(response.data);
     } catch (error) {
       message.error("Failed to fetch data");

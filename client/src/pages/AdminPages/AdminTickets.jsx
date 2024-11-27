@@ -20,7 +20,7 @@ const AdminTickets = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/tickets/get_tickets");
+      const response = await axios.get("/tickets/get_all_tickets");
       setData(response.data);
     } catch (error) {
       message.error("Failed to fetch data");
