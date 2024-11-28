@@ -34,11 +34,11 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     capacity INT NOT NULL,
     venue VARCHAR(100) NOT NULL,
     image_url VARCHAR(1024),
-    organized_by INT NOT NULL,
+    organized_by INT NULL,
     event_date DATETIME NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
-    category VARCHAR(30) NOT NULL,
+    category VARCHAR(30) NULL,
     status VARCHAR(30) NOT NULL,
     verified TINYINT NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -46,21 +46,21 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     PRIMARY KEY (event_id),
     INDEX organized_by_idx (organized_by),
     INDEX category_idx (category),
-    FOREIGN KEY (organized_by) REFERENCES users (user_id),
-    FOREIGN KEY (category) REFERENCES categories (name)
+    FOREIGN KEY (organized_by) REFERENCES users (user_id) ON UPDATE CASCADE ON DELETE SET NULL,
+    FOREIGN KEY (category) REFERENCES categories (name) ON UPDATE CASCADE ON DELETE SET NULL
   );
   
   CREATE TABLE IF NOT EXISTS reviews (
     review_id INT NOT NULL AUTO_INCREMENT,
     text VARCHAR(300) NOT NULL,
-    user_id INT NOT NULL,
-    event_id INT NOT NULL,
+    user_id INT NULL,
+    event_id INT NULL,
     rating INT NOT NULL,
     PRIMARY KEY (review_id),
     INDEX user_id_idx (user_id),
     INDEX event_id_idx (event_id),
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (event_id) REFERENCES events (event_id)
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES events (event_id) ON UPDATE CASCADE ON DELETE CASCADE
   );
   
   CREATE TABLE IF NOT EXISTS tags (
@@ -73,26 +73,28 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     tag_name VARCHAR(30) NOT NULL,
     PRIMARY KEY (event_id, tag_name),
     INDEX tag_name_idx (tag_name),
-    FOREIGN KEY (event_id) REFERENCES events (event_id),
+    FOREIGN KEY (event_id) REFERENCES events (event_id)
+        ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (tag_name) REFERENCES tags (name)
+        ON UPDATE CASCADE ON DELETE CASCADE
   );
   
   CREATE TABLE IF NOT EXISTS tickets (
     ticket_id INT NOT NULL AUTO_INCREMENT,
     ticket_name VARCHAR(30) UNIQUE NOT NULL,
-    event_id INT NOT NULL,
+    event_id INT NULL,
     capacity INT NOT NULL,
     price INT NOT NULL,
-    INDEX event_id_idx (event_id),
     PRIMARY KEY (ticket_id),
-    FOREIGN KEY (event_id) REFERENCES events (event_id)
+    INDEX event_id_idx (event_id),
+    FOREIGN KEY (event_id) REFERENCES events (event_id) ON UPDATE CASCADE ON DELETE CASCADE
   );
   
   CREATE TABLE IF NOT EXISTS registrations (
     registration_id INT NOT NULL AUTO_INCREMENT,
-    event_id INT NOT NULL,
-    user_id INT NOT NULL,
-    ticket_id INT NOT NULL,
+    event_id INT NULL,
+    user_id INT NULL,
+    ticket_id INT NULL,
     status VARCHAR(30) NOT NULL,
     amount INT NOT NULL,
     modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -100,9 +102,9 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     INDEX event_id_idx (event_id),
     INDEX user_id_idx (user_id),
     INDEX ticket_id_idx (ticket_id),
-    FOREIGN KEY (event_id) REFERENCES events (event_id),
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (ticket_id) REFERENCES tickets (ticket_id)
+    FOREIGN KEY (event_id) REFERENCES events (event_id) ON UPDATE CASCADE ON DELETE SET NULL,
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON UPDATE CASCADE ON DELETE SET NULL,
+    FOREIGN KEY (ticket_id) REFERENCES tickets (ticket_id) ON UPDATE CASCADE ON DELETE SET NULL
   );
   
   CREATE TABLE IF NOT EXISTS attendance (
@@ -111,12 +113,9 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, event_id),
     INDEX event_id_idx (event_id),
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (event_id) REFERENCES events (event_id)
-  );
-  
-  -- alter table events modify column event_date datetime;
-  `;
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES events (event_id) ON UPDATE CASCADE ON DELETE CASCADE
+  );`;
 
 db.query(create_tables_query, (err) => {
   if (err) console.log(err);

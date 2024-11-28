@@ -6,7 +6,7 @@ import { FaLock } from "react-icons/fa6";
 import { AuthContext } from "../../App";
 
 const AdminUsers = () => {
-  const { user_id } = useContext(AuthContext);
+  const { userId } = useContext(AuthContext);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -163,12 +163,14 @@ const AdminUsers = () => {
               onClick={() => handleEdit(record)}
               style={{ marginRight: 8 }}
             />
-            <Button
-              icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record.user_id)}
-              danger
-            />
-            {!(record.is_admin && user_id === record.user_id) && (
+            {!(record.is_admin && userId === record.user_id) && (
+              <Button
+                icon={<DeleteOutlined />}
+                onClick={() => handleDelete(record.user_id)}
+                danger
+              />
+            )}
+            {!(record.is_admin && userId === record.user_id) && (
               <Button
                 className="ml-2"
                 icon={<FaLock />}

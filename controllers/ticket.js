@@ -126,18 +126,29 @@ const update_ticket = (req, res) => {
 
 const delete_ticket = (req, res) => {
   const { ticket_id } = req.params;
-
-  const query = "DELETE FROM tickets WHERE ticket_id = ?";
-  db.query(query, [ticket_id], (err, result) => {
+  // don't delete if payments have been done
+  const q =
+    'select * from registrations where ticket_id = ? and status = "Confirmed";';
+  db.query(q, [ticket_id], (err, result) => {
     if (err) {
-      console.log(err);
+      return res.status(500).json({ message: "Error deleting ticket (1)" });
+    }
+    if (result.length > 0) {
+      return res.status(400).json({ message: "Ticket has payments" });
+    }
 
-      return res.status(500).json({ message: "Error deleting ticket" });
-    }
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
-    res.status(200).json({ message: "Ticket deleted successfully!" });
+    const query = "DELETE FROM tickets WHERE ticket_id = ?";
+    db.query(query, [ticket_id], (err, result) => {
+      if (err) {
+        console.log(err);
+
+        return res.status(500).json({ message: "Error deleting ticket" });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "Ticket not found" });
+      }
+      res.status(200).json({ message: "Ticket deleted successfully!" });
+    });
   });
 };
 
