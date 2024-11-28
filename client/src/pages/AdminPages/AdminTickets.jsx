@@ -142,14 +142,14 @@ const AdminTickets = () => {
       {/* Create Ticket Button */}
       <div className="flex justify-between py-3 pb-0 px-6">
         <h1 className="text-lg font-bold">Tickets</h1>
-        <Button
+        {/* <Button
           type="primary"
           icon={<PlusOutlined />}
           style={{ marginBottom: 16 }}
           onClick={() => setIsCreating(true)}
         >
           Create Ticket
-        </Button>
+        </Button> */}
       </div>
 
       <Table

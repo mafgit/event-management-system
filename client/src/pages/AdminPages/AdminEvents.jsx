@@ -31,73 +31,18 @@ const AdminEvents = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/events/get_events");
-      setData(response.data.events);
+      const response = await axios.get("/events/get_all_events");
+      setData(response.data);
     } catch (error) {
       message.error("Failed to fetch data");
     }
     setLoading(false);
-
-    //   setData([
-    // {
-    //   event_id: 1,
-    //   name: "Tech Innovators Conference",
-    //   description:
-    //     "A gathering of leading tech innovators to discuss future trends.",
-    //   capacity: 300,
-    //   venue: "Downtown Convention Center",
-    //   organized_by: 101,
-    //   event_date: "2024-11-15",
-    //   start_time: "09:00",
-    //   end_time: "17:00",
-    //   category: "Technology",
-    //   status: "Upcoming",
-    //   verified: true,
-    //   created_at: "2024-09-10T08:30:00",
-    //   modified_at: "2024-10-01T12:45:00",
-    //   image_url: "https://example.com/images/tech_conference.jpg",
-    // },
-    //     {
-    //       event_id: 2,
-    //       name: "Music and Arts Festival",
-    //       description:
-    //         "An outdoor celebration of music and the arts with local and international artists.",
-    //       capacity: 5000,
-    //       venue: "City Park",
-    //       organized_by: 203,
-    //       event_date: "2024-12-03",
-    //       start_time: "12:00",
-    //       end_time: "23:00",
-    //       category: "Entertainment",
-    //       status: "Upcoming",
-    //       verified: false,
-    //       created_at: "2024-08-25T14:00:00",
-    //       modified_at: "2024-09-15T09:10:00",
-    //       image_url: "https://example.com/images/music_festival.jpg",
-    //     },
-    //     {
-    //       event_id: 3,
-    //       name: "Charity Gala Dinner",
-    //       description:
-    //         "A formal event to raise funds for local charities, featuring dinner and entertainment.",
-    //       capacity: 200,
-    //       venue: "Grand Hotel Ballroom",
-    //       organized_by: 305,
-    //       event_date: "2024-11-25",
-    //       start_time: "18:30",
-    //       end_time: "22:00",
-    //       category: "Charity",
-    //       status: "Upcoming",
-    //       verified: true,
-    //       created_at: "2024-09-30T11:20:00",
-    //       modified_at: "2024-10-05T10:00:00",
-    //       image_url: "https://example.com/images/charity_gala.jpg",
-    //     },
-    //   ]);
   };
 
   // Delete Row
   const handleDelete = async (id) => {
+    console.log(id);
+
     try {
       await axios.delete(`/events/delete_event/${id}`);
       message.success("Event deleted successfully");
@@ -247,14 +192,14 @@ const AdminEvents = () => {
     <div>
       <div className="flex justify-between py-3 pb-0 px-6">
         <h1 className="text-lg font-bold">Events</h1>
-        <Button
+        {/* <Button
           type="primary"
           icon={<PlusOutlined />}
           style={{ marginBottom: 16 }}
           onClick={() => setIsCreating(true)}
         >
           Create Event
-        </Button>
+        </Button> */}
       </div>
 
       <Table

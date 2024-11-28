@@ -82,6 +82,31 @@ const update_registration = async (req, res) => {
   );
 };
 
+const update_status = async (req, res) => {
+  const { status } = req.body;
+  const { id } = req.params;
+  const query = "UPDATE registrations SET status=? where registration_id=?";
+
+  db.execute(
+    query,
+    [status == "Pending" ? "Confirmed" : "Pending", id],
+    (error, result) => {
+      // if (result.affectedRows === 0) {
+      //   return res.status(404).json({ message: "Registration not found" });
+      // }
+      if (error) {
+        console.log(error);
+
+        return res
+          .status(500)
+          .json({ message: "Error updating status", error });
+      }
+
+      return res.status(200).json({ message: "Status updated successfully" });
+    }
+  );
+};
+
 const delete_registration = (req, res) => {
   const { id } = req.params;
   const query = "DELETE FROM registrations WHERE registration_id = ?";
@@ -106,4 +131,5 @@ module.exports = {
   get_registration,
   update_registration,
   delete_registration,
+  update_status,
 };

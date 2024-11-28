@@ -85,15 +85,19 @@ const AdminUsers = () => {
     form.resetFields();
   };
 
-  const handleAdmin = () => {
-    // todo: handle Admin
+  const handleAdmin = (user_id, is_admin) => {
+    console.log(user_id, is_admin);
+    axios.put(`/users/update_admin/${user_id}`, { is_admin }).then((res) => {
+      message.success("Admin status updated successfully");
+      fetchData();
+    });
     form.resetFields();
   };
 
   // Save Edited Data
   const handleSave = () => {
     axios
-      .put(`/users/update_user/${editingRecord.id}`, form.getFieldsValue())
+      .put(`/users/update_user/${editingRecord.user_id}`, form.getFieldsValue())
       .then((res) => {
         message.success("User updated successfully");
         setIsEditing(false);
@@ -149,29 +153,33 @@ const AdminUsers = () => {
     },
     {
       title: "Actions",
-      render: (text, record) => (
-        <>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            style={{ marginRight: 8 }}
-          />
-          <Button
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id)}
-            danger
-          />
-          {!(record.is_admin && user_id === record.user_id) && (
+      render: (text, record) => {
+        // console.log(record);
+
+        return (
+          <>
             <Button
-              className="ml-2"
-              icon={<FaLock />}
-              onClick={() => handleAdmin(record.id, record.is_admin)}
-            >
-              {record.is_admin ? "Remove Admin" : "Make Admin"}
-            </Button>
-          )}
-        </>
-      ),
+              icon={<EditOutlined />}
+              onClick={() => handleEdit(record)}
+              style={{ marginRight: 8 }}
+            />
+            <Button
+              icon={<DeleteOutlined />}
+              onClick={() => handleDelete(record.user_id)}
+              danger
+            />
+            {!(record.is_admin && user_id === record.user_id) && (
+              <Button
+                className="ml-2"
+                icon={<FaLock />}
+                onClick={() => handleAdmin(record.user_id, record.is_admin)}
+              >
+                {record.is_admin ? "Remove Admin" : "Make Admin"}
+              </Button>
+            )}
+          </>
+        );
+      },
     },
   ];
 
@@ -192,14 +200,14 @@ const AdminUsers = () => {
     <div>
       <div className="flex justify-between py-3 pb-0 px-6">
         <h1 className="text-lg font-bold">Users</h1>
-        <Button
+        {/* <Button
           type="primary"
           icon={<PlusOutlined />}
           style={{ marginBottom: 16 }}
           onClick={() => setIsCreating(true)}
         >
           Create User
-        </Button>
+        </Button> */}
       </div>
 
       <Table

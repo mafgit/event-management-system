@@ -17,6 +17,18 @@ const AdminRegistrations = () => {
     fetchData();
   }, []);
 
+  const handleStatus = (registration_id, status) => {
+    axios
+      .put(`/registrations/update_status/${registration_id}`, { status })
+      .then(() => {
+        message.success("Status updated successfully");
+        fetchData();
+      })
+      .catch((error) => {
+        message.error("Failed to update status");
+      });
+  };
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -120,16 +132,36 @@ const AdminRegistrations = () => {
       title: "Actions",
       render: (text, record) => (
         <>
-          <Button
+          {/* <Button
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
             style={{ marginRight: 8 }}
-          />
-          <Button
+          /> */}
+          {/* <Button
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.registration_id)}
             danger
-          />
+          /> */}
+
+          {record.status === "Pending" ? (
+            <button
+              className="bg-green-600 p-1 rounded-md text-white w-full"
+              onClick={() =>
+                handleStatus(record.registration_id, record.status)
+              }
+            >
+              Confirm
+            </button>
+          ) : (
+            <button
+              className="bg-red-500 p-1 rounded-md text-white w-full"
+              onClick={() =>
+                handleStatus(record.registration_id, record.status)
+              }
+            >
+              Cancel
+            </button>
+          )}
         </>
       ),
     },
@@ -152,14 +184,14 @@ const AdminRegistrations = () => {
     <div>
       <div className="flex justify-between py-3 pb-0 px-6">
         <h1 className="text-lg font-bold">Registrations</h1>
-        <Button
+        {/* <Button
           type="primary"
           icon={<PlusOutlined />}
           style={{ marginBottom: 16 }}
           onClick={() => setIsCreating(true)}
         >
           Create Registration
-        </Button>
+        </Button> */}
       </div>
 
       <Table

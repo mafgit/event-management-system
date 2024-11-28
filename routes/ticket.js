@@ -3,14 +3,18 @@ const {
   get_tickets,
   // get_ticket,
   create_ticket,
-  // update_ticket,
+  update_ticket,
   delete_ticket,
   register_ticket,
   unregister_ticket,
   get_tickets_with_status,
   get_all_tickets,
 } = require("../controllers/ticket");
-const { verifyAdminOrOrganizer, verifyToken } = require("../utils/verifyUser");
+const {
+  verifyAdminOrOrganizer,
+  verifyToken,
+  verifyAdmin,
+} = require("../utils/verifyUser");
 
 router.get("/get_tickets/:id", get_tickets);
 router.get("/get_all_tickets", get_all_tickets);
@@ -28,9 +32,9 @@ router.post(
 );
 router.post("/register_ticket", verifyToken, register_ticket);
 router.delete("/unregister_ticket", verifyToken, unregister_ticket);
-// router.put("/update_ticket/:id", update_ticket);
+router.put("/update_ticket/:id", verifyToken, verifyAdmin, update_ticket);
 router.delete(
-  "/delete_ticket/:id/:ticket_id",
+  "/delete_ticket/:ticket_id",
   verifyToken,
   verifyAdminOrOrganizer,
   delete_ticket

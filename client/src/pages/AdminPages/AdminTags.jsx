@@ -29,9 +29,18 @@ const AdminTags = () => {
   };
 
   // Delete Row
-  const handleDelete = async (id) => {
+  const handleDelete = async (name) => {
     try {
-      await axios.delete(`/tags/delete_tag/${id}`);
+      await axios({
+        method: "delete",
+        url: `/events/delete_tag`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          name,
+        },
+      });
       message.success("Tag deleted successfully");
       fetchData(); // Refresh data after deletion
     } catch (error) {
@@ -55,10 +64,10 @@ const AdminTags = () => {
   // Save Edited Data
   const handleSave = async () => {
     try {
-      await axios.put(
-        `/tags/update_tag/${editingRecord.id}`,
-        form.getFieldsValue()
-      );
+      await axios.put(`/events/update_tag`, {
+        ...form.getFieldsValue(),
+        oldName: editingRecord.name,
+      });
       message.success("Tag updated successfully");
       setIsEditing(false);
       fetchData(); // Refresh data after edit
@@ -70,7 +79,7 @@ const AdminTags = () => {
   // Handle Create New tag
   const handleCreate = async () => {
     try {
-      await axios.post("/tags/create_tag", form.getFieldsValue());
+      await axios.post("/events/create_tag", form.getFieldsValue());
       message.success("Tag created successfully");
       setIsCreating(false);
       fetchData(); // Refresh data after creation
@@ -97,7 +106,7 @@ const AdminTags = () => {
           />
           <Button
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id)}
+            onClick={() => handleDelete(record.name)}
             danger
           />
         </>

@@ -95,11 +95,11 @@ const AdminReviews = () => {
       title: "Actions",
       render: (text, record) => (
         <>
-          <Button
+          {/* <Button
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
             style={{ marginRight: 8 }}
-          />
+          /> */}
           <Button
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.review_id)}

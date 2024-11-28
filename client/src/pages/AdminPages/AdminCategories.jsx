@@ -28,9 +28,18 @@ const AdminCategories = () => {
   };
 
   // Delete Row
-  const handleDelete = async (id) => {
+  const handleDelete = async (name) => {
     try {
-      await axios.delete(`/categories/delete_category/${id}`);
+      await axios({
+        method: "delete",
+        url: `/events/delete_category`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          name,
+        },
+      });
       message.success("Category deleted successfully");
       fetchData(); // Refresh data after deletion
     } catch (error) {
@@ -54,10 +63,10 @@ const AdminCategories = () => {
   // Save Edited Data
   const handleSave = async () => {
     try {
-      await axios.put(
-        `/categories/update_category/${editingRecord.id}`,
-        form.getFieldsValue()
-      );
+      await axios.put(`/events/update_category`, {
+        ...form.getFieldsValue(),
+        oldName: editingRecord.name,
+      });
       message.success("Category updated successfully");
       setIsEditing(false);
       fetchData(); // Refresh data after edit
@@ -69,7 +78,7 @@ const AdminCategories = () => {
   // Handle Create New Category
   const handleCreate = async () => {
     try {
-      await axios.post("/categories/create_category", form.getFieldsValue());
+      await axios.post("/events/create_category", form.getFieldsValue());
       message.success("Category created successfully");
       setIsCreating(false);
       fetchData(); // Refresh data after creation
@@ -96,7 +105,7 @@ const AdminCategories = () => {
           />
           <Button
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id)}
+            onClick={() => handleDelete(record.name)}
             danger
           />
         </>

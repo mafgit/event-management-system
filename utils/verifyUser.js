@@ -34,7 +34,7 @@ const verifyToken = (req, res, next) => {
 };
 
 const verifyAdmin = (req, res, next) => {
-  if (req.user.is_admin !== 1) {
+  if (!req.user.is_admin) {
     return res
       .status(403)
       .json({ message: "Forbidden! Admin access required" });

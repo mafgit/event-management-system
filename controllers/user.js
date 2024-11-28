@@ -49,6 +49,8 @@ const update_user = (req, res) => {
     [first_name, last_name, email, password, id],
     (error, result) => {
       if (error) {
+        console.log(error);
+
         return res.status(500).json({ error: error.message });
       }
 
@@ -62,8 +64,10 @@ const update_user = (req, res) => {
 
 const delete_user = (req, res) => {
   const { id } = req.params;
-  db.query("DELETE FROM users WHERE user_id = ?", [id], (error, result) => {
+
+  db.query("DELETE FROM users WHERE user_id = ?;", [id], (error, result) => {
     if (error) {
+      console.log(error);
       return res.status(500).json({ error: error.message });
     }
     if (result.affectedRows === 0) {
@@ -73,10 +77,30 @@ const delete_user = (req, res) => {
   });
 };
 
+const update_admin = (req, res) => {
+  const { id } = req.params;
+  const { is_admin } = req.body;
+  db.query(
+    "UPDATE users SET is_admin = ? WHERE user_id = ?",
+    [!is_admin, id],
+    (error, result) => {
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.status(200).json({ message: "User updated" });
+    }
+  );
+};
+
 module.exports = {
   get_users,
   get_user,
   create_user,
   update_user,
   delete_user,
+  update_admin,
 };

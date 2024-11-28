@@ -17,6 +17,13 @@ const {
   cancel_event,
   get_can_review,
   get_admin_counts,
+  delete_category,
+  get_all_events,
+  create_category,
+  update_category,
+  create_tag,
+  delete_tag,
+  update_tag,
 } = require("../controllers/event.js");
 const {
   verifyToken,
@@ -28,6 +35,7 @@ const router = require("express").Router();
 
 router.post("/create_event", verifyToken, create_event);
 router.get("/get_events", get_events);
+router.get("/get_all_events", get_all_events);
 router.get("/get_organized_by/:id", get_organized_by);
 router.get("/get_attended_by_me", verifyToken, get_attended_by_me);
 router.get(
@@ -62,12 +70,7 @@ router.put(
   verifyAdminOrOrganizer,
   update_event
 );
-// router.delete(
-//   "/delete_event/:id",
-//   verifyToken,
-//   verifyAdminOrOrganizer,
-//   delete_event
-// );
+router.delete("/delete_event/:id", verifyToken, verifyAdmin, delete_event);
 
 router.get(
   "/cancel_event/:id",
@@ -75,5 +78,10 @@ router.get(
   verifyAdminOrOrganizer,
   cancel_event
 );
-
+router.delete("/delete_category", verifyToken, verifyAdmin, delete_category);
+router.post("/create_category", verifyToken, verifyAdmin, create_category);
+router.put("/update_category", verifyToken, verifyAdmin, update_category);
+router.delete("/delete_tag", verifyToken, verifyAdmin, delete_tag);
+router.post("/create_tag", verifyToken, verifyAdmin, create_tag);
+router.put("/update_tag", verifyToken, verifyAdmin, update_tag);
 module.exports = router;

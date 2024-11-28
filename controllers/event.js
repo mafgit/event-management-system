@@ -122,6 +122,14 @@ const get_organized_by = async (req, res) => {
   }
 };
 
+const get_all_events = (req, res) => {
+  const q = "SELECT * FROM events;";
+  db.query(q, (err, results) => {
+    if (err) throw err;
+    res.status(200).json(results);
+  });
+};
+
 const get_attended_by_me = async (req, res) => {
   try {
     const q =
@@ -351,7 +359,7 @@ const update_event = async (req, res) => {
       category,
       image_url,
       tags,
-    } = req.body.formData;
+    } = req.body;
 
     event_date = moment(event_date).format("YYYY-MM-DD HH:mm:ss");
     start_time = moment(event_date).format("HH:mm:ss");
@@ -402,14 +410,16 @@ const update_event = async (req, res) => {
           if (err) throw err;
 
           // insert tags
-          tags.forEach((tag_name) => {
-            let q2 = `insert ignore into event_tags(event_id, tag_name) values(?, ?);`;
-            db.execute(q2, [id, tag_name], (err, results) => {
-              if (err) {
-                console.log(err);
-              }
+          if (tags && tags.length > 0) {
+            tags.forEach((tag_name) => {
+              let q2 = `insert ignore into event_tags(event_id, tag_name) values(?, ?);`;
+              db.execute(q2, [id, tag_name], (err, results) => {
+                if (err) {
+                  console.log(err);
+                }
+              });
             });
-          });
+          }
         });
 
         return res
@@ -424,24 +434,24 @@ const update_event = async (req, res) => {
   }
 };
 
-// const delete_event = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const q = "DELETE FROM events WHERE id = ?;";
-//     db.execute(q, [id], (err, results) => {
-//       if (err) throw err;
-//       if (results.affectedRows === 0)
-//         return res
-//           .status(404)
-//           .json({ success: false, message: "Event not found" });
-//       res
-//         .status(200)
-//         .json({ success: true, message: "Event deleted successfully" });
-//     });
-//   } catch (error) {
-//     res.status(500).json({ success: false, error: error.message });
-//   }
-// };
+const delete_event = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const q = "DELETE FROM events WHERE event_id = ?;";
+    db.execute(q, [id], (err, results) => {
+      if (err) throw err;
+      if (results.affectedRows === 0)
+        return res
+          .status(404)
+          .json({ success: false, message: "Event not found" });
+      res
+        .status(200)
+        .json({ success: true, message: "Event deleted successfully" });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
 
 const cancel_event = (req, res) => {
   const { id } = req.params;
@@ -472,6 +482,92 @@ const cancel_event = (req, res) => {
   });
 };
 
+const create_category = (req, res) => {
+  const { name } = req.body;
+  const q = "INSERT INTO categories(name) VALUES(?);";
+  db.execute(q, [name], (err, results) => {
+    if (err) throw err;
+    res
+      .status(200)
+      .json({ success: true, message: "Category created successfully" });
+  });
+};
+
+const delete_category = (req, res) => {
+  const { name } = req.body;
+  // console.log(req.body);
+
+  const q = "DELETE FROM categories WHERE name = ?;";
+  db.execute(q, [name], (err, results) => {
+    if (err) throw err;
+    if (results.affectedRows === 0)
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
+    res
+      .status(200)
+      .json({ success: true, message: "Category deleted successfully" });
+  });
+};
+
+const update_category = (req, res) => {
+  const { name, oldName } = req.body;
+
+  const q = "UPDATE categories SET name = ? WHERE name = ?;";
+  db.execute(q, [name, oldName], (err, results) => {
+    if (err) throw err;
+    if (results.affectedRows === 0)
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" });
+
+    res
+      .status(200)
+      .json({ success: true, message: "Category updated successfully" });
+  });
+};
+
+const create_tag = (req, res) => {
+  const { name } = req.body;
+  const q = "INSERT INTO tags(name) VALUES(?);";
+  db.execute(q, [name], (err, results) => {
+    if (err) throw err;
+    res
+      .status(200)
+      .json({ success: true, message: "Tag created successfully" });
+  });
+};
+
+const delete_tag = (req, res) => {
+  const { name } = req.body;
+  // console.log(req.body);
+
+  const q = "DELETE FROM tags WHERE name = ?;";
+  db.execute(q, [name], (err, results) => {
+    if (err) throw err;
+    if (results.affectedRows === 0)
+      return res.status(404).json({ success: false, message: "Tag not found" });
+    res
+      .status(200)
+      .json({ success: true, message: "Tag deleted successfully" });
+  });
+};
+
+const update_tag = (req, res) => {
+  const { name, oldName } = req.body;
+
+  const q = "UPDATE tags SET name = ? WHERE name = ?;";
+  db.execute(q, [name, oldName], (err, results) => {
+    if (err) throw err;
+    if (results.affectedRows === 0)
+      return res.status(404).json({ success: false, message: "Tag not found" });
+
+    res
+      .status(200)
+      .json({ success: true, message: "Tag updated successfully" });
+  });
+};
+
 module.exports = {
   create_event,
   get_events,
@@ -479,7 +575,7 @@ module.exports = {
   get_featured,
   get_upcoming,
   update_event,
-  // delete_event,
+  delete_event,
   get_organized_by,
   get_attended_by_me,
   get_analytics,
@@ -491,4 +587,11 @@ module.exports = {
   get_can_review,
   cancel_event,
   get_admin_counts,
+  get_all_events,
+  delete_category,
+  create_category,
+  update_category,
+  delete_tag,
+  create_tag,
+  update_tag,
 };

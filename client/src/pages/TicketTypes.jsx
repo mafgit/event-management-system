@@ -138,19 +138,14 @@ const TicketTypes = () => {
                         //     toast.error("Couldn't delete this ticket type");
                         //   });
                         axios
-                          .delete(
-                            "/tickets/delete_ticket/" +
-                              id +
-                              "/" +
-                              ticket.ticket_id
-                          )
+                          .delete("/tickets/delete_ticket/" + ticket.ticket_id)
                           .then((res) => {
                             window.location.reload();
                             toast.success("Ticket deleted successfully!");
                           })
                           .catch((err) => {
                             //     console.log(err);
-                            //     toast.error("Couldn't delete this ticket type");
+                            toast.error("Couldn't delete this ticket type");
                           });
                       }}
                     >
