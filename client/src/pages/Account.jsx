@@ -47,7 +47,7 @@ const Account = () => {
   return (
     <div className="page">
       <br />
-      <h1 className="text-2xl text-center">Your Account</h1>
+      <h1 className="text-2xl text-center font-bold">Your Account</h1>
       <br />
       <div className="flex flex-col bg-gray-300 p-5 max-w-[300px] rounded-md m-auto">
         <div className="">

@@ -361,22 +361,13 @@ const update_event = async (req, res) => {
       tags,
     } = req.body;
 
+    console.log(start_time, end_time);
+
     event_date = moment(event_date).format("YYYY-MM-DD HH:mm:ss");
     start_time = moment(event_date).format("HH:mm:ss");
     end_time = moment(event_date).format("HH:mm:ss");
 
-    // console.log(
-    //   name,
-    //   description,
-    //   capacity,
-    //   venue,
-    //   event_date,
-    //   start_time,
-    //   end_time,
-    //   category,
-    //   image_url,
-    //   id
-    // );
+    console.log(start_time, end_time);
 
     let q =
       "UPDATE events SET name = ?, description = ?, capacity = ?, venue = ?, event_date = ?, start_time = ?, end_time = ?, category = ?, image_url = ? WHERE event_id = ?;";
@@ -397,6 +388,8 @@ const update_event = async (req, res) => {
       ],
       (err, results) => {
         if (err) {
+          console.log(err);
+
           throw err;
         }
         if (results.affectedRows === 0)

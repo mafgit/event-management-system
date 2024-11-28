@@ -83,7 +83,7 @@ function CreateEvent({ edit = false }) {
       try {
         await axios.put(
           `http://localhost:5000/events/update_event/${id}`,
-          { formData: { ...formData, tags: selectedTags } },
+          { ...formData, tags: selectedTags },
           {
             withCredentials: true,
             headers: {

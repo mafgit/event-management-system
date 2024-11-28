@@ -25,7 +25,6 @@ import AttendedByMe from "./pages/AttendedByMe";
 import Account from "./pages/Account";
 import EventAnalytics from "./pages/EventAnalytics";
 import TicketTypes from "./pages/TicketTypes";
-import EditEvent from "./pages/EditEvent";
 
 axios.defaults.baseURL = "http://localhost:5000/";
 axios.defaults.withCredentials = true;
