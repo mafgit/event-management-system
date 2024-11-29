@@ -136,9 +136,7 @@ export default function Component() {
               ))}
             </div>
           ) : (
-            <p className="m-auto text-center w-full">
-              No events found organized by you.
-            </p>
+            <p className="m-auto text-center w-full">No events found</p>
           )}
         </div>
       </div>
