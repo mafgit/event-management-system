@@ -40,9 +40,10 @@ const Event = () => {
         setReviews(res.data);
       });
 
-      axios.get("/events/get_can_review/" + id).then((res) => {
-        setCanReview(res.data.attended && !res.data.reviewed);
-      });
+      if (auth)
+        axios.get("/events/get_can_review/" + id).then((res) => {
+          setCanReview(res.data.attended && !res.data.reviewed);
+        });
 
       if (auth)
         axios.get("/tickets/get_tickets_with_status/" + id).then((res) => {
