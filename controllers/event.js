@@ -278,14 +278,14 @@ const get_ticket_types = (req, res) => {
 const get_featured = async (req, res) => {
   try {
     const q =
-      "SELECT * FROM events WHERE verified = 1 and event_date >= CURDATE() ORDER BY Attendees DESC, event_date ASC LIMIT 10;";
+      "SELECT * FROM events WHERE verified = 1 and event_date >= CURDATE() ORDER BY capacity DESC, event_date ASC LIMIT 10;";
     db.query(q, (err, result) => {
       if (err) throw err;
       if (result.length === 0)
         return res
           .status(404)
           .json({ success: false, message: "Event not found" });
-      res.status(200).json({ success: true, event: result[0] });
+      res.status(200).json({ success: true, events: [result[0], result[1], result[2]] });
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -302,7 +302,7 @@ const get_upcoming = async (req, res) => {
         return res
           .status(404)
           .json({ success: false, message: "Event not found" });
-      res.status(200).json({ success: true, event: result[0] });
+      res.status(200).json({ success: true, events: [result[0], result[1], result[2]] });
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

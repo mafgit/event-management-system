@@ -18,7 +18,7 @@ const EventCard = ({
   event_date,
   status,
 }) => {
-  console.log(name, image_url);
+  // console.log(name, image_url);
 
   return (
     <div className="border-slate-200 border rounded-xl flex flex-col justify-between min-h-[125px] group overflow-hidden max-w-[400px]">
