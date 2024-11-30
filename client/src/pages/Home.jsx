@@ -2,22 +2,16 @@ import React, { useEffect, useState } from "react";
 import Carousel from "../components/Carousel";
 import EventCard from "../components/EventCard";
 import { Link } from "react-router-dom";
-import { CiSearch } from "react-icons/ci";
 import { IoTimeSharp } from "react-icons/io5";
-import { IoCalendar } from "react-icons/io5";
 import axios from "axios";
+import CountUp from "react-countup";
 
 const Home = () => {
 
   const [featuredEvents, setFeaturedEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [timeLeft, setTimeLeft] = useState("");
-
- // const [queryEvents, setQueryEvents] = useState([]);
-
-
-
-
+  
   useEffect(() => {
     async function fetchFeaturedEvents () {
 
@@ -27,8 +21,6 @@ const Home = () => {
           return;
         }
         setFeaturedEvents(response.data.events);
-        // console.log(featuredEvents);
-        
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -42,8 +34,6 @@ const Home = () => {
           return;
         }
         setUpcomingEvents(response.data.events);
-        // console.log(upcomingEvents);
-        
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -125,19 +115,6 @@ const Home = () => {
                 </>
               ))
               }
-              {/* <div className="rounded-lg">
-                <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-2 font-normal"><IoCalendar className="text-md"/><span className='text-sm'>9th Aug 2024</span></span>
-                <EventCard/>
-              </div>
-              <div className="rounded-lg">
-                <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-2 font-bold"><IoTimeSharp className="text-lg"/> Starts in: <span className='italic tracking-widest text-xl ml-2 font-normal'>{timeLeft[1]}</span></span>
-                <EventCard/>
-              </div>
-              <div className="rounded-lg">
-                <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-2 font-bold"><IoTimeSharp className="text-lg"/> Starts in: <span className='italic tracking-widest text-xl ml-2 font-normal'>00:45:12</span></span>
-                <EventCard/>
-              </div> */}
-
             </section>
         </div>
       </section>
@@ -225,15 +202,15 @@ const Home = () => {
     <section className="pb-16 pt-3 bg-gray-100 text-center">
       <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto">
         <div>
-          <h3 className="text-5xl font-bold">1,500+</h3>
+          <h3 className="text-5xl font-bold"><CountUp start={0} end={1500} duration={3} suffix="+" /></h3>
           <p className="text-lg text-gray-500">Events Created</p>
         </div>
         <div>
-          <h3 className="text-5xl font-bold">10K+</h3>
+          <h3 className="text-5xl font-bold"><CountUp start={0} end={10} duration={3} suffix="K+" /></h3>
           <p className="text-lg text-gray-500">Active Attendees</p>
         </div>
         <div>
-          <h3 className="text-5xl font-bold">50+</h3>
+          <h3 className="text-5xl font-bold"><CountUp start={0} end={50} duration={3} suffix="+" /></h3>
           <p className="text-lg text-gray-500">Countries Reached</p>
         </div>
       </div>
