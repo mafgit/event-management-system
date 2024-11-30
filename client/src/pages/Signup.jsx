@@ -30,7 +30,8 @@ const Signup = ({ isLoginPage }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: result.user.displayName,
+          first_name: result.user.displayName.split(" ")[0],
+          last_name: result.user.displayName.split(" ").slice(1).join(" "),
           email: result.user.email,
         }),
       });

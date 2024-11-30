@@ -4,42 +4,86 @@ import EventCard from "../components/EventCard";
 import { Link } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import { IoTimeSharp } from "react-icons/io5";
+import { IoCalendar } from "react-icons/io5";
+import axios from "axios";
 
 const Home = () => {
 
   const [featuredEvents, setFeaturedEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
-  const [queryEvents, setQueryEvents] = useState([]);
+  const [timeLeft, setTimeLeft] = useState("");
+
+ // const [queryEvents, setQueryEvents] = useState([]);
+
+
+
 
   useEffect(() => {
     async function fetchFeaturedEvents () {
+
       try {
-        const res = await fetch('https://localhost:5000/events/get_featured');
-        const data = await res.json();
-        if(data.success === false){
+        const response = await axios.get("http://localhost:5000/events/get_featured");
+        if(response.data.success === false){
           return;
         }
-        setFeaturedEvents(data);
+        setFeaturedEvents(response.data.events);
+        // console.log(featuredEvents);
+        
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching events:", error);
       }
     }
 
     async function fetchUpcomingEvents () {
+
       try {
-        const res = await fetch('https://localhost:5000/events/get_upcoming');
-        const data = await res.json();
-        if(data.success === false){
+        const response = await axios.get("http://localhost:5000/events/get_upcoming");
+        if(response.data.success === false){
           return;
         }
-        setUpcomingEvents(data);
+        setUpcomingEvents(response.data.events);
+        // console.log(upcomingEvents);
+        
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching events:", error);
       }
     }
     fetchFeaturedEvents();
     fetchUpcomingEvents();
   }, [])
+
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const updatedTimeLeft = {};
+
+      upcomingEvents.forEach((event) => {
+        const startDateTime = new Date(`${event.event_date.split('T')[0]}T${event.start_time}`);
+        const difference = startDateTime - now;
+        console.log(startDateTime);
+        
+        if (difference <= 0) {
+          updatedTimeLeft[event.event_id] = "00:00:00"; // Event started or passed
+        } else {
+          const hours = String(Math.floor(difference / (1000 * 60 * 60))).padStart(2, "0");
+          const minutes = String(Math.floor((difference / (1000 * 60)) % 60)).padStart(2, "0");
+          const seconds = String(Math.floor((difference / 1000) % 60)).padStart(2, "0");
+
+          updatedTimeLeft[event.event_id] = `${hours}:${minutes}:${seconds}`;
+        }
+      });
+      console.log(timeLeft);
+      
+      setTimeLeft(updatedTimeLeft);
+    };
+
+    // Run every second
+    const timer = setInterval(calculateTimeLeft, 1000);
+    // calculateTimeLeft();
+    // // Clean up the interval on component unmount
+    return () => clearInterval(timer);
+  }, [upcomingEvents]);
 
   //https://images.unsplash.com/photo-1642427749670-f20e2e76ed8c?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
   //https://images.unsplash.com/photo-1641579281152-e5d633aa3775?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
@@ -48,7 +92,7 @@ const Home = () => {
   //https://plus.unsplash.com/premium_photo-1681488484866-af8f282d59ce?q=80&w=1914&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
   return (
   <>
-      <header className="relative bg-cover bg-center h-screen" style={{ backgroundImage: 'url("https://plus.unsplash.com/premium_photo-1681488484866-af8f282d59ce?q=80&w=1914&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")' }}>
+      <header className="relative bg-cover bg-[40%] h-screen" style={{ backgroundImage: 'url("https://images.pexels.com/photos/6344448/pexels-photo-6344448.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")' }}>
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         <div className="relative z-10 flex flex-col items-center justify-center text-center text-white h-full">
           <h1 className="text-5xl font-bold mb-4">Organize & Attend Events Effortlessly</h1>
@@ -57,36 +101,42 @@ const Home = () => {
         </div>
       </header>
 
-
       <section className="bg-gray-50 pb-8">
         <div className="pt-4 px-16">
-          <h2 className="text-zinc-900 text-center text-2xl mb-4 font-light">Featured Events</h2>
-          <Carousel featured={featuredEvents}/>
+          <h2 className="pt-14 pb-10 text-zinc-900 text-center text-4xl mb-4 font-extrabold">Featured Events</h2>
+          <div className="shadow-2xl rounded-3xl"><Carousel featured={featuredEvents}/></div>
         </div>
         <div className="mt-4 max-w-[66rem] mx-auto ">
-          <h2 className="text-zinc-900 text-center text-2xl mb-4 font-light">Upcoming Events</h2>
+          <h2 className="pt-10 text-zinc-900 text-center text-2xl mb-4 font-light">Upcoming Events</h2>
             <section className="grid grid-cols-3 gap-x-10">
-              {upcomingEvents && upcomingEvents.map((event) => (
+              {upcomingEvents && upcomingEvents.map((event, idx) => (
                 <>
-                  <div className="bg-red-500 text-white p-2 rounded-lg">
-                    Starts in: 3 Days, 12 Hours, 45 Mins
+                  <div className="rounded-lg">
+                    <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-1 font-normal text-sm"><IoTimeSharp className="text-md"/> Starts in: <span className='text-sm ml-1 tracking-widest font-semibold'>{timeLeft[event.event_id]}</span></span>
+                    <EventCard image_url={event.image_url}
+                                name={event.name}
+                                capacity={event.capacity}
+                                venue={event.venue}
+                                id ={event.event_id}
+                                category={event.category}
+                                event_date={event.event_date}
+                                status={event.status}/>
                   </div>
-                  <EventCard event={event}/>
                 </>
               ))
               }
+              {/* <div className="rounded-lg">
+                <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-2 font-normal"><IoCalendar className="text-md"/><span className='text-sm'>9th Aug 2024</span></span>
+                <EventCard/>
+              </div>
               <div className="rounded-lg">
-                <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-2 font-bold"><IoTimeSharp className="text-lg"/> Starts in: <span className='italic tracking-widest text-xl ml-2 font-normal'>00:45:12</span></span>
+                <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-2 font-bold"><IoTimeSharp className="text-lg"/> Starts in: <span className='italic tracking-widest text-xl ml-2 font-normal'>{timeLeft[1]}</span></span>
                 <EventCard/>
               </div>
               <div className="rounded-lg">
                 <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-2 font-bold"><IoTimeSharp className="text-lg"/> Starts in: <span className='italic tracking-widest text-xl ml-2 font-normal'>00:45:12</span></span>
                 <EventCard/>
-              </div>
-              <div className="rounded-lg">
-                <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-2 font-bold"><IoTimeSharp className="text-lg"/> Starts in: <span className='italic tracking-widest text-xl ml-2 font-normal'>00:45:12</span></span>
-                <EventCard/>
-              </div>
+              </div> */}
 
             </section>
         </div>
@@ -125,14 +175,14 @@ const Home = () => {
     </section>
 
 
-    <section className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">
+    {/*<section className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">
       <div className="flex flex-col gap-6 p-5 py-10">
         <div className="text-center">
           <h3 className="text-5xl text-white font-extrabold mb-2">Search Events</h3>
           <p className="text-lg text-zinc-200">Don't miss out on the hottest events happening near you.</p>
         </div>
 
-        {/* Search Bar */}
+        Search Bar
         <form className="flex justify-center items-stretch gap-3 w-full md:w-2/3 lg:w-1/2 mx-auto transition-transform transform focus-within:scale-105">
           <input 
             className="w-full focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white text-gray-800 placeholder-gray-500 rounded-full px-6 py-3 shadow-lg transition ease-in-out duration-300" 
@@ -144,7 +194,7 @@ const Home = () => {
           </button>
         </form>
 
-        {/* Category Buttons */}
+        Category Buttons
         <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 max-w-4xl mx-auto">
           {["Music", "Tech", "Party", "Conference", "Workshop"].map((category, idx) => (
             <button
@@ -157,22 +207,22 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Events Section */}
+      Events Section
       <div className="bg-gray-50 rounded-t-[3rem]">
         <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {queryEvents && queryEvents.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}
 
-          {/* Placeholder cards if no events are passed */}
+          Placeholder cards if no events are passed
           {[...Array(4)].map((_, index) => (
             <EventCard key={index} />
           ))}
         </div>
       </div>
-    </section>
+    </section>*/}
 
-    <section className="py-16 bg-gray-100 text-center">
+    <section className="pb-16 pt-3 bg-gray-100 text-center">
       <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto">
         <div>
           <h3 className="text-5xl font-bold">1,500+</h3>
@@ -190,43 +240,20 @@ const Home = () => {
     </section>
 
       {/* Create Event Call-to-Action Section */}
-      <section className="py-16 bg-teal-600  backdrop-blur-lg text-white text-center relative">
+      <section className="py-16 bg-gradient-to-r from-teal-600 to-teal-400  backdrop-blur-lg text-white text-center relative">
           <h2 className="text-4xl font-bold mb-2">Ready to Create Your Own <span className="text-zinc-950">Event?</span></h2>
           <p className="text-md mb-10">Host amazing events effortlessly and reach a global audience.</p>
           <img className="max-w-4xl mx-auto" src="https://www.bizzabo.com/wp-content/uploads/2024/09/CC.png" alt="" />
-          <Link to="/create-event" className="bg-gradient-to-tr from-zinc-900 to-zinc-800 hover:from-teal-600 hover:to-teal-200 text-lg  text-white py-3 px-16 rounded-lg transition duration-300 ">Start Creating</Link>
-          <div className="absolute inset-0 bg-black opacity-20 -z-10 rounded-full top-40 bottom-8"></div>
+          <Link to="/create-event" className="bg-gradient-to-tr from-zinc-900 to-zinc-800 hover:from-teal-600 hover:to-teal-200 text-lg  text-white py-3 px-16 rounded-2xl transition duration-300">Start Creating</Link>
+          <div className="mx-auto max-w-4xl absolute inset-0 bg-white opacity-10 -z-10 rounded-full top-40 bottom-8"></div>
       </section>
 
       {/* Testimonials */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-4xl font-extrabold text-gray-900 mb-12">
-            Join Thousands of Happy Event Organizers and Attendees
+            Hear From Our Past Users
           </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="bg-white p-8 rounded-lg shadow-xl transition transform hover:scale-105 hover:shadow-2xl">
-              <h3 className="text-6xl font-bold text-purple-600 mb-4">
-                <span className="counter" data-target="5000">0</span>+
-              </h3>
-              <p className="text-lg text-gray-600">Successful Events Organized</p>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-xl transition transform hover:scale-105 hover:shadow-2xl">
-              <h3 className="text-6xl font-bold text-pink-600 mb-4">
-                <span className="counter" data-target="10000">0</span>+
-              </h3>
-              <p className="text-lg text-gray-600">Happy Attendees Worldwide</p>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-xl transition transform hover:scale-105 hover:shadow-2xl">
-              <h3 className="text-6xl font-bold text-yellow-600 mb-4">
-                <span className="counter" data-target="200">0</span>+
-              </h3>
-              <p className="text-lg text-gray-600">Global Event Partners</p>
-            </div>
-          </div>
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="bg-gradient-to-b from-purple-50 to-white p-8 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:scale-105">
