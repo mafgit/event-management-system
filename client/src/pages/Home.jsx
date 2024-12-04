@@ -129,11 +129,11 @@ const Home = () => {
             <Carousel featured={featuredEvents} />
           </div>
         </div>
-        <div className="mt-4 max-w-[66rem] mx-auto ">
+        <div className="mt-4 max-w-[80rem] mx-auto ">
           <h2 className="pt-10 text-zinc-900 text-center text-3xl mb-4 font-bold">
             Upcoming Events
           </h2>
-          <section className="flex flex-wrap justify-center items-center gap-10">
+          <section className="flex flex-wrap justify-center items-center gap-5">
             {upcomingEvents &&
               upcomingEvents.map((event, idx) => (
                 <>

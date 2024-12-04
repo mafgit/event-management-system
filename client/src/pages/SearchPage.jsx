@@ -40,14 +40,15 @@ export default function Component() {
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 sm:px-0 mb-3">
-          <div className="w-full flex items-center flex-col justify-center gap-2 my-5 mb-10">
+          <div className="w-full flex items-center flex-col justify-center gap-2 my-3 mb-10">
+            <h1 className="font-bold text-2xl mb-2">Search Events</h1>
             <div className="">
               <input
                 type="text"
                 onChange={(e) => setSearch(e.target.value)}
                 value={search}
                 className="px-3 py-2 rounded-full w-[300px]"
-                placeholder="Search events"
+                placeholder="Enter event name here"
               />
               <button
                 onClick={() => {
