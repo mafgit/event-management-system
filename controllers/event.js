@@ -285,7 +285,8 @@ const get_featured = async (req, res) => {
         return res
           .status(404)
           .json({ success: false, message: "Event not found" });
-      res.status(200).json({ success: true, events: [result[0], result[1], result[2]] });
+
+      res.status(200).json({ success: true, events: result });
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -302,7 +303,7 @@ const get_upcoming = async (req, res) => {
         return res
           .status(404)
           .json({ success: false, message: "Event not found" });
-      res.status(200).json({ success: true, events: [result[0], result[1], result[2]] });
+      res.status(200).json({ success: true, events: result });
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

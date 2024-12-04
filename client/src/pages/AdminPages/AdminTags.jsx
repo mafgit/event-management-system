@@ -150,7 +150,7 @@ const AdminTags = () => {
         dataSource={data}
         loading={loading}
         rowKey="id"
-        pagination={{ pageSize: 5 }} // Adjust page size as needed
+        pagination={{ pageSize: 8 }} // Adjust page size as needed
       />
 
       {/* Edit Modal */}
