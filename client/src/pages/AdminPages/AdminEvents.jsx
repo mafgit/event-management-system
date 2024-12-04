@@ -73,10 +73,11 @@ const AdminEvents = () => {
   // Save Edited Data
   const handleSave = async () => {
     try {
-      await axios.put(
-        `/events/update_event/${editingRecord.event_id}`,
-        form.getFieldsValue()
-      );
+      await axios.put(`/events/update_event/${editingRecord.event_id}`, {
+        ...form.getFieldsValue(),
+        start_time: form.getFieldsValue().start_time.format("HH:mm"),
+        end_time: form.getFieldsValue().end_time.format("HH:mm"),
+      });
       message.success("Event updated successfully");
       setIsEditing(false);
       fetchData(); // Refresh data after edit

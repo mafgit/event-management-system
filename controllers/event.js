@@ -360,18 +360,29 @@ const update_event = async (req, res) => {
       category,
       image_url,
       tags,
+      verified,
     } = req.body;
 
-    console.log(start_time, end_time);
+    // console.log("before: ", event_date, start_time, end_time);
+    // console.log("===============");
 
-    event_date = moment(event_date).format("YYYY-MM-DD HH:mm:ss");
-    start_time = moment(event_date).format("HH:mm:ss");
-    end_time = moment(event_date).format("HH:mm:ss");
+    // event_date = moment(event_date).format("YYYY-MM-DD HH:mm:ss");
+    // start_time = moment(event_date).format("HH:mm:ss");
+    // end_time = moment(event_date).format("HH:mm:ss");
 
-    console.log(start_time, end_time);
+    // console.log("after: ", event_date, start_time, end_time);
+
+    // console.log(start_time, end_time);
+
+    event_date = new Date(event_date)
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " "); // to convert from iso format to mysql format
+
+    console.log("after: ", event_date, start_time, end_time);
 
     let q =
-      "UPDATE events SET name = ?, description = ?, capacity = ?, venue = ?, event_date = ?, start_time = ?, end_time = ?, category = ?, image_url = ? WHERE event_id = ?;";
+      "UPDATE events SET name = ?, description = ?, capacity = ?, venue = ?, event_date = ?, start_time = ?, end_time = ?, category = ?, image_url = ?, verified = ? WHERE event_id = ?;";
 
     db.execute(
       q,
@@ -385,6 +396,7 @@ const update_event = async (req, res) => {
         end_time,
         category,
         image_url,
+        verified,
         id,
       ],
       (err, results) => {
