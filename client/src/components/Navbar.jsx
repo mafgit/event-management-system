@@ -6,7 +6,7 @@ const Navbar = () => {
   const { auth, admin } = useContext(AuthContext);
 
   return (
-    <div className="bg-gray-300 text-black py-2 px-6 flex justify-between">
+    <div className="bg-gradient-to-r from-purple-300 via-emerald-100 to-indigo-300 text-black py-2 px-6 flex justify-between">
       <Link className="flex items-center font-bold italic" to="/">
         <h1 className="text-lg">EventHorizon</h1>
       </Link>

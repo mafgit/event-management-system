@@ -2,17 +2,13 @@ import React, { useEffect, useState } from "react";
 import Carousel from "../components/Carousel";
 import EventCard from "../components/EventCard";
 import { Link } from "react-router-dom";
-import { CiSearch } from "react-icons/ci";
 import { IoTimeSharp } from "react-icons/io5";
-import { IoCalendar } from "react-icons/io5";
 import axios from "axios";
 
 const Home = () => {
   const [featuredEvents, setFeaturedEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [timeLeft, setTimeLeft] = useState("");
-
-  // const [queryEvents, setQueryEvents] = useState([]);
 
   useEffect(() => {
     async function fetchFeaturedEvents() {
@@ -89,11 +85,6 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [upcomingEvents]);
 
-  //https://images.unsplash.com/photo-1642427749670-f20e2e76ed8c?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-  //https://images.unsplash.com/photo-1641579281152-e5d633aa3775?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-  //https://plus.unsplash.com/premium_photo-1681488484866-af8f282d59ce?q=80&w=1914&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-  //https://images.unsplash.com/photo-1574302833650-e91c6ec31969?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-  //https://plus.unsplash.com/premium_photo-1681488484866-af8f282d59ce?q=80&w=1914&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
   return (
     <>
       <header
@@ -157,18 +148,6 @@ const Home = () => {
                   </div>
                 </>
               ))}
-            {/* <div className="rounded-lg">
-                <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-2 font-normal"><IoCalendar className="text-md"/><span className='text-sm'>9th Aug 2024</span></span>
-                <EventCard/>
-              </div>
-              <div className="rounded-lg">
-                <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-2 font-bold"><IoTimeSharp className="text-lg"/> Starts in: <span className='italic tracking-widest text-xl ml-2 font-normal'>{timeLeft[1]}</span></span>
-                <EventCard/>
-              </div>
-              <div className="rounded-lg">
-                <span className="text-rose-600 rounded p-2 flex items-center justify-center gap-2 font-bold"><IoTimeSharp className="text-lg"/> Starts in: <span className='italic tracking-widest text-xl ml-2 font-normal'>00:45:12</span></span>
-                <EventCard/>
-              </div> */}
           </section>
         </div>
       </section>
@@ -230,53 +209,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/*<section className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">
-      <div className="flex flex-col gap-6 p-5 py-10">
-        <div className="text-center">
-          <h3 className="text-5xl text-white font-extrabold mb-2">Search Events</h3>
-          <p className="text-lg text-zinc-200">Don't miss out on the hottest events happening near you.</p>
-        </div>
-
-        Search Bar
-        <form className="flex justify-center items-stretch gap-3 w-full md:w-2/3 lg:w-1/2 mx-auto transition-transform transform focus-within:scale-105">
-          <input 
-            className="w-full focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white text-gray-800 placeholder-gray-500 rounded-full px-6 py-3 shadow-lg transition ease-in-out duration-300" 
-            type="text" 
-            placeholder="Search Events..." 
-          />
-          <button className="px-5 py-3 rounded-full bg-white shadow-lg hover:bg-gray-200 transition ease-in-out duration-300">
-            <CiSearch className="text-gray-600 text-xl" />
-          </button>
-        </form>
-
-        Category Buttons
-        <div className="pt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 max-w-4xl mx-auto">
-          {["Music", "Tech", "Party", "Conference", "Workshop"].map((category, idx) => (
-            <button
-              key={idx}
-              className="bg-gray-100 text-gray-700 hover:bg-indigo-400 hover:text-white focus:bg-yellow-600 focus:ring-2 focus:ring-purple-400 rounded-full py-2 px-8 font-medium shadow-md transition duration-200 transform hover:scale-105"
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      Events Section
-      <div className="bg-gray-50 rounded-t-[3rem]">
-        <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {queryEvents && queryEvents.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-
-          Placeholder cards if no events are passed
-          {[...Array(4)].map((_, index) => (
-            <EventCard key={index} />
-          ))}
-        </div>
-      </div>
-    </section>*/}
 
       <section className="pb-16 pt-3 bg-gray-100 text-center">
         <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto">
