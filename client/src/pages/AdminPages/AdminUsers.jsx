@@ -32,33 +32,6 @@ const AdminUsers = () => {
         message.error("Failed to fetch data");
         setLoading(false);
       });
-
-    // setData([
-    //   {
-    //     user_id: 1,
-    //     first_name: "ab",
-    //     last_name: "cd",
-    //     is_admin: true,
-    //     password: "avbs",
-    //     email: "a@a.com",
-    //   },
-    //   {
-    //     user_id: 2,
-    //     first_name: "cd",
-    //     last_name: "ed",
-    //     is_admin: false,
-    //     password: "avbs",
-    //     email: "b@b.com",
-    //   },
-    //   {
-    //     user_id: 3,
-    //     first_name: "ad",
-    //     last_name: "casdf",
-    //     is_admin: false,
-    //     password: "asdasdasdsad",
-    //     email: "asdasd@a.com",
-    //   },
-    // ]);
   };
 
   // Delete Row
@@ -150,6 +123,7 @@ const AdminUsers = () => {
     {
       title: "Password",
       dataIndex: "password",
+      ellipsis: true,
     },
     {
       title: "Actions",
@@ -221,7 +195,7 @@ const AdminUsers = () => {
         dataSource={data}
         loading={loading}
         rowKey="id"
-        pagination={{ pageSize: 5 }} // Adjust page size as needed
+        pagination={{ pageSize: 6 }} // Adjust page size as needed
       />
 
       {/* Edit Modal */}

@@ -112,6 +112,7 @@ const AdminEvents = () => {
     {
       title: "Description",
       dataIndex: "description",
+      ellipsis: true,
     },
     {
       title: "Capacity",
@@ -129,6 +130,7 @@ const AdminEvents = () => {
     {
       title: "Image URL",
       dataIndex: "image_url",
+      ellipsis: true,
     },
     {
       title: "Event Date",

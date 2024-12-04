@@ -203,7 +203,7 @@ const AdminRegistrations = () => {
         dataSource={data}
         loading={loading}
         rowKey="registration_id"
-        pagination={{ pageSize: 5 }} // Adjust page size as needed
+        pagination={{ pageSize: 9 }} // Adjust page size as needed
       />
 
       {/* Edit Modal */}

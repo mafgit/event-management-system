@@ -184,8 +184,9 @@ const Event = () => {
             <p>
               <b>Organized by: </b> {event.organizer_name}
             </p>
-            <p className="italic">
-              <b>Description:</b> {event.description}
+            <p>
+              <b>Description:</b>{" "}
+              <p className="italic inline">"{event.description}"</p>
             </p>
           </div>
         </div>
@@ -220,7 +221,7 @@ const Event = () => {
                           });
                         // using this format of axios to send data in body in delete request
                       }}
-                      className="register-btn"
+                      className="register-btn pending-btn"
                     >
                       Pending - {ticket.ticket_name}
                     </button>
@@ -236,7 +237,6 @@ const Event = () => {
                         axios
                           .post("/tickets/register_ticket", {
                             id,
-                            ticket_name: ticket.ticket_name,
                             ticket_id: ticket.ticket_id,
                           })
                           .then((res) => {

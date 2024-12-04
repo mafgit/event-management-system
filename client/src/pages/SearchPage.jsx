@@ -11,12 +11,18 @@ export default function Component() {
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedType, setSelectedType] = useState("All");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
       .get("/events/get_events?q=&tags=all&category=all&type=all")
       .then((res) => {
         setEventList(res.data.events);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
       });
 
     // get categories
@@ -33,7 +39,7 @@ export default function Component() {
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 sm:px-0">
+        <div className="px-4 sm:px-0 mb-3">
           <div className="w-full flex items-center flex-col justify-center gap-2 my-5 mb-10">
             <div className="">
               <input
@@ -52,7 +58,7 @@ export default function Component() {
                   //     selectedCategory === "All" ? "all" : selectedCategory
                   //   }&type=${selectedType === "All" ? "all" : selectedType}`
                   // );
-
+                  setLoading(true);
                   axios
                     .get(
                       `/events/get_events?q=${search.trim()}&tags=${
@@ -65,6 +71,11 @@ export default function Component() {
                     )
                     .then((res) => {
                       setEventList(res.data.events);
+                      setLoading(false);
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      setLoading(false);
                     });
                 }}
                 className="btn text-white bg-blue-500 p-2 rounded-full ml-2"
@@ -116,7 +127,11 @@ export default function Component() {
               ))}
             </div>
           </div>
-          {eventList.length ? (
+          {loading ? (
+            <h1 className="m-auto text-center w-full text-gray-600">
+              Loading...
+            </h1>
+          ) : !loading && eventList.length ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {eventList.map((event) => (
                 <EventCard
@@ -136,7 +151,9 @@ export default function Component() {
               ))}
             </div>
           ) : (
-            <p className="m-auto text-center w-full">No events found</p>
+            <p className="m-auto text-center w-full text-gray-600">
+              No events found
+            </p>
           )}
         </div>
       </div>

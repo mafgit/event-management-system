@@ -153,7 +153,7 @@ const delete_ticket = (req, res) => {
 };
 
 const register_ticket = (req, res) => {
-  const { id, ticket_name, ticket_id } = req.body;
+  const { id, ticket_id } = req.body;
 
   // if capacity - tickets_bought = 0, reject
 
@@ -166,16 +166,18 @@ const register_ticket = (req, res) => {
       return res.status(400).json({ message: "Ticket already registered" });
     }
 
-    const query2 = `select count(*) as tickets_bought from registrations where event_id = ? and ticket_name = ? and status = 'Confirmed';`;
-    db.query(query2, [id, ticket_name], (err2, result2) => {
+    const query2 = `select count(*) as tickets_bought from registrations where event_id = ? and ticket_id = ? and status = 'Confirmed';`;
+    db.query(query2, [id, ticket_id], (err2, result2) => {
       if (err2) {
+        console.log(err2);
+
         return res
           .status(500)
           .json({ message: "Error registering ticket (2)" });
       }
 
-      const query3 = `select capacity, price from tickets where event_id = ? and ticket_name = ?;`;
-      db.query(query3, [id, ticket_name], (err3, result3) => {
+      const query3 = `select capacity, price from tickets where event_id = ? and ticket_id = ?;`;
+      db.query(query3, [id, ticket_id], (err3, result3) => {
         if (err3) {
           console.log(err3);
 

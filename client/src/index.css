@@ -46,8 +46,13 @@
   @apply btn text-white bg-gradient-to-r from-pink-700 to-blue-700 p-2 w-full font-bold uppercase rounded-tl-md rounded-tr-md;
 }
 
-.paid-btn {
+.paid-btn,
+.pending-btn {
   @apply btn text-white bg-gradient-to-r from-green-500 to-green-600 p-2 w-full font-bold uppercase rounded-tl-md rounded-tr-md;
+}
+
+.pending-btn {
+  @apply btn text-white bg-gradient-to-r from-orange-600 to-orange-400 p-2 w-full font-bold uppercase rounded-tl-md rounded-tr-md;
 }
 
 .event-card-top-right {

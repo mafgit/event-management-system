@@ -286,8 +286,6 @@ const get_featured = async (req, res) => {
           .status(404)
           .json({ success: false, message: "Event not found" });
 
-      console.log(result);
-
       res.status(200).json({ success: true, events: result });
     });
   } catch (error) {
