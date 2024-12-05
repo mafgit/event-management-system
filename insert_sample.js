@@ -21,6 +21,7 @@ truncate table event_tags;
 truncate table tickets;
 truncate table registrations;
 truncate table attendance;
+truncate table deleted_events;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Users
