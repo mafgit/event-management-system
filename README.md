@@ -33,5 +33,5 @@ An Event Management System (EMS) where users can both organize events and regist
   - REACT_APP_FIREBASE_MESSAGING_SENDER_ID
   - REACT_APP_FIREBASE_APP_ID
   - REACT_APP_FIREBASE_MEASUREMENT_ID
-- Run `npm run both` in the root folder to start both the backend and the frontend
+- Run `npm run both` in the root folder to start both the backend and the frontend, which can independently be run by the following commands: `npm run dev` (backend), `cd client` then `npm start` (frontend)
 - Run `node insert_sample` in the root folder to insert sample data

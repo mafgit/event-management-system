@@ -99,9 +99,7 @@ const Home = () => {
           <h1 className="text-5xl font-bold mb-4">
             Organize & Attend Events Effortlessly
           </h1>
-          <p className="text-lg mb-8">
-            Discover events near you or create your own.
-          </p>
+          <p className="text-lg mb-8">Discover events or create your own.</p>
           <Link
             to={"/search"}
             className="bg-gradient-to-tr from-purple-800 to-purple-400 hover:from-purple-600 hover:to-cyan-400 text-white py-2 px-6 rounded-full transition duration-300"

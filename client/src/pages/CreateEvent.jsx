@@ -621,7 +621,7 @@ function CreateEvent({ edit = false }) {
                     }}
                     className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 mt-3 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
                   >
-                    Cancel Event
+                    Delete Event (Cancel)
                   </button>
                 )}
               </div>
