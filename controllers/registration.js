@@ -83,29 +83,134 @@ const update_registration = async (req, res) => {
   );
 };
 
-const update_status = async (req, res) => {
+// const update_status = async (req, res) => {
+//   const { status } = req.body;
+//   const { id } = req.params;
+//   const query = "UPDATE registrations SET status=? where registration_id=?";
+
+//   db.execute(
+//     query,
+//     [status == "Pending" ? "Confirmed" : "Pending", id],
+//     (error, result) => {
+//       // if (result.affectedRows === 0) {
+//       //   return res.status(404).json({ message: "Registration not found" });
+//       // }
+//       if (error) {
+//         console.log(error);
+
+//         return res
+//           .status(500)
+//           .json({ message: "Error updating status", error });
+//       }
+
+//       return res.status(200).json({ message: "Status updated successfully" });
+//     }
+//   );
+// };
+
+const update_status = (req, res) => {
   const { status } = req.body;
   const { id } = req.params;
-  const query = "UPDATE registrations SET status=? where registration_id=?";
 
-  db.execute(
-    query,
-    [status == "Pending" ? "Confirmed" : "Pending", id],
-    (error, result) => {
-      // if (result.affectedRows === 0) {
-      //   return res.status(404).json({ message: "Registration not found" });
-      // }
-      if (error) {
-        console.log(error);
+  const registrationQuery =
+    "SELECT ticket_id, status FROM registrations WHERE registration_id = ?";
 
-        return res
-          .status(500)
-          .json({ message: "Error updating status", error });
-      }
-
-      return res.status(200).json({ message: "Status updated successfully" });
+  db.execute(registrationQuery, [id], (error, registration) => {
+    if (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ message: "Error fetching registration", error });
     }
-  );
+
+    if (registration.length === 0) {
+      console.log("err1");
+      return res.status(404).json({ message: "Registration not found" });
+    }
+
+    const ticketId = registration[0].ticket_id;
+    const currentStatus = registration[0].status;
+
+    if (currentStatus === "Confirmed" && status === "Pending") {
+      console.log("err2");
+      return res
+        .status(400)
+        .json({ message: "Registration is already confirmed" });
+    }
+
+    if (status === "Pending") {
+      const ticketQuery = `
+        SELECT 
+          capacity, 
+          (capacity - (
+            SELECT COUNT(*) 
+            FROM registrations 
+            WHERE ticket_id = ? AND status = 'Confirmed'
+          )) AS tickets_left
+        FROM tickets 
+        WHERE ticket_id = ?
+      `;
+
+      db.execute(ticketQuery, [ticketId, ticketId], (error, ticket) => {
+        if (error) {
+          console.error(error);
+          return res
+            .status(500)
+            .json({ message: "Error fetching ticket information", error });
+        }
+
+        if (ticket.length === 0) {
+          console.log("err3");
+          return res.status(404).json({ message: "Ticket not found" });
+        }
+
+        if (ticket[0].tickets_left <= 0) {
+          console.log("err4");
+          return res
+            .status(400)
+            .json({ message: "No tickets available for confirmation" });
+        }
+
+        const updateQuery =
+          "UPDATE registrations SET status=? WHERE registration_id=?";
+        db.execute(
+          updateQuery,
+          [currentStatus == "Pending" ? "Confirmed" : "Pending", id],
+          (error, result) => {
+            if (error) {
+              console.error(error);
+              return res
+                .status(500)
+                .json({ message: "Error updating status", error });
+            }
+
+            return res
+              .status(200)
+              .json({ message: "Status updated successfully" });
+          }
+        );
+      });
+    } else {
+      const updateQuery =
+        "UPDATE registrations SET status=? WHERE registration_id=?";
+      db.execute(
+        updateQuery,
+        [currentStatus == "Pending" ? "Confirmed" : "Pending", id],
+        (error, result) => {
+          if (error) {
+            console.error(error);
+            return res
+              .status(500)
+              .json({ message: "Error updating status", error });
+          }
+
+          return res
+            .status(200)
+            .json({ message: "Status updated successfully" });
+        }
+      );
+    }
+  });
 };
 
 // const update_status = async (req, res) => {

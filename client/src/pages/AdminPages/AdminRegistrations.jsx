@@ -20,12 +20,15 @@ const AdminRegistrations = () => {
   const handleStatus = (registration_id, status) => {
     axios
       .put(`/registrations/update_status/${registration_id}`, { status })
-      .then(() => {
+      .then((res) => {
+        console.log(res);
+
         message.success("Status updated successfully");
         fetchData();
       })
       .catch((error) => {
         message.error("Failed to update status");
+        console.log(error);
       });
   };
 
