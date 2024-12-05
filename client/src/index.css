@@ -9,8 +9,8 @@
 
 .navbar-links a {
   transition: 0.3s;
-  border-bottom: 2px solid #d1d5db;
-  border-top: 1px solid #d1d5db;
+  border-bottom: 2px solid transparent;
+  border-top: 1px solid transparent;
 }
 
 .navbar-links a:hover {
@@ -19,8 +19,8 @@
 
 .footer-links a {
   transition: 0.3s;
-  border-bottom: 2px solid #d1d5db;
-  border-top: 1px solid #d1d5db;
+  border-bottom: 2px solid transparent;
+  border-top: 1px solid transparent;
 }
 
 .footer-links a:hover {
