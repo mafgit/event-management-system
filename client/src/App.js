@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Event from "./pages/Event";
 import SearchPage from "./pages/SearchPage";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 import AdminHome from "./pages/AdminPages/AdminHome";
 import AdminUsers from "./pages/AdminPages/AdminUsers";
 import AdminCategories from "./pages/AdminPages/AdminCategories";
@@ -130,11 +132,30 @@ function App() {
             }
           />
 
+
           <Route
             path="/organized-by/:id"
             element={
               <NormalRoute>
                 <OrganizedBy />
+              </NormalRoute>
+            }
+          />
+
+          <Route
+            path="/about-us"
+            element={
+              <NormalRoute>
+                <About />
+              </NormalRoute>
+            }
+          />
+          
+          <Route
+            path="/contact-us"
+            element={
+              <NormalRoute>
+                <Contact />
               </NormalRoute>
             }
           />

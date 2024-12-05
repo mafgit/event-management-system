@@ -7,10 +7,10 @@ const Footer = () => {
         <Link to="https://github.com/mafgit/event-management-system" target="_blank" className="flex items-center gap-2">
           <FaGithub /> Github
         </Link>
-        <Link to="/contact" className="flex items-center gap-2">
+        <Link to="/contact-us" className="flex items-center gap-2">
           <FaEnvelope /> Contact Us
         </Link>
-        <Link to="/about" className="flex items-center gap-2">
+        <Link to="/about-us" className="flex items-center gap-2">
           <FaInfoCircle /> About Us
         </Link>
       </div>
