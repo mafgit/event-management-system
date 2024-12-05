@@ -148,8 +148,6 @@ const get_event = async (req, res) => {
     const { id } = req.params;
     const q = "CALL GetEventView(?);";
     db.query(q, [id], (err, result) => {
-      console.log("SARIM: ", result[0][0]);
-
       if (err) throw err;
       if (result.length === 0)
         return res
@@ -165,9 +163,14 @@ const get_event = async (req, res) => {
             throw err2;
           }
 
+          let result_final = [];
+          if (result2.length && result[0] && result[0].length) {
+            result_final = result[0][0];
+          }
+
           return res
             .status(200)
-            .json({ success: true, event: { ...result[0][0], tags: result2 } });
+            .json({ success: true, event: { ...result_final, tags: result2 } });
         }
       );
     });
@@ -226,6 +229,10 @@ const get_analytics = (req, res) => {
       if (error2) {
         res.status(500).json({ error: error2 });
         throw error2;
+      }
+
+      if (results1.length === 0 || results2.length === 0 || !results1[0].name) {
+        return res.status(500).json({ error: "Error" });
       }
 
       res.json({ name: results1[0].name, results: results2[0] });
