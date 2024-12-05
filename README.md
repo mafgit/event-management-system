@@ -26,6 +26,8 @@ An Event Management System (EMS) where users can both organize events and regist
   - DB_PW
   - DB_NAME
   - JWT_SECRET
+  - CREATE_PROCEDURES ("yes" for first execution; "no" for after)
+  - CREATE_TRIGGERS ("yes" for first execution; "no" for after)
 - Add to the `.env` file which is inside client folder the following variables:
   - REACT_APP_FIREBASE_API_KEY
   - REACT_APP_FIREBASE_AUTH_DOMAIN

@@ -50,8 +50,7 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (category) REFERENCES categories (name) ON UPDATE CASCADE ON DELETE SET NULL
   );
   
-
-
+  create table if not exists deleted_events like events;
 
   CREATE TABLE IF NOT EXISTS reviews (
     review_id INT NOT NULL AUTO_INCREMENT,
@@ -119,6 +118,8 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (event_id) REFERENCES events (event_id) ON UPDATE CASCADE ON DELETE CASCADE
   );
+
+  -- views
   
   CREATE OR REPLACE VIEW get_featured_view AS
   SELECT * 
@@ -139,39 +140,8 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
 
   create or replace view get_all_users_view as
   SELECT * FROM users;
+
 `;
-
-// let trg = `
-//   DROP EVENT IF EXISTS update_event_status;
-
-// DELIMITER //
-
-// CREATE EVENT update_event_status
-// ON SCHEDULE EVERY 1 MINUTE
-// DO
-//   UPDATE events
-//   SET status = 'Completed'
-//   WHERE end_time <= NOW() AND status = 'Scheduled';
-// END //
-
-// DELIMITER ;
-
-// DROP TRIGGER IF EXISTS event_status_trigger;
-
-// DELIMITER //
-
-// CREATE TRIGGER event_status_trigger
-// BEFORE UPDATE ON events
-// FOR EACH ROW
-// BEGIN
-//   IF NEW.end_time <= NOW() AND NEW.status = 'Scheduled' THEN
-//     SET NEW.status = 'Completed';
-//   END IF;
-// END;
-// //
-
-// DELIMITER ;
-// `;
 
 db.query(create_tables_query, (err) => {
   if (err) console.log(err);
@@ -202,6 +172,20 @@ db.query(create_tables_query, (err) => {
       db.query(procedures_query, (err) => {
         if (err) console.log(err);
         else console.log("-> procedures are ready");
+
+        if (process.env.CREATE_TRIGGERS == "yes") {
+          const create_triggers_query = `
+  create trigger log_deleted_event before delete on events
+  for each row
+  begin
+    insert into deleted_events select * from events where event_id = old.event_id;
+  end;`;
+
+          db.query(create_triggers_query, (err) => {
+            if (err) console.log(err);
+            else console.log("-> triggers are ready");
+          });
+        }
       });
     }
   }
