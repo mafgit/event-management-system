@@ -191,6 +191,13 @@ const update_status = (req, res) => {
         );
       });
     } else {
+      if (currentStatus === "Pending" && status === "Confirmed") {
+        console.log("err2");
+        return res
+          .status(400)
+          .json({ message: "Registration is already pending" });
+      }
+
       const updateQuery =
         "UPDATE registrations SET status=? WHERE registration_id=?";
       db.execute(
