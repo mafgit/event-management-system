@@ -33,7 +33,7 @@ const AdminHome = () => {
 
   return (
     <div className="">
-      <h1 className="text-center font-bold text-3xl mt-12 text-gray-800">
+      <h1 className="text-center font-bold text-3xl mt-24 text-gray-800">
         Admin Dashboard
       </h1>
       <div className="flex flex-wrap gap-2 w-full items-center justify-center mt-10 max-w-[1000px] m-auto">
