@@ -50,6 +50,9 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (category) REFERENCES categories (name) ON UPDATE CASCADE ON DELETE SET NULL
   );
   
+
+
+
   CREATE TABLE IF NOT EXISTS reviews (
     review_id INT NOT NULL AUTO_INCREMENT,
     text VARCHAR(300) NOT NULL,
@@ -115,7 +118,40 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     INDEX event_id_idx (event_id),
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (event_id) REFERENCES events (event_id) ON UPDATE CASCADE ON DELETE CASCADE
-  );`;
+  );
+  `;
+
+  let trg = `
+  DROP EVENT IF EXISTS update_event_status;
+
+DELIMITER //
+
+CREATE EVENT update_event_status
+ON SCHEDULE EVERY 1 MINUTE
+DO
+  UPDATE events
+  SET status = 'Completed'
+  WHERE end_time <= NOW() AND status = 'Scheduled';
+END //
+
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS event_status_trigger;
+
+DELIMITER //
+
+CREATE TRIGGER event_status_trigger
+BEFORE UPDATE ON events
+FOR EACH ROW
+BEGIN
+  IF NEW.end_time <= NOW() AND NEW.status = 'Scheduled' THEN 
+    SET NEW.status = 'Completed';
+  END IF;
+END;
+//
+
+DELIMITER ;
+`
 
 db.query(create_tables_query, (err) => {
   if (err) console.log(err);
