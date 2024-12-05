@@ -38,7 +38,7 @@ const Contact = () => {
       <Content>
         {/* Contact Us Header */}
         <section style={{ ...sectionStyle, textAlign: 'center' }}>
-          <Title level={1} style={{ color: '#065f46', fontSize: '48px', marginBottom: '16px' }}>
+          <Title level={1} style={{ color: '#333', fontSize: '48px', marginBottom: '16px' }}>
             Contact Us
           </Title>
           <Paragraph style={{ fontSize: '18px', color: '#666', maxWidth: '800px', margin: '0 auto 24px' }}>
@@ -63,7 +63,7 @@ const Contact = () => {
                 <PhoneOutlined style={{ fontSize: '36px', color: '#000', marginBottom: '16px' }} />
                 <Title level={3} style={{ color: '#000', marginBottom: '16px' }}>Call Us</Title>
                 <Link href="tel:+11234567890" style={linkStyle}>
-                  +1 (123) 456-7890
+                  01234567890
                 </Link>
               </Card>
             </Col>
@@ -72,7 +72,7 @@ const Contact = () => {
                 <EnvironmentOutlined style={{ fontSize: '36px', color: '#000', marginBottom: '16px' }} />
                 <Title level={3} style={{ color: '#000', marginBottom: '16px' }}>Visit Us</Title>
                 <Link href="https://maps.google.com/?q=123+Event+Street,+Horizon+City,+EH+12345" target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                  123 Event Street, Horizon City, EH 12345
+                  FAST NUCES karachi
                 </Link>
               </Card>
             </Col>
@@ -98,7 +98,7 @@ const Contact = () => {
         <section style={{ ...sectionStyle, textAlign: 'center' }}>
           <Title level={2} style={{ color: '#333', marginBottom: '24px' }}>We're Here to Help</Title>
           <Paragraph style={{ fontSize: '16px', color: '#666', maxWidth: '800px', margin: '0 auto' }}>
-            Our team is available Monday through Friday, 9:00 AM to 5:00 PM (EST). 
+            Our team is available Monday through Friday, 9:00 AM to 5:00 PM. 
             For urgent matters outside of business hours, please email us and we'll get back to you as soon as possible.
           </Paragraph>
         </section>

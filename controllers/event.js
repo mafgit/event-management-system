@@ -148,7 +148,7 @@ const get_event = async (req, res) => {
     const { id } = req.params;
     const q = "CALL GetEventView(?);";
     db.query(q, [id], (err, result) => {
-      console.log("SARIM: ", result[0][0]);
+      // console.log("SARIM: ", result[0][0]);
 
       if (err) throw err;
       if (result.length === 0)
