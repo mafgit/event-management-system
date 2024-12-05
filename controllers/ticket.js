@@ -152,70 +152,128 @@ const delete_ticket = (req, res) => {
   });
 };
 
-const register_ticket = (req, res) => {
+// const register_ticket = (req, res) => {
+//   const { id, ticket_id } = req.body;
+
+//   // if capacity - tickets_bought = 0, reject
+//   const query1 = `select * from registrations where event_id = ? and user_id = ?;`; // if found, reject
+//   db.query(query1, [id, req.user.id], (err, result) => {
+//     if (err) {
+//       return res.status(500).json({ message: "Error registering ticket (1)" });
+//     }
+//     if (result.length > 0) {
+//       return res.status(400).json({ message: "Ticket already registered" });
+//     }
+
+//     const query2 = `select count(*) as tickets_bought from registrations where event_id = ? and ticket_id = ? and status = 'Confirmed';`;
+//     db.query(query2, [id, ticket_id], (err2, result2) => {
+//       if (err2) {
+//         console.log(err2);
+
+//         return res
+//           .status(500)
+//           .json({ message: "Error registering ticket (2)" });
+//       }
+
+//       const query3 = `select capacity, price from tickets where event_id = ? and ticket_id = ?;`;
+//       db.query(query3, [id, ticket_id], (err3, result3) => {
+//         if (err3) {
+//           console.log(err3);
+
+//           return res
+//             .status(500)
+//             .json({ message: "Error registering ticket (3)" });
+//         }
+
+//         if (result2[0].tickets_bought >= result3[0].capacity) {
+//           return res.status(400).json({ message: "Ticket sold out" });
+//         }
+
+//         const query4 =
+//           "INSERT INTO registrations (event_id, user_id, ticket_id, status, amount) VALUES (?, ?, ?, ?, ?)";
+//         db.query(
+//           query4,
+//           [id, req.user.id, ticket_id, "Pending", result3[0].price],
+//           (err4, result4) => {
+//             if (err4) {
+//               console.log(err4);
+
+//               return res
+//                 .status(500)
+//                 .json({ message: "Error registering ticket (4)" });
+//             }
+//             return res.status(201).json({
+//               message: "Ticket registered, but pending until payment!",
+//             });
+//           }
+//         );
+//       });
+//     });
+//   });
+// };
+
+const register_ticket = async (req, res) => {
   const { id, ticket_id } = req.body;
 
-  // if capacity - tickets_bought = 0, reject
+  try {
+    // getting db connection
+    const connection = await db.promise().getConnection();
 
-  const query1 = `select * from registrations where event_id = ? and user_id = ?;`; // if found, reject
-  db.query(query1, [id, req.user.id], (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: "Error registering ticket (1)" });
-    }
-    if (result.length > 0) {
-      return res.status(400).json({ message: "Ticket already registered" });
-    }
+    try {
+      await connection.beginTransaction();
 
-    const query2 = `select count(*) as tickets_bought from registrations where event_id = ? and ticket_id = ? and status = 'Confirmed';`;
-    db.query(query2, [id, ticket_id], (err2, result2) => {
-      if (err2) {
-        console.log(err2);
+      // if already registered, reject
+      const query1 = `SELECT * FROM registrations WHERE event_id = ? AND user_id = ?;`;
+      const [result1] = await connection.execute(query1, [id, req.user.id]);
 
-        return res
-          .status(500)
-          .json({ message: "Error registering ticket (2)" });
+      if (result1.length > 0) {
+        throw new Error("Ticket already registered");
       }
 
-      const query3 = `select capacity, price from tickets where event_id = ? and ticket_id = ?;`;
-      db.query(query3, [id, ticket_id], (err3, result3) => {
-        if (err3) {
-          console.log(err3);
+      // counting tickets that have been bought
+      const query2 = `SELECT COUNT(*) AS tickets_bought FROM registrations WHERE event_id = ? AND ticket_id = ? AND status = 'Confirmed';`;
+      const [result2] = await connection.execute(query2, [id, ticket_id]);
 
-          return res
-            .status(500)
-            .json({ message: "Error registering ticket (3)" });
-        }
+      // getting capacity and price from tickets
+      const query3 = `SELECT capacity, price FROM tickets WHERE event_id = ? AND ticket_id = ?;`;
+      const [result3] = await connection.execute(query3, [id, ticket_id]);
 
-        if (result2[0].tickets_bought >= result3[0].capacity) {
-          return res.status(400).json({ message: "Ticket sold out" });
-        }
+      if (result2[0].tickets_bought >= result3[0].capacity) {
+        throw new Error("Ticket sold out");
+      }
 
-        const query4 =
-          "INSERT INTO registrations (event_id, user_id, ticket_id, status, amount) VALUES (?, ?, ?, ?, ?)";
-        db.query(
-          query4,
-          [id, req.user.id, ticket_id, "Pending", result3[0].price],
-          (err4, result4) => {
-            if (err4) {
-              console.log(err4);
+      // inserting registration
+      const query4 = `INSERT INTO registrations (event_id, user_id, ticket_id, status, amount) VALUES (?, ?, ?, ?, ?);`;
+      const [result4] = await connection.execute(query4, [
+        id,
+        req.user.id,
+        ticket_id,
+        "Pending",
+        result3[0].price,
+      ]);
 
-              return res
-                .status(500)
-                .json({ message: "Error registering ticket (4)" });
-            }
-            return res.status(201).json({
-              message: "Ticket registered, but pending until payment!",
-            });
-          }
-        );
+      // commit
+      await connection.commit();
+      connection.release();
+
+      res.status(201).json({
+        message: "Ticket registered, but pending until payment!",
       });
-    });
-  });
+    } catch (error) {
+      // Rollback the transaction in case of error
+      await connection.rollback();
+      connection.release();
+      res.status(400).json({ message: error.message });
+    }
+  } catch (error) {
+    // Handle unexpected errors
+    res.status(500).json({ message: "Error registering ticket", error });
+  }
 };
 
 const unregister_ticket = (req, res) => {
   const { id, ticket_name, ticket_id } = req.body;
-  console.log(id, ticket_name);
+  // console.log(id, ticket_name);
 
   const query = `DELETE FROM registrations WHERE event_id = ? and user_id = ? and ticket_id = ?;`;
   db.query(query, [id, req.user.id, ticket_id], (err, result) => {

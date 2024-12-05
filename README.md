@@ -14,7 +14,7 @@ An Event Management System (EMS) where users can both organize events and regist
 - Frontend:
   - React
   - Tailwind
-  - Antdesign (for admin dashboard)
+  - Ant Design (for admin dashboard)
 
 ### How to Get Started
 

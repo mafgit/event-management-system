@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
-import { FaGithub, FaEnvelope, FaInfoCircle } from "react-icons/fa"; 
+import { FaGithub, FaEnvelope, FaInfoCircle } from "react-icons/fa";
 const Footer = () => {
   return (
-    <div className="bg-teal-800 text-white py-4 px-6 flex justify-between items-center">
+    <div className="bg-gray-300 text-black py-4 px-6 flex justify-between items-center">
       <div className="footer-links flex gap-5">
-        <Link to="https://github.com/mafgit/event-management-system" target="_blank" className="flex items-center gap-2">
+        <Link
+          to="https://github.com/mafgit/event-management-system"
+          target="_blank"
+          className="flex items-center gap-2"
+        >
           <FaGithub /> Github
         </Link>
         <Link to="/contact-us" className="flex items-center gap-2">

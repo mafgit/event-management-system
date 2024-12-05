@@ -1,7 +1,7 @@
 const db = require("../db");
 
 const get_users = (req, res) => {
-  db.query("SELECT * FROM users", [], (error, results) => {
+  db.query("SELECT * FROM get_all_users_view", [], (error, results) => {
     if (error) {
       return;
       res.status(500).json({ error: error.message });

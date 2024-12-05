@@ -119,7 +119,27 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (event_id) REFERENCES events (event_id) ON UPDATE CASCADE ON DELETE CASCADE
   );
-  `;
+  
+  CREATE OR REPLACE VIEW get_featured_view AS
+  SELECT * 
+  FROM events
+  WHERE verified = 1 
+    AND event_date >= CURDATE()
+  ORDER BY capacity DESC, event_date ASC
+  LIMIT 10;
+
+  create or replace view get_upcoming_view as
+  SELECT * FROM events
+  WHERE verified = 1 and event_date >= CURDATE() 
+  ORDER BY event_date DESC 
+  LIMIT 3;
+
+  create or replace view get_all_events_view as
+  SELECT * FROM events;
+
+  create or replace view get_all_users_view as
+  SELECT * FROM users;
+`;
 
 // let trg = `
 //   DROP EVENT IF EXISTS update_event_status;
@@ -157,6 +177,33 @@ db.query(create_tables_query, (err) => {
   if (err) console.log(err);
   else {
     console.log("-> table structures are ready");
+
+    if (process.env.CREATE_PROCEDURES === "yes") {
+      let procedures_query = `
+      -- procedures
+  CREATE OR REPLACE PROCEDURE GetEventView(IN p_event_id INT)
+  BEGIN
+    SELECT e.*, concat(u.first_name, ' ', u.last_name) as organizer_name
+    FROM events e inner join users u
+    on e.organized_by = u.user_id
+    WHERE e.event_id = p_event_id;
+  END;
+
+  CREATE OR REPLACE PROCEDURE GetAnalyticsView(IN p_event_id INT)
+  BEGIN
+    select u.*, r.*, t.*, a.created_at as 'attendance_created_at' from users u
+    inner join registrations r on u.user_id = r.user_id
+    left join attendance a on a.user_id = r.user_id
+    inner join tickets t on r.ticket_id = t.ticket_id
+    where r.event_id = p_event_id and t.event_id = p_event_id and r.status = 'Confirmed';
+  END;
+  `;
+
+      db.query(procedures_query, (err) => {
+        if (err) console.log(err);
+        else console.log("-> procedures are ready");
+      });
+    }
   }
 });
 

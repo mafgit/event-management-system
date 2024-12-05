@@ -83,7 +83,7 @@ const get_admin_counts = (req, res) => {
 const get_events = async (req, res) => {
   const { q, tags, category, type } = req.query;
   str = "SELECT * FROM events where status <> 'Cancelled' and verified = 1";
-  if (q) str += ` and name like '%${q}%'`;
+  if (q) str += ` and name like '%${q}%'`; // cmnt: avoid sql injection
   if (tags != "all")
     str += ` and event_id in (select event_id from event_tags where tag_name in (${tags
       .split(",")
@@ -123,7 +123,7 @@ const get_organized_by = async (req, res) => {
 };
 
 const get_all_events = (req, res) => {
-  const q = "SELECT * FROM events;";
+  const q = "SELECT * FROM get_all_events_view";
   db.query(q, (err, results) => {
     if (err) throw err;
     res.status(200).json(results);
@@ -146,9 +146,10 @@ const get_attended_by_me = async (req, res) => {
 const get_event = async (req, res) => {
   try {
     const { id } = req.params;
-    const q =
-      "SELECT e.*, concat(u.first_name, ' ', u.last_name) as organizer_name FROM events e inner join users u on e.organized_by = u.user_id WHERE e.event_id = ?;";
+    const q = "CALL GetEventView(?);";
     db.query(q, [id], (err, result) => {
+      console.log("SARIM: ", result[0][0]);
+
       if (err) throw err;
       if (result.length === 0)
         return res
@@ -166,7 +167,7 @@ const get_event = async (req, res) => {
 
           return res
             .status(200)
-            .json({ success: true, event: { ...result[0], tags: result2 } });
+            .json({ success: true, event: { ...result[0][0], tags: result2 } });
         }
       );
     });
@@ -219,19 +220,15 @@ const get_analytics = (req, res) => {
       throw error1;
     }
     // users
-    const q2 = `select u.*, r.*, t.*, a.created_at as 'attendance_created_at' from users u
-inner join registrations r on u.user_id = r.user_id
-left join attendance a on a.user_id = r.user_id
-inner join tickets t on r.ticket_id = t.ticket_id
-where r.event_id = ? and t.event_id = ? and r.status = 'Confirmed';`;
+    const q2 = `CALL GetAnalyticsView(?);`;
 
-    db.query(q2, [id, id], (error2, results2) => {
+    db.query(q2, [id], (error2, results2) => {
       if (error2) {
         res.status(500).json({ error: error2 });
         throw error2;
       }
 
-      res.json({ name: results1[0].name, results: results2 });
+      res.json({ name: results1[0].name, results: results2[0] });
     });
   });
 };
@@ -277,8 +274,7 @@ const get_ticket_types = (req, res) => {
 
 const get_featured = async (req, res) => {
   try {
-    const q =
-      "SELECT * FROM events WHERE verified = 1 and event_date >= CURDATE() ORDER BY capacity DESC, event_date ASC LIMIT 10;";
+    const q = "select * from get_featured_view;";
     db.query(q, (err, result) => {
       if (err) throw err;
       if (result.length === 0)
@@ -295,8 +291,7 @@ const get_featured = async (req, res) => {
 
 const get_upcoming = async (req, res) => {
   try {
-    const q =
-      "SELECT * FROM events WHERE verified = 1 and event_date >= CURDATE() ORDER BY event_date DESC LIMIT 3;";
+    const q = "select * from get_upcoming_view;";
     db.query(q, (err, result) => {
       if (err) throw err;
       if (result.length === 0)
@@ -418,7 +413,7 @@ const update_event = async (req, res) => {
           // insert tags
           if (tags && tags.length > 0) {
             tags.forEach((tag_name) => {
-              let q2 = `insert ignore into event_tags(event_id, tag_name) values(?, ?);`;
+              let q2 = `insert ignore into event_tags(event_id, tag_name) values(?, ?);`; // cmnt: batch insertion
               db.execute(q2, [id, tag_name], (err, results) => {
                 if (err) {
                   console.log(err);
