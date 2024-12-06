@@ -151,17 +151,28 @@ END;
 create trigger log_deleted_event before delete on events
 for each row
 begin
-  INSERT INTO deleted_events 
-  VALUES (OLD.event_id, OLD.name, OLD.description, OLD.capacity, OLD.venue, OLD.image_url, OLD.organized_by, 
-          OLD.event_date, OLD.start_time, OLD.end_time, OLD.category, OLD.status, OLD.verified, OLD.created_at, 
-          OLD.modified_at, NOW(), USER());
+     INSERT INTO deleted_events (
+      event_id, name, description, capacity, venue, image_url, organized_by, 
+      event_date, start_time, end_time, category, status, verified, 
+      created_at, modified_at, deleted_at, deleted_by
+  )
+  VALUES (
+      OLD.event_id, OLD.name, OLD.description, OLD.capacity, OLD.venue, OLD.image_url, OLD.organized_by, 
+      OLD.event_date, OLD.start_time, OLD.end_time, OLD.category, OLD.status, OLD.verified, 
+    OLD.created_at, OLD.modified_at, NOW(), USER()
+  );
+
 end;
 
 create trigger log_deleted_user before delete on users
 for each row
 begin
-    INSERT INTO deleted_users 
-  VALUES (OLD.user_id, OLD.first_name, OLD.last_name, OLD.email, OLD.is_admin, OLD.password, NOW(), USER());
+     INSERT INTO deleted_users (
+      user_id, first_name, last_name, email, is_admin, password, deleted_at, deleted_by
+  )
+  VALUES (
+      OLD.user_id, OLD.first_name, OLD.last_name, OLD.email, OLD.is_admin, OLD.password, NOW(), USER()
+  );
 end;
 `;
 

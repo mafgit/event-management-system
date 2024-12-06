@@ -53,12 +53,40 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
   
 
   -- trigger tables
-  create table if not exists deleted_events like events;
-  create table if not exists deleted_users like users;
+CREATE TABLE IF NOT EXISTS deleted_events (
+    event_id INT NOT NULL,
+    name VARCHAR(45) NOT NULL,
+    description VARCHAR(300) NOT NULL,
+    capacity INT NOT NULL,
+    venue VARCHAR(100) NOT NULL,
+    image_url VARCHAR(1024),
+    organized_by INT NULL,
+    event_date DATETIME NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    category VARCHAR(30) NULL,
+    status VARCHAR(30) NOT NULL,
+    verified TINYINT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL,
+    modified_at TIMESTAMP NOT NULL,
+    deleted_at DATETIME NOT NULL,
+    deleted_by VARCHAR(255) NOT NULL,
+    PRIMARY KEY (event_id)
+);
 
-- Alter trigger tables to include additional columns
-alter table deleted_events  add column deleted_at datetime, add column deleted_by varchar(255);
-alter table deleted_users  add column deleted_at datetime, add column deleted_by varchar(255);
+
+CREATE TABLE IF NOT EXISTS deleted_users (
+    user_id INT NOT NULL,
+    first_name VARCHAR(40) NOT NULL,
+    last_name VARCHAR(40) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    is_admin TINYINT NOT NULL DEFAULT 0,
+    password VARCHAR(255) NOT NULL,
+    deleted_at DATETIME NOT NULL,
+    deleted_by VARCHAR(255) NOT NULL,
+    PRIMARY KEY (user_id)
+);
+
 
 
 
