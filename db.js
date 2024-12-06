@@ -50,7 +50,11 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (category) REFERENCES categories (name) ON UPDATE CASCADE ON DELETE SET NULL
   );
   
+
+  // trigers tables
   create table if not exists deleted_events like events;
+  create table if not exists deleted_users like users;
+
 
   CREATE TABLE IF NOT EXISTS reviews (
     review_id INT NOT NULL AUTO_INCREMENT,
@@ -168,25 +172,44 @@ db.query(create_tables_query, (err) => {
     where r.event_id = p_event_id and t.event_id = p_event_id and r.status = 'Confirmed';
   END;
   `;
-
-      db.query(procedures_query, (err) => {
+  
+  db.query(procedures_query, (err) => {
+    if (err) console.log(err);
+    else console.log("-> procedures are ready");
+  
+    if (process.env.CREATE_TRIGGERS == "yes") {
+      // Create trigger for events
+      const create_event_trigger_query = `
+        CREATE TRIGGER log_deleted_event BEFORE DELETE ON events
+        FOR EACH ROW
+        BEGIN
+          INSERT INTO deleted_events SELECT * FROM events WHERE event_id = OLD.event_id;
+        END;`;
+  
+      db.query(create_event_trigger_query, (err) => {
         if (err) console.log(err);
-        else console.log("-> procedures are ready");
-
-        if (process.env.CREATE_TRIGGERS == "yes") {
-          const create_triggers_query = `
-  create trigger log_deleted_event before delete on events
-  for each row
-  begin
-    insert into deleted_events select * from events where event_id = old.event_id;
-  end;`;
-
-          db.query(create_triggers_query, (err) => {
-            if (err) console.log(err);
-            else console.log("-> triggers are ready");
-          });
-        }
+        else console.log("-> triggers for events are ready");
       });
+  
+      // Create trigger for users
+      const create_user_trigger_query = `
+        CREATE TRIGGER log_deleted_user BEFORE DELETE ON users
+        FOR EACH ROW
+        BEGIN
+          INSERT INTO deleted_users SELECT * FROM users WHERE user_id = OLD.user_id;
+        END;`;
+  
+      db.query(create_user_trigger_query, (err) => {
+        if (err) console.log(err);
+        else console.log("-> triggers for users are ready");
+      });
+    }
+  });
+  
+
+
+
+
     }
   }
 });
