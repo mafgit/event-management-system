@@ -161,6 +161,8 @@ const get_event = async (req, res) => {
         "select * from event_tags where event_id = ?",
         [id],
         (err2, result2) => {
+          // console.log(result2);
+
           if (err2) {
             res.status(500).json({ success: false, error: err2.message });
             throw err2;
@@ -415,23 +417,25 @@ const update_event = async (req, res) => {
             .status(404)
             .json({ success: false, message: "Event not found" });
 
-        // delete tags of that event
-        let q1 = `delete from event_tags where event_id = ?;`;
-        db.execute(q1, [id], (err, results) => {
-          if (err) throw err;
+        if (!req.body.req_from_admin) {
+          // delete tags of that event
+          let q1 = `delete from event_tags where event_id = ?;`;
+          db.execute(q1, [id], (err, results) => {
+            if (err) throw err;
 
-          // insert tags
-          if (tags && tags.length > 0) {
-            tags.forEach((tag_name) => {
-              let q2 = `insert ignore into event_tags(event_id, tag_name) values(?, ?);`; // cmnt: batch insertion
-              db.execute(q2, [id, tag_name], (err, results) => {
-                if (err) {
-                  console.log(err);
-                }
+            // insert tags
+            if (tags && tags.length > 0) {
+              tags.forEach((tag_name) => {
+                let q2 = `insert ignore into event_tags(event_id, tag_name) values(?, ?);`; // cmnt: batch insertion
+                db.execute(q2, [id, tag_name], (err, results) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                });
               });
-            });
-          }
-        });
+            }
+          });
+        }
 
         return res
           .status(200)
