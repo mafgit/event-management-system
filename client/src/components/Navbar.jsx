@@ -16,11 +16,12 @@ const Navbar = () => {
         {auth ? (
           <>
             <Link to="/create-event">Create Event</Link>
-            <Link to="/account"><img src="/image.png" className="w-6 h-6 ml-2 mr-2"/></Link>
+            <Link to="/account" className="img-link-element">
+              <img src="/image.png" className="w-6 h-6 ml-2 mr-2" alt="user" />
+            </Link>
           </>
         ) : (
           <Link to="/login">Login</Link>
-          
         )}
         {admin ? (
           <Link to="/admin" className="bg-white px-2 rounded-md btn">

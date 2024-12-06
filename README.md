@@ -35,4 +35,4 @@ An Event Management System (EMS) where users can both organize events and regist
   - REACT_APP_FIREBASE_MEASUREMENT_ID
 - Run `npm install` in both the root folder and the client folder to install dependencies
 - Run `npm run both` in the root folder to start both the backend and the frontend, which can independently be run by the following commands: `npm run dev` (backend), `cd client` then `npm start` (frontend)
-- Run `node insert_data` in the root folder to insert sample data, and create procedures and triggers
+- Wait until a console log appears stating that table structures are ready. Then run `node insert_data` in the root folder to insert sample data, and to create procedures and triggers.

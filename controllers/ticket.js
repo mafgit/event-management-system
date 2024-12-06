@@ -96,17 +96,27 @@ const create_ticket = (req, res) => {
   const { id } = req.params;
   const { ticket_name, price, capacity } = req.body;
 
+  if (price < 0 || capacity < 0) {
+    return res
+      .status(400)
+      .json({ message: "Price and capacity must be non-negative" });
+  }
+
   const query =
     "INSERT INTO tickets (event_id, ticket_name, price, capacity) VALUES (?, ?, ?, ?)";
   db.query(query, [id, ticket_name, price, capacity], (err, result) => {
     if (err) {
       console.log(err);
-      if(err.sqlState === '45000'){
-        return res.status(500).json({ message: "Ticket capacity exceeds remaining event capacity!" });
+      if (err.sqlState === "45000") {
+        return res
+          .status(500)
+          .json({
+            message: "Ticket capacity exceeds remaining event capacity!",
+          });
       }
       return res.status(500).json({ message: "Error creating ticket" });
     }
-     res.status(201).json({ message: "Ticket created successfully!" });
+    res.status(201).json({ message: "Ticket created successfully!" });
   });
 };
 

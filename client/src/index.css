@@ -10,7 +10,7 @@
 .navbar-links a {
   transition: 0.3s;
   border-bottom: 2px solid transparent;
-  border-top: 1px solid transparent;
+  border-top: 2px solid transparent;
 }
 
 .navbar-links a:hover {
@@ -20,12 +20,18 @@
 .footer-links a {
   transition: 0.3s;
   border-bottom: 2px solid transparent;
-  border-top: 1px solid transparent;
+  border-top: 2px solid transparent;
 }
 
 .footer-links a:hover {
   border-bottom: 2px solid white;
 }
+
+/* .img-link-element:hover,
+.img-link-element {
+  border-top: transparent !important;
+  border-bottom: transparent !important;
+} */
 
 .page {
   min-height: calc(100vh - 103px);
