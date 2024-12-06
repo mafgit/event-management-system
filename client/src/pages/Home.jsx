@@ -20,7 +20,6 @@ const Home = () => {
           return;
         }
         setFeaturedEvents(response.data.events);
-        // console.log(featuredEvents);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -35,7 +34,6 @@ const Home = () => {
           return;
         }
         setUpcomingEvents(response.data.events);
-        // console.log(upcomingEvents);
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -54,8 +52,6 @@ const Home = () => {
           `${event.event_date.split("T")[0]}T${event.start_time}`
         );
         const difference = startDateTime - now;
-        console.log(startDateTime);
-
         if (difference <= 0) {
           updatedTimeLeft[event.event_id] = "00:00:00"; // Event started or passed
         } else {
@@ -73,15 +69,12 @@ const Home = () => {
           updatedTimeLeft[event.event_id] = `${hours}:${minutes}:${seconds}`;
         }
       });
-      console.log(timeLeft);
 
       setTimeLeft(updatedTimeLeft);
     };
 
-    // Run every second
     const timer = setInterval(calculateTimeLeft, 1000);
-    // calculateTimeLeft();
-    // // Clean up the interval on component unmount
+
     return () => clearInterval(timer);
   }, [upcomingEvents]);
 

@@ -24,29 +24,35 @@ const Signup = ({ isLoginPage }) => {
       const auth = getAuth(app);
 
       const result = await signInWithPopup(auth, provider);
-      const res = await fetch("http://localhost:5000/auth/google", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          first_name: result.user.displayName.split(" ")[0],
-          last_name: result.user.displayName.split(" ").slice(1).join(" "),
-          email: result.user.email,
-        }),
-      });
-      const data = await res.json();
-      if (data.success === false) return toast(data.message);
-      toast("Logged in!");
-      const { user_id, email, first_name, last_name, is_admin } = data.user;
-      setAuth(true);
-      setUserId(user_id);
-      setEmail(email);
-      setFirstName(first_name);
-      setLastName(last_name);
-      setAdmin(is_admin);
-    } catch (error) {
-      console.log("Could not sign in with google", error);
+      axios
+        .post("/auth/google", 
+          { email: result.user.email, 
+            first_name: result.user.displayName.split(" ")[0],
+            last_name: result.user.displayName.split(" ")[1],
+          })
+        .then((res) => {
+          if (res.data.success) {
+            toast("Logged in!");
+            const { user_id, email, first_name, last_name, is_admin } = res.data.user;
+            setAuth(true);
+            setUserId(user_id);
+            setEmail(email);
+            setFirstName(first_name);
+            setLastName(last_name);
+            setAdmin(is_admin);
+          } else {
+            toast(res.data.message);
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            toast(error.response.data.message);
+          } else {
+            toast("Request error: " + error.message);
+          }
+        });
+     } catch (error) {
+        toast("Could not sign in with google!");
     }
   };
 
