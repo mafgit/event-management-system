@@ -52,9 +52,14 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
   );
   
 
-  -- triggers tables
+  -- trigger tables
   create table if not exists deleted_events like events;
   create table if not exists deleted_users like users;
+
+- Alter trigger tables to include additional columns
+alter table deleted_events  add column deleted_at datetime, add column deleted_by varchar(255);
+alter table deleted_users  add column deleted_at datetime, add column deleted_by varchar(255);
+
 
 
   CREATE TABLE IF NOT EXISTS reviews (
