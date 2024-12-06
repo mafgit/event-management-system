@@ -14,8 +14,9 @@ console.log("-> connected to mysql database");
 
 const create_tables_query = `CREATE TABLE IF NOT EXISTS users ( 
     user_id INT NOT NULL AUTO_INCREMENT,
-    first_name VARCHAR(20) NOT NULL,
-    last_name VARCHAR(20) NOT NULL,
+    first_name VARCHAR(40) NOT NULL,
+    last_name VARCHAR(40) NOT NULL,
+    -- names are 40 chars long so that google signin with name "k224257 Mohammad Abdullah Farooqui" and the likes can work
     email VARCHAR(255) NOT NULL UNIQUE,
     is_admin TINYINT NOT NULL DEFAULT 0,
     password VARCHAR(255) NOT NULL,
@@ -119,7 +120,7 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (event_id) REFERENCES events (event_id) ON UPDATE CASCADE ON DELETE CASCADE
   );
 
-  -- views
+  -- show: views
   
   CREATE OR REPLACE VIEW get_featured_view AS
   SELECT * 
@@ -147,47 +148,6 @@ db.query(create_tables_query, (err) => {
   if (err) console.log(err);
   else {
     console.log("-> table structures are ready");
-
-    if (process.env.CREATE_PROCEDURES === "yes") {
-      let procedures_query = `
-      -- procedures
-  CREATE OR REPLACE PROCEDURE GetEventView(IN p_event_id INT)
-  BEGIN
-    SELECT e.*, concat(u.first_name, ' ', u.last_name) as organizer_name
-    FROM events e inner join users u
-    on e.organized_by = u.user_id
-    WHERE e.event_id = p_event_id;
-  END;
-
-  CREATE OR REPLACE PROCEDURE GetAnalyticsView(IN p_event_id INT)
-  BEGIN
-    select u.*, r.*, t.*, a.created_at as 'attendance_created_at' from users u
-    inner join registrations r on u.user_id = r.user_id
-    left join attendance a on a.user_id = r.user_id
-    inner join tickets t on r.ticket_id = t.ticket_id
-    where r.event_id = p_event_id and t.event_id = p_event_id and r.status = 'Confirmed';
-  END;
-  `;
-
-      db.query(procedures_query, (err) => {
-        if (err) console.log(err);
-        else console.log("-> procedures are ready");
-
-        if (process.env.CREATE_TRIGGERS == "yes") {
-          const create_triggers_query = `
-  create trigger log_deleted_event before delete on events
-  for each row
-  begin
-    insert into deleted_events select * from events where event_id = old.event_id;
-  end;`;
-
-          db.query(create_triggers_query, (err) => {
-            if (err) console.log(err);
-            else console.log("-> triggers are ready");
-          });
-        }
-      });
-    }
   }
 });
 

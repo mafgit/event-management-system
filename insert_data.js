@@ -9,7 +9,7 @@ const db = mysql.createPool({
   multipleStatements: true,
 });
 
-const insert_sample_data_query = `
+const sample_trig_proc_query = `
 use ems;
 SET FOREIGN_KEY_CHECKS = 0;
 truncate table users;
@@ -125,15 +125,43 @@ INSERT INTO attendance (user_id, event_id) VALUES
 (6, 6),
 (7, 7),
 (8, 6);
+
+-- show: procedures
+
+CREATE PROCEDURE GetEventView(IN p_event_id INT)
+BEGIN
+  SELECT e.*, concat(u.first_name, ' ', u.last_name) as organizer_name
+  FROM events e inner join users u
+  on e.organized_by = u.user_id
+  WHERE e.event_id = p_event_id;
+END;
+
+CREATE PROCEDURE GetAnalyticsView(IN p_event_id INT)
+BEGIN
+  select u.*, r.*, t.*, a.created_at as 'attendance_created_at' from users u
+  inner join registrations r on u.user_id = r.user_id
+  left join attendance a on a.user_id = r.user_id
+  inner join tickets t on r.ticket_id = t.ticket_id
+  where r.event_id = p_event_id and t.event_id = p_event_id and r.status = 'Confirmed';
+END;
+
+-- show: trigger
+
+create trigger log_deleted_event before delete on events
+for each row
+begin
+  insert into deleted_events select * from events where event_id = old.event_id;
+end;
 `;
 
-db.query(insert_sample_data_query, (err) => {
+db.query(sample_trig_proc_query, (err) => {
   if (err) {
     console.log(err);
     process.exit(1);
   } else {
     console.log("-> tables have been truncated");
     console.log("-> sample data has been inserted");
+    console.log("-> procedures & triggers have been created");
     process.exit(0);
   }
 });

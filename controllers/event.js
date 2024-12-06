@@ -146,6 +146,7 @@ const get_attended_by_me = async (req, res) => {
 const get_event = async (req, res) => {
   try {
     const { id } = req.params;
+    // show: procedure
     const q = "CALL GetEventView(?);";
     db.query(q, [id], (err, result) => {
       if (err) throw err;
@@ -222,7 +223,7 @@ const get_analytics = (req, res) => {
       res.status(500).json({ error: error1 });
       throw error1;
     }
-    // users
+    // show: procedure
     const q2 = `CALL GetAnalyticsView(?);`;
 
     db.query(q2, [id], (error2, results2) => {

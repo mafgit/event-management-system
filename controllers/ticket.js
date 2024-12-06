@@ -212,6 +212,7 @@ const delete_ticket = (req, res) => {
 //   });
 // };
 
+// show: transaction
 const register_ticket = async (req, res) => {
   const { id, ticket_id } = req.body;
 

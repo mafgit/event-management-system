@@ -2,7 +2,7 @@
 
 ### Description
 
-An Event Management System (EMS) where users can both organize events and register for events.
+An Event Management System (EMS) where users can both organize events and register for events
 
 ### Tech Stack
 
@@ -20,14 +20,12 @@ An Event Management System (EMS) where users can both organize events and regist
 
 - Use `git clone`
 - Create a MySQL database on your machine
-- Add `.env` file to the root folder and another `.env` file inside client folder.
+- Add `.env` file to the root folder and another `.env` file inside client folder
 - Add to the first `.env` file the following variables:
   - DB_USER
   - DB_PW
   - DB_NAME
   - JWT_SECRET
-  - CREATE_PROCEDURES ("yes" for first execution; "no" for after)
-  - CREATE_TRIGGERS ("yes" for first execution; "no" for after)
 - Add to the `.env` file which is inside client folder the following variables:
   - REACT_APP_FIREBASE_API_KEY
   - REACT_APP_FIREBASE_AUTH_DOMAIN
@@ -36,4 +34,4 @@ An Event Management System (EMS) where users can both organize events and regist
   - REACT_APP_FIREBASE_APP_ID
   - REACT_APP_FIREBASE_MEASUREMENT_ID
 - Run `npm run both` in the root folder to start both the backend and the frontend, which can independently be run by the following commands: `npm run dev` (backend), `cd client` then `npm start` (frontend)
-- Run `node insert_sample` in the root folder to insert sample data
+- Run `node insert_data` in the root folder to insert sample data, and create procedures and triggers
