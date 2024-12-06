@@ -77,6 +77,7 @@ const AdminEvents = () => {
         ...form.getFieldsValue(),
         start_time: form.getFieldsValue().start_time.format("HH:mm"),
         end_time: form.getFieldsValue().end_time.format("HH:mm"),
+        req_from_admin: true,
       });
       message.success("Event updated successfully");
       setIsEditing(false);
