@@ -16,7 +16,7 @@ const Navbar = () => {
         {auth ? (
           <>
             <Link to="/create-event">Create Event</Link>
-            <Link to="/account"><img src="image.png" className="w-6 h-6 ml-2 mr-2"/></Link>
+            <Link to="/account"><img src="/image.png" className="w-6 h-6 ml-2 mr-2"/></Link>
           </>
         ) : (
           <Link to="/login">Login</Link>
