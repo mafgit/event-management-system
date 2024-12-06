@@ -149,6 +149,8 @@ const get_event = async (req, res) => {
     // show: procedure
     const q = "CALL GetEventView(?);";
     db.query(q, [id], (err, result) => {
+      // console.log(id, result[0]);
+
       if (err) throw err;
       if (result.length === 0)
         return res
@@ -165,7 +167,7 @@ const get_event = async (req, res) => {
           }
 
           let result_final = [];
-          if (result2.length && result[0] && result[0].length) {
+          if (result.length && result[0] && result[0].length) {
             result_final = result[0][0];
           }
 
