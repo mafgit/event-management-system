@@ -30,6 +30,8 @@ const Event = () => {
   const { auth } = useContext(AuthContext);
   useEffect(() => {
     axios.get("/events/get_event/" + id).then((res) => {
+      console.log(res.data);
+
       setEvent(res.data.event);
 
       axios.get("/tickets/get_tickets/" + id).then((res) => {
