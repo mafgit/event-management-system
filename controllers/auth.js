@@ -118,7 +118,7 @@ const google = async (req, res) => {
               .status(200)
               .json({
                 success: true,
-                user: { user_id: newUserId, first_name, email },
+                user: { user_id: newUserId, first_name, email, last_name },
               });
           }
         );
