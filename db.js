@@ -51,7 +51,11 @@ const create_tables_query = `CREATE TABLE IF NOT EXISTS users (
     FOREIGN KEY (category) REFERENCES categories (name) ON UPDATE CASCADE ON DELETE SET NULL
   );
   
+
+  -- triggers tables
   create table if not exists deleted_events like events;
+  create table if not exists deleted_users like users;
+
 
   CREATE TABLE IF NOT EXISTS reviews (
     review_id INT NOT NULL AUTO_INCREMENT,
