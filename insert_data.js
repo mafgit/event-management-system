@@ -151,14 +151,18 @@ END;
 create trigger log_deleted_event before delete on events
 for each row
 begin
-  insert into deleted_events select * from events where event_id = old.event_id;
+  INSERT INTO deleted_events 
+  VALUES (OLD.event_id, OLD.name, OLD.description, OLD.capacity, OLD.venue, OLD.image_url, OLD.organized_by, 
+          OLD.event_date, OLD.start_time, OLD.end_time, OLD.category, OLD.status, OLD.verified, OLD.created_at, 
+          OLD.modified_at, NOW(), USER());
 end;
 
-CREATE TRIGGER log_deleted_user BEFORE DELETE ON users
-FOR EACH ROW
-BEGIN
-  INSERT INTO deleted_users SELECT * FROM users WHERE user_id = OLD.user_id;
-END;
+create trigger log_deleted_user before delete on users
+for each row
+begin
+    INSERT INTO deleted_users 
+  VALUES (OLD.user_id, OLD.first_name, OLD.last_name, OLD.email, OLD.is_admin, OLD.password, NOW(), USER());
+end;
 `;
 
 db.query(sample_trig_proc_query, (err) => {
