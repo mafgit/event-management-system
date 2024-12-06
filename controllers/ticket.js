@@ -101,9 +101,12 @@ const create_ticket = (req, res) => {
   db.query(query, [id, ticket_name, price, capacity], (err, result) => {
     if (err) {
       console.log(err);
+      if(err.sqlState === '45000'){
+        return res.status(500).json({ message: "Ticket capacity exceeds remaining event capacity!" });
+      }
       return res.status(500).json({ message: "Error creating ticket" });
     }
-    res.status(201).json({ message: "Ticket created successfully!" });
+     res.status(201).json({ message: "Ticket created successfully!" });
   });
 };
 

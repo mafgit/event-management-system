@@ -148,6 +148,27 @@ END;
 
 -- show: triggerس
 
+CREATE TRIGGER check_capacity_before_insert
+BEFORE INSERT ON ems.tickets
+FOR EACH ROW
+BEGIN
+    DECLARE remaining_capacity INT;
+
+    -- Calculate the remaining capacity for the event associated with the new ticket
+    SELECT e.capacity - COALESCE(SUM(t.capacity), 0)
+    INTO remaining_capacity
+    FROM ems.events e
+    LEFT JOIN ems.tickets t ON e.event_id = t.event_id
+    WHERE e.event_id = NEW.event_id  -- Reference the event_id from the new ticket
+    GROUP BY e.event_id, e.capacity;
+
+    -- Check if the incoming ticket capacity exceeds the remaining capacity
+    IF NEW.capacity > remaining_capacity THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Ticket capacity exceeds remaining event capacity';
+    END IF;
+END;
+
+
 create trigger log_deleted_event before delete on events
 for each row
 begin

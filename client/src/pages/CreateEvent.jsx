@@ -24,6 +24,7 @@ function CreateEvent({ edit = false }) {
   const imageRef = useRef(null);
   const [isUploading, setIsUploading] = useState(false);
   const [imageUploadError, setImageUploadError] = useState(false);
+  const [capacityError, setCapacityError] = useState(false);
   const [dateError, setDateError] = useState(false);
   const [startTimeError, setStartTimeError] = useState(false);
   const [endTimeError, setEndTimeError] = useState(false);
@@ -49,13 +50,6 @@ function CreateEvent({ edit = false }) {
 
     if (!edit) {
       if (!validateDateTime()) return;
-      // if (!formData.image_url) {
-      //   window.scrollTo({
-      //     top: 0,
-      //     behavior: "smooth",
-      //   });
-      //   return setImageUploadError("Cover Image must be uploaded!");
-      // }
       try {
         const res = await axios.post(
           "http://localhost:5000/events/create_event",
@@ -71,13 +65,12 @@ function CreateEvent({ edit = false }) {
         );
         const data = await res.data;
         if (data.success === false) {
-          // console.log("Event creation failed!");
           return;
         }
         navigate(`/event/${data.event_id}`);
         window.location.reload();
       } catch (error) {
-        // console.log(error);
+        console.log(error);
       }
     } else {
       try {
@@ -137,6 +130,12 @@ function CreateEvent({ edit = false }) {
       validateDate(value);
     } else if (id === "start_time" || id === "end_time") {
       validateTime();
+    }
+    else if (id === "capacity"){  
+      setCapacityError(false);
+      if(+value < 1){
+        setCapacityError("Error: Atleast 1 person should attend the event!")
+      }
     }
   };
 
@@ -351,6 +350,12 @@ function CreateEvent({ edit = false }) {
                     className="mt-1 block w-full border-2 border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     placeholder="How many can attend?"
                   />
+                  {capacityError && 
+                    <span className="text-sm text-red-600 flex items-center gap-1 p-1">
+                      <MdError />
+                      {capacityError}
+                    </span> 
+                  }
                 </div>
 
                 <div>
@@ -598,7 +603,8 @@ function CreateEvent({ edit = false }) {
               <div>
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+                  disabled={isUploading}
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white enabled:bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-gray-500 transition duration-300 ease-in-out transform enabled:hover:-translate-y-1 enabled:hover:scale-105"
                 >
                   {edit ? "Edit" : "Create"} Epic Event
                 </button>

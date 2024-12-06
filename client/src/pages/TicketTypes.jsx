@@ -27,7 +27,7 @@ const TicketTypes = () => {
         console.log(res);
       })
       .catch((err) => {
-        toast.error("Failed to create ticket");
+        toast.error(err.response.data.message);
         console.log(err);
       });
   };
