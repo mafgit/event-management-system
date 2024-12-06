@@ -22,6 +22,7 @@ truncate table tickets;
 truncate table registrations;
 truncate table attendance;
 truncate table deleted_events;
+truncate table deleted_users;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Users
@@ -145,13 +146,19 @@ BEGIN
   where r.event_id = p_event_id and t.event_id = p_event_id and r.status = 'Confirmed';
 END;
 
--- show: trigger
+-- show: triggerس
 
 create trigger log_deleted_event before delete on events
 for each row
 begin
   insert into deleted_events select * from events where event_id = old.event_id;
 end;
+
+CREATE TRIGGER log_deleted_user BEFORE DELETE ON users
+FOR EACH ROW
+BEGIN
+  INSERT INTO deleted_users SELECT * FROM users WHERE user_id = OLD.user_id;
+END;
 `;
 
 db.query(sample_trig_proc_query, (err) => {
