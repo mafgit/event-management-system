@@ -1,5 +1,11 @@
 # EVENTHORIZON
 
+### Preview
+![ss1](./screenshot.png)
+
+
+![ss2](./screenshot2.png)
+
 ### Description
 
 An Event Management System (EMS) where users can both organize events and register for events
